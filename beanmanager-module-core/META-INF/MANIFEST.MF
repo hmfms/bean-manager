@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BeanManager Plug-in
+Bundle-SymbolicName: BeanManager
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Export-Package: org.bsc.bean,
+ org.bsc.bean.adapters,
+ org.bsc.bean.dyna,
+ org.bsc.bean.metadata,
+ org.bsc.bean.osgi,
+ org.bsc.bean.res,
+ org.bsc.util
+Bundle-Activator: org.bsc.bean.osgi.BeanManagerActivator
+Import-Package: org.osgi.framework;version="1.4.0"
