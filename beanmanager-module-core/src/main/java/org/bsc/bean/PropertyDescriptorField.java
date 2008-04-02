@@ -19,16 +19,18 @@ PropertyDescriptor extension for manage generic DataBase field
 */
 public class PropertyDescriptorField extends PropertyDescriptor {
 
- public static final String FIELDNAME     = "fieldName";
- public static final String SQLTYPE       = "sqlType";
- public static final String PRIMARYKEY    = "primaryKey";
- public static final String HAVEDEFAULT   = "_hDef";
- public static final String READONLY      = "readOnly";
- public static final String ADAPTER       = "adapter";
- public static final String  ENTITY       = "entity";
- public static final String  DEREF       = "_deref";
+ public static final String FIELDNAME       = "fieldName";
+ public static final String SQLTYPE         = "sqlType";
+ public static final String PRIMARYKEY      = "primaryKey";
+ public static final String HAVEDEFAULT     = "_hDef";
+ public static final String READONLY        = "readOnly";
+ public static final String ADAPTER         = "adapter";
+ public static final String  ENTITY         = "entity";
+ public static final String  DEREF          = "_deref";
  public static final String  FUNC           = "_func";
  public static final String DEFAULT_VALUE   = "def.value";
+ public static final String SIZE            = "f.size";
+ 
  
 
   /** to implement intelligent update command */
@@ -62,6 +64,7 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   this.setDerefName( false );
   this.setValue( SQLTYPE, new Integer(Types.VARCHAR) );
   this.setReadOnly( false );
+  this.setSize(0);
  }
 
  /**
@@ -77,12 +80,14 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   this.setDerefName( false );
   this.setValue( SQLTYPE, new Integer(Types.VARCHAR) );
   this.setReadOnly( false );
+  this.setSize(0);
  }
 
  /**
   *
   * @return String
   */
+ @Override
  public String toString() {
    return "PropertyDescriptorField " + getName() + " " + getFieldName();
  }
@@ -316,20 +321,20 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   }
 
   /**
-  *
-  * @param readOnly
-  */
-  //public void setUseDbDefault(boolean value) {
-  //  setBooleanValue(HAVEDEFAULT, value);
-  //}
+   * 
+   * @param size
+   * @return
+   */
+  public PropertyDescriptorField setSize( int size ) {
+        this.setValue(SIZE, size);          
+        return this;
+  }
 
   /**
-  *
-  * @return
-  */
-  //public boolean isUseDbDefault() {
-  //  return getBooleanValue(HAVEDEFAULT);
-  //}
-
-
+   * 
+   * @return
+   */
+  public int getSize() {
+      return (Integer)this.getValue(SIZE);
+  }
 }

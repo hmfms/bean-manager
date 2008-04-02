@@ -40,6 +40,14 @@ public class CharBooleanAdapter implements DataAdapter {
     return resultSet.wasNull() ? null : new Boolean(booleanValue);
   }
 
+  /**
+   * 
+   * @param preparedStatement
+   * @param i
+   * @param object
+   * @param PropertyDescriptorField
+   * @throws java.sql.SQLException
+   */
   public void setValue(PreparedStatement preparedStatement, int i, Object object, PropertyDescriptorField PropertyDescriptorField) throws SQLException {
     if( Log.isTraceEnabled() ) {
       Log.trace("CharBooleanAdapter.setValue({0})={1}",  PropertyDescriptorField.getFieldName(), object );

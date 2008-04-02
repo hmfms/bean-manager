@@ -6,9 +6,9 @@
     <version>0.0.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>bsc.framework</groupId>
+  <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-core</artifactId>
-  <version>${project.parent.version}</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>bean manager core</name>
   
 <properties>
@@ -19,8 +19,8 @@
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/bean-manager</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/bean-manager</developerConnection>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</developerConnection>
 </scm>
 
  <dependencies>

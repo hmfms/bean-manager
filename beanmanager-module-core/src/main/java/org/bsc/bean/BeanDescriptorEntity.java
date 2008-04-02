@@ -101,12 +101,14 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param relationName name of table joined
    * @param conditions
    */
-  public void createJoinRelation( String relationName, JoinCondition... conditions ) {
-    this.createJoinRelation(
-      relationName,
-      this.getEntityName(),
-      JoinRelations.LEFT_OUTER_JOIN,
-      conditions);
+  public BeanDescriptorEntity createJoinRelation( String relationName, JoinCondition... conditions ) {
+    return this.createJoinRelation(
+                    relationName,
+                    this.getEntityName(),
+                    JoinType.LEFT_OUTER_JOIN,
+                    conditions);
+    
+    
   }
 
   /**
@@ -115,12 +117,12 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param joinType specify left or right join
    * @param conditions
    */
-  public void createJoinRelation( String relationName, int joinType, JoinCondition... conditions ) {
-    this.createJoinRelation(
-      relationName,
-      this.getEntityName(),
-      joinType,
-      conditions);
+  public BeanDescriptorEntity createJoinRelation( String relationName, JoinType joinType, JoinCondition... conditions ) {
+    return  this.createJoinRelation(
+                    relationName,
+                    this.getEntityName(),
+                    joinType,
+                    conditions);
   }
 
   /**
@@ -129,12 +131,12 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param tableA table associated with each condition keyA
    * @param conditions
    */
-  public void createJoinRelation( String relationName, String tableA, JoinCondition... conditions ) {
-    this.createJoinRelation(
-        relationName,
-        tableA,
-        JoinRelations.LEFT_OUTER_JOIN,
-        conditions );
+  public BeanDescriptorEntity createJoinRelation( String relationName, String tableA, JoinCondition... conditions ) {
+    return this.createJoinRelation(
+                    relationName,
+                    tableA,
+                    JoinType.LEFT_OUTER_JOIN,
+                    conditions );
   }
 
   /**
@@ -143,12 +145,12 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param joinType
    * @param conditions
    */
-  public void createJoinRelation( String relationName, String tableA, int joinType, JoinCondition... conditions ) {
-    this.createJoinRelation(
-      relationName,
-      tableA,
-      joinType,
-      java.util.Arrays.asList(conditions) );
+  public BeanDescriptorEntity createJoinRelation( String relationName, String tableA, JoinType joinType, JoinCondition... conditions ) {
+    return this.createJoinRelation(
+                    relationName,
+                    tableA,
+                    joinType,
+                    java.util.Arrays.asList(conditions) );
   }
 
   /**
@@ -156,12 +158,12 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param relationName name of table joined
    * @param conditions
    */
-  public void createJoinRelation( String relationName, int joinType, java.util.List<JoinCondition> conditions ) {
-    this.createJoinRelation(
-      relationName,
-      this.getEntityName(),
-      joinType,
-      conditions);
+  public BeanDescriptorEntity createJoinRelation( String relationName, JoinType joinType, java.util.List<JoinCondition> conditions ) {
+    return this.createJoinRelation(
+                    relationName,
+                    this.getEntityName(),
+                    joinType,
+                    conditions);
   }
 
   /**
@@ -170,7 +172,7 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    * @param tableB
    * @param conditions
    */
-  public void createJoinRelation( String relationName, String tableA, int joinType, java.util.List<JoinCondition> conditions ) {
+  public BeanDescriptorEntity createJoinRelation( String relationName, String tableA, JoinType joinType, java.util.List<JoinCondition> conditions ) {
     JoinRelations jr = this.getJoinRelations();
 
     if( jr==null ) {
@@ -185,6 +187,7 @@ public class BeanDescriptorEntity extends BeanDescriptor {
       jr.add( relationName, tableA, joinType, conditions );
     }
 
+    return this;
   }
 
   /**

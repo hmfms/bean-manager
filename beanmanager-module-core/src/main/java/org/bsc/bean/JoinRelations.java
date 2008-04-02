@@ -12,16 +12,6 @@ package org.bsc.bean;
 
 public class JoinRelations {
 
-  /** LEFT OUTER JOIN */
-  public static final int LEFT_OUTER_JOIN = 0;
-  public static final int LEFT_JOIN = LEFT_OUTER_JOIN;
-
-  /** RIGHT OUTER JOIN */
-  public static final int RIGHT_OUTER_JOIN = 1;
-  public static final int RIGHT_JOIN = RIGHT_OUTER_JOIN;
-
-  /** INNER JOIN */
-  public static final int INNER_JOIN = 2;
 
   /** JOIN COMMAND PATTERNS */
   private static final String[] JOINCMD     = {
@@ -35,10 +25,10 @@ public class JoinRelations {
    */
   class Relation  {
     java.util.List<JoinCondition> conditions;
-    int type;
+    JoinType type;
     String name;
 
-    public Relation( String name, int type, java.util.List<JoinCondition> conditions ) {
+    public Relation( String name, JoinType type, java.util.List<JoinCondition> conditions ) {
       this.type = type;
       this.conditions = conditions;
       this.name = name;
@@ -47,7 +37,7 @@ public class JoinRelations {
     public String getName() { return name; }
     public java.util.Collection<JoinCondition> getConditions() { return conditions; }
 
-    public int getType() { return type ; }
+    public JoinType getType() { return type ; }
 
   }
 
@@ -63,7 +53,7 @@ public class JoinRelations {
   /**
    *
    */
-  public void add( String relationName, String tableA, int joinType, java.util.List<JoinCondition> conditions ) {
+  public void add( String relationName, String tableA, JoinType joinType, java.util.List<JoinCondition> conditions ) {
     this.add( tableA, new Relation( relationName, joinType,conditions) );
   }
 
@@ -88,6 +78,7 @@ public class JoinRelations {
   /**
    * generate SQL JOIN clouse
    */
+    @Override
   public String toString() {
     return getJoinCommand();
   }
@@ -99,12 +90,12 @@ public class JoinRelations {
    */
   private String getJoinCommand() {
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     
     for( Relation relation : this.getRelations() ) {
 
         result.append(
-                java.text.MessageFormat.format(JOINCMD[relation.getType()],
+                java.text.MessageFormat.format(JOINCMD[relation.getType().value()],
                 			relation.getName(),
                 			getJoinConditions(relation) ) 
                 			);

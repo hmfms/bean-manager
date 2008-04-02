@@ -6,7 +6,9 @@ import java.beans.IntrospectionException;
 import java.sql.Types;
 
 /**
-property that identify a PrimaryKey field
+ * property that identify a PrimaryKey field
+ * 
+ * Default data type integer
  *
  * <pre>
  * PropertyDescriptorPK _prop = new PropertyDescriptorPK("<i>propName</i>", beanClass, "get<i>propName</i>", "set<i>propName</i>");

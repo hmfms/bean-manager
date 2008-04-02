@@ -586,12 +586,13 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
  }
 
  /**
+  * Create a new property array as result of joining the properties arrays given in input 
   * 
   * @param a
   * @param b
-  * @return
+  * @return new array ( a + b )
   */
- public static PropertyDescriptor[] joinProperties( PropertyDescriptor[] a, PropertyDescriptor[] b ) 
+ public static PropertyDescriptor[] joinProperties( PropertyDescriptor[] a, PropertyDescriptor... b) 
  {
      
      PropertyDescriptor result[] = new PropertyDescriptor[ a.length + b.length ];
