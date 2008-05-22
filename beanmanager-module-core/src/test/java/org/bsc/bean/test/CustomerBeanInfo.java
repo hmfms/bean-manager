@@ -11,6 +11,7 @@ import org.bsc.bean.AbstractManagedBeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.bean.PropertyDescriptorPK;
+import org.bsc.bean.adapters.CharBooleanAdapter;
 
 /**
  * 
@@ -38,7 +39,10 @@ public class CustomerBeanInfo extends AbstractManagedBeanInfo<Customer> {
 					new PropertyDescriptorField("lastName", getBeanClass(), "getLastName", "setLastName" )
 						.setFieldName("LAST_NAME"),
 					new PropertyDescriptorField("account_id", getBeanClass(), "getAccountId", "setAccountId" )
-                                                .setSQLType(Types.INTEGER)
+                                                .setSQLType(Types.INTEGER),
+					new PropertyDescriptorField("vip", getBeanClass(), "isVip", "setVip" )
+                                                .setSQLType(Types.CHAR)
+                                                .setAdapter( new CharBooleanAdapter())
 			};
 		} catch (IntrospectionException e) {
 			e.printStackTrace();

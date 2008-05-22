@@ -990,23 +990,29 @@ private int setStoreStatementInclude( PreparedStatement ps,
   }
 
  /**
- insert bean into db
+ insert beans into db
 
  @param conn database connectio
- @param bean object to insert into db
+ @param beans objects to insert into db
  @exception SQLException
  */
- public int create( Connection conn, Object bean ) throws SQLException {
+ public int create( Connection conn, T... beans ) throws SQLException {
     String sql = this.getCreateStatement();
 
     Log.TRACE_CMD( "create", sql );
 
     PreparedStatement ps = conn.prepareStatement(sql);
 
-    this.setCreateStatement( ps, bean );
+    int result = 0;
+    
+    for( T bean : beans ) {
+        this.setCreateStatement( ps, bean );
 
-    int result = ps.executeUpdate();
-
+        result += ps.executeUpdate();
+        
+        
+    }
+    
     ps.close();
     
     return result;
@@ -1055,12 +1061,13 @@ private int setStoreStatementInclude( PreparedStatement ps,
  @param conn database connection
  @param bean object to update into db
  @param properties properties to include/exclude to update
- @param include if true the props are included into update otherwise excluded
+ @param constraints allow to include or exclude properties from update
  @exception SQLException
  */
- public int store( Connection conn, Object bean, boolean include, String... properties ) throws SQLException {
+ public int store( Connection conn, Object bean, StoreConstraints constraints, String... properties ) throws SQLException {
     int result = 0;
-
+    boolean include = StoreConstraints.INCLUDE_PROPERTIES.equals(constraints);
+    
     if( !include ) {
         java.util.Arrays.sort(properties);
     }

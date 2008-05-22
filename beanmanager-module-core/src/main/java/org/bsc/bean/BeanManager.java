@@ -110,13 +110,13 @@ public interface BeanManager<T> {
   public T setBeanProperties( T bean, ResultSet rs ) throws SQLException;
 
  /**
-  * insert bean into db ( perform SQL INSERT )
+  * insert beans into db ( perform SQL INSERT )
   *
   *@param conn database connectio
-  *@param bean object to insert into db
+  *@param beans objects to insert into db
   *@exception SQLException
   */
-  public int create(Connection conn, T bean) throws SQLException;
+  public int create(Connection conn, T ... beans) throws SQLException;
 
   /**
    * update bean into db ( perform SQL UPDATE )
@@ -141,10 +141,10 @@ public interface BeanManager<T> {
   * @param conn database connection
   * @param bean object to update into db
   * @param properties properties to include/exclude to update
-  * @param include if true the props are included into update otherwise excluded
+  * @param constraints allow to include or exclude properties from update
   * @exception SQLException
   */
-  public int store( Connection conn, T bean, boolean include, String... properties ) throws SQLException ;
+  public int store( Connection conn, T bean, StoreConstraints constraints, String... properties ) throws SQLException ;
 
   /**
   * delete bean from db using an id

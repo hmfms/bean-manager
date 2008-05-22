@@ -35,9 +35,10 @@ public class CharBooleanAdapter implements DataAdapter {
     String fieldName =PropertyDescriptorField.getDerefFieldName();
     Log.trace("CharBooleanAdapter.getValue "+ fieldName);
 
-    boolean booleanValue = resultSet.getBoolean(fieldName);
+    
+    String booleanValue = resultSet.getString(fieldName);
 
-    return resultSet.wasNull() ? null : new Boolean(booleanValue);
+    return resultSet.wasNull() ? null : TRUE.equalsIgnoreCase(booleanValue);
   }
 
   /**

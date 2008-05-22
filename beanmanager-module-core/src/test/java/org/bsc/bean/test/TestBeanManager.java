@@ -16,8 +16,7 @@ import org.junit.Test;
 
 import org.bsc.bean.BeanManager;
 import org.bsc.bean.BeanManagerFactory;
-import org.bsc.bean.dyna.DynaPropertyDescriptorField;
-import org.bsc.bean.metadata.ColumnBean;
+import org.bsc.bean.StoreConstraints;
 import org.bsc.bean.metadata.TableBean;
 import org.bsc.bean.metadata.TableBeanInfo;
 import org.junit.AfterClass;
@@ -101,7 +100,8 @@ public class TestBeanManager {
 				"FIRST_NAME VARCHAR(30) NOT NULL," +
 				"LAST_NAME VARCHAR(30) NOT NULL," +
 				"ID INTEGER NOT NULL CONSTRAINT EMP_NO_PK PRIMARY KEY,"+
-				"ACCOUNT_ID INTEGER NOT NULL "+
+				"ACCOUNT_ID INTEGER NOT NULL, "+
+				"VIP CHAR(1) NOT NULL "+
 				")"
                                 ,
                          "CREATE TABLE ACCOUNT ( " +
@@ -215,6 +215,7 @@ public class TestBeanManager {
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
 		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertFalse( "Customer.vip isn't false", bean.isVip() );
 		
 		
 	}
@@ -226,7 +227,7 @@ public class TestBeanManager {
 		bean.setCustomerId(1);
 		bean.setFirstName(firstName);
 		
-		customerManager.store(conn, bean, true, "firstName");
+		customerManager.store(conn, bean, StoreConstraints.INCLUDE_PROPERTIES, "firstName");
 		
 		bean = customerManager.findById(conn, 1);
 		
@@ -244,7 +245,7 @@ public class TestBeanManager {
 		bean.setCustomerId(1);
 		bean.setLastName("sorrentino");
 		
-		customerManager.store(conn, bean, false, "firstName");
+		customerManager.store(conn, bean, StoreConstraints.EXCLUDE_PROPERTIES, "firstName");
 		
 		bean = customerManager.findById(conn, 1);
 		

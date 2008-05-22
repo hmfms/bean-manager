@@ -6,13 +6,16 @@ public class Customer {
 	private String lastName;
 	private int id;
 	private int accountId;
-	
+        private boolean vip = false;
+
+        
         @Override
         public String toString() {
             return new StringBuilder(100)
                     .append("customerId=").append(id)
                     .append(";firstName=").append(firstName)
                     .append(";lastName=").append(lastName)
+                    .append(";vip=").append(vip)
                     .toString();
         }
 
@@ -41,5 +44,13 @@ public class Customer {
 	public final void setAccountId(int value) {
 		this.accountId = value;
 	}
+
+        public boolean isVip() {
+            return vip;
+        }
+
+        public void setVip(boolean vip) {
+            this.vip = vip;
+        }
 	
 }

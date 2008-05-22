@@ -17,6 +17,7 @@ import java.util.List;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.ResultSetDynaClass;
+import org.bsc.bean.StoreConstraints;
 import org.bsc.bean.metadata.ColumnBean;
 import org.bsc.bean.metadata.ColumnBeanInfo;
 import org.junit.After;
@@ -216,7 +217,7 @@ public class TestDynaBeanManager {
 		bean.setId(1);
 		bean.set( "FIRST_NAME", "bartolomeo");
 		
-		manager.store(conn, bean, true, "FIRST_NAME");
+		manager.store(conn, bean, StoreConstraints.INCLUDE_PROPERTIES, "FIRST_NAME");
 		
 		bean = manager.findById(conn, 1);
 		

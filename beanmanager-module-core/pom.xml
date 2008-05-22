@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
+<project 
+    xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<groupId>org.bsc.framework</groupId>
+<artifactId>beanmanager-core</artifactId>
+<version>1.0.0-SNAPSHOT</version>
+<name>bean manager core</name>
+  
+<parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.framework</groupId>
     <version>0.0.1</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.bsc.framework</groupId>
-  <artifactId>beanmanager-core</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>bean manager core</name>
-  
+</parent>
+
 <properties>
     <!-- SCM SETTINGS -->
     <addTimestamp>true</addTimestamp>
@@ -19,8 +24,8 @@
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</developerConnection>
+<connection>${scm.url}/trunk/beanmanager-module-core</connection>
+<developerConnection>${scm.url}/trunk/beanmanager-module-core</developerConnection>
 </scm>
 
  <dependencies>

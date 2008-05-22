@@ -133,26 +133,27 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
    this method perform INSERT on every table
    </pre>
    @param conn database connectio
-   @param bean object to insert into db
+   @param beans object to insert into db
    @exception SQLException
    */
-  public int create(Connection conn, T bean) throws java.sql.SQLException {
+  public int create(Connection conn, T... beans) throws java.sql.SQLException {
 
     int result = 0;
     Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
 
-    if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
-      result = base.create( conn, bean );
-    }
+    for( T bean : beans ) {
+        if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
+          result = base.create( conn, bean );
+        }
 
-    for( int i=0; i<aggregate.length; ++i ) {
-        aggregate[i].create( conn, bean );
-    }
+        for( int i=0; i<aggregate.length; ++i ) {
+            aggregate[i].create( conn, bean );
+        }
 
-    if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
-      result = base.create( conn, bean );
+        if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
+          result = base.create( conn, bean );
+        }
     }
-
     return result;
 
   }
@@ -287,27 +288,28 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
    @param conn database connection
    @param bean object to update into db
    @param properties properties to include/exclude to update
-   @param include if true the props are included into update otherwise excluded
+   @param constraints allow to include or exclude properties from update
    @exception SQLException
    */
-   public int store( Connection conn, T bean, boolean include, String... properties ) throws java.sql.SQLException {
+   public int store( Connection conn, T bean, StoreConstraints constraints, String... properties ) throws java.sql.SQLException {
     int result = 0;
+
     Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
 
     if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
-      result += base.store( conn, bean, include, properties );
+      result += base.store( conn, bean, constraints, properties );
     }
 
     for( int i=0; i<aggregate.length; ++i ) {
       try {
-        result += aggregate[i].store(conn, bean, include, properties);
+        result += aggregate[i].store(conn, bean, constraints, properties);
       } catch( PropertyNotFoundException pnfEx ) { 
         Log.warn( "Property not found!", pnfEx );
       }
     }
 
     if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
-      result += base.store( conn, bean, include, properties );
+      result += base.store( conn, bean, constraints, properties );
     }
 
     return result;
