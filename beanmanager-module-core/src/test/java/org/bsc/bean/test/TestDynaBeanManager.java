@@ -26,12 +26,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.bsc.bean.test.BaseTestUtils.*;
+
+import org.apache.ddlutils.model.Database;
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+
 /**
  * 
  * @author Sorrentino
  *
  */
-public class TestDynaBeanManager {
+public class TestDynaBeanManager extends BaseTestUtils {
 	private static BeanManager<DynaCustomer> manager = null; 
 	
         Connection conn;
@@ -48,19 +53,26 @@ public class TestDynaBeanManager {
             
             try { 
                 
-            createTable( conn );
-
             //
             // CREATE META DATA (ON THE FLY)
             //
-            
-            
+               
             DynaManagedBeanInfo beanInfo = new DynaCustomerBeanInfo();
             
             beanInfo.addDynaPropertyDescriptors( conn.getMetaData(), null, null, "get", "set");
             
 	    manager = (BeanManager<DynaCustomer>) BeanManagerFactory.getFactory().createBeanManager(DynaCustomer.class, beanInfo);
-             
+            
+            Database db = new Database();
+
+            createTablesModel(db, new CustomerBeanInfo() );                       
+
+            Platform p = PlatformFactory.createNewPlatformInstance(DRIVER, CONNECTION_URL);
+
+            // void createTables(Connection connection, Database model, boolean dropTablesFirst, boolean continueOnError)
+            // Creates the tables defined in the database model.
+            p.createTables( conn, db, true, true);
+
             }
             finally {
                 disconnect( conn );
@@ -71,50 +83,9 @@ public class TestDynaBeanManager {
 	@AfterClass
 	public static void term() throws Exception {
 	
-            Connection conn = connect();
-            
-            try {
-            dropTable( conn );
-            }
-            finally {
-                disconnect( conn );
-            }
-                
 	}
 	
         
-	
-	private static void createTable( Connection conn ) throws Exception {
-
-		String sql[] = { 
-			"CREATE TABLE DCUSTOMER ( " +
-				"FIRST_NAME VARCHAR(30) NOT NULL," +
-				"LAST_NAME VARCHAR(30) NOT NULL," +
-                                "AGE INTEGER DEFAULT 30," +
-				"ID INTEGER NOT NULL CONSTRAINT EMP_NO_PK PRIMARY KEY"+
-				")" 
-                                , 
-                                
-			"CREATE TABLE DCUSTOMER_EXT ( " +
-				"ID INTEGER NOT NULL CONSTRAINT EMP_EX_NO_PK PRIMARY KEY"+
-				")" 
-                };
-		
-                executeCommands(conn, sql);
-	}
-
-	private static void dropTable( Connection conn ) throws Exception {
-
-		String sql[] = {
-                    "DROP TABLE DCUSTOMER",
-                    "DROP TABLE DCUSTOMER_EXT"                      
-                };
-		
-                executeCommands(conn, sql);
-
-		
-	}
-
         @Before
         public void openConnection() throws Exception {
             conn = connect();
@@ -125,8 +96,23 @@ public class TestDynaBeanManager {
             disconnect( conn );
         }
         
+	@Test
+        public void performOperations() throws Exception {
+            
+            createBean();
+            
+            findBeanById();
+            
+            updateBeanInclude();
+            
+            findAllBeans();
+            
+            removeBean();
+            
+        }
+        
         //@Test
-        public void test100_describeTable() throws Exception {
+        public void describeTable() throws Exception {
             DatabaseMetaData md = conn.getMetaData();
                         
             ResultSet rs = md.getColumns(null, null, "DCUSTOMER", null);
@@ -150,7 +136,7 @@ public class TestDynaBeanManager {
          * @throws java.sql.SQLException
          */
         //@Test
-        public void test101_describeTableJDBC() throws SQLException {
+        public void describeTableJDBC() throws SQLException {
         
             DatabaseMetaData md = conn.getMetaData();
                         
@@ -179,8 +165,7 @@ public class TestDynaBeanManager {
              }
          }
         
-	@Test
-	public void test200_createBean() throws Exception {
+        public void createBean() throws Exception {
 		
             for( int i=1; i < 10 ; ++i ) {
 		DynaCustomer bean = manager.instantiateBean();
@@ -189,6 +174,8 @@ public class TestDynaBeanManager {
 		
                 bean.set( "FIRST_NAME", "name"+i);
 		bean.set( "LAST_NAME", "sname"+i);
+		bean.set( "ACCOUNT_ID", 1);
+                bean.set( "VIP", true);
 		
                 bean.set("AGE", 20+i);
                 
@@ -197,8 +184,7 @@ public class TestDynaBeanManager {
             }
 	}
 	
-	@Test
-	public void test300_findBeanById() throws SQLException {
+	public void findBeanById() throws SQLException {
 		
 		DynaCustomer bean = manager.findById(conn, 1);
 		
@@ -209,8 +195,7 @@ public class TestDynaBeanManager {
 	}
 
 
-	@Test
-	public void test400_updateBeanInclude() throws Exception {
+	public void updateBeanInclude() throws Exception {
 		
 		DynaCustomer bean = manager.instantiateBean();
 		
@@ -228,50 +213,7 @@ public class TestDynaBeanManager {
 		
 	}
 
-                
-/*                
-	@Test
-	public void updateBeanExclude() throws SQLException {
-		
-		Customer bean = new Customer();
-		
-		bean.setId(1);
-		bean.setLastName("sorrentino");
-		
-		manager.store(conn, bean, false, "firstName");
-		
-		bean = manager.findById(conn, 1);
-		
-		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getId(), 1 );
-		Assert.assertEquals( "Customer.lastName doesn't match", bean.getLastName(), "sorrentino" );
-		
-		
-	}
-
-	@Test
-	public void updateBean() throws SQLException {
-		
-		Customer bean = manager.findById(conn, 1);
-		
-		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getId(), 1 );
-
-		bean.setFirstName("bartolo");
-		
-		manager.store(conn, bean);
-		
-		bean = manager.findById(conn, 1);
-		
-		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getId(), 1 );
-		Assert.assertEquals( "Customer.firstName doesn't match", bean.getFirstName(), "bartolo" );
-		
-		
-	}
-*/	
-	@Test
-	public void test500_findAllBeans() throws SQLException {
+	public void findAllBeans() throws SQLException {
 		List<DynaCustomer> customers = new ArrayList<DynaCustomer>();
 		
 		manager.findAll(conn, customers, "");
@@ -283,8 +225,7 @@ public class TestDynaBeanManager {
 		
 	}
 	
-	@Test
-	public void test600_removeBean() throws SQLException {
+	public void removeBean() throws SQLException {
 		
 		manager.removeById(conn, 1);
 		

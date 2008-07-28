@@ -11,50 +11,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.logging.LogManager;
-import org.bsc.bean.BeanManager;
-import org.bsc.bean.BeanManagerFactory;
-import org.bsc.bean.dyna.DynaManagedBeanInfo;
+import org.bsc.bean.ddl.DDLUtils;
 
 /**
  *
  * @author Sorrentino
  */
-public class BaseTestUtils {
+public class BaseTestUtils extends DDLUtils {
 
-    public static void loadDriver() throws Exception {
-        
-            String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-            Class.forName(driver); 
-        
+    public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver"; 
+    public static final String CONNECTION_URL = "jdbc:derby:./target/DerbyDB/testDB"; ;
+    
+    public static void loadDriver() throws Exception {    
+            Class.forName(DRIVER);         
     }
     
     public static void initLogger() throws Exception {
-        
             LogManager.getLogManager().readConfiguration( TestBeanManager.class.getResourceAsStream("/logging.properties"));
-        
     }
     
     public static Connection connect() throws Exception {
             
-            String connectionURL = "jdbc:derby:./target/DerbyDB/testDB"; 
-
             Properties p = new Properties();
             p.setProperty("create", "true");
 		
-	    return DriverManager.getConnection(connectionURL, p); 
+	    return DriverManager.getConnection(CONNECTION_URL, p); 
     }
     
-    public static void executeCommands( Connection conn, String sql[] ) throws Exception  {
-            Statement stmt = conn.createStatement();
-
-            for( String command : sql )
-                stmt.addBatch(command);
-
-            stmt.executeBatch();
-
-            stmt.close();
-    }
-
     /**
      * 
      * @param conn

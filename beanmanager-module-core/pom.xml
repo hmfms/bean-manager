@@ -50,6 +50,13 @@
     <scope>test</scope>
 </dependency>
 
+<dependency>
+    <groupId>org.apache.ddlutils</groupId>
+    <artifactId>ddlutils</artifactId>
+    <version>1.0</version>
+    <scope>test</scope>
+</dependency>  
+
 </dependencies>
   
 <build>

@@ -1,5 +1,6 @@
 package org.bsc.bean.test;
 
+import java.beans.BeanInfo;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -20,18 +21,18 @@ import org.bsc.bean.StoreConstraints;
 import org.bsc.bean.metadata.TableBean;
 import org.bsc.bean.metadata.TableBeanInfo;
 import org.junit.AfterClass;
-import static org.bsc.bean.test.BaseTestUtils.connect;
-import static org.bsc.bean.test.BaseTestUtils.disconnect;
-import static org.bsc.bean.test.BaseTestUtils.executeCommands;
-import static org.bsc.bean.test.BaseTestUtils.initLogger;
-import static org.bsc.bean.test.BaseTestUtils.loadDriver;
+
+import org.apache.ddlutils.model.Database;
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+
 
 /**
  * 
  * @author Sorrentino
  *
  */
-public class TestBeanManager {
+public class TestBeanManager extends BaseTestUtils {
 	private static BeanManager<Customer> customerManager = null; 
 	private static BeanManager<Account> accountManager = null; 
 	private static BeanManager<CustomerAccount> customerAccountManager = null; 
@@ -50,13 +51,29 @@ public class TestBeanManager {
             
             try { 
                 
-                createDB( conn );
-
+                
                 BeanManagerFactory factory = BeanManagerFactory.getFactory();
                 
                 customerManager = (BeanManager<Customer>)factory.createBeanManager(Customer.class);
                 accountManager = (BeanManager<Account>) factory.createBeanManager(Account.class);
                 customerAccountManager = (BeanManager<CustomerAccount>) factory.createBeanManager(CustomerAccount.class);
+                
+		Database db = new Database();
+		
+		createTablesModel(db,                         
+                        new CustomerBeanInfo(),
+                        new AccountBeanInfo(),
+                        new CustomerAccountBeanInfo() 
+                        );
+		
+              
+		Platform p = PlatformFactory.createNewPlatformInstance(DRIVER, CONNECTION_URL);
+		
+                // void createTables(Connection connection, Database model, boolean dropTablesFirst, boolean continueOnError)
+                // Creates the tables defined in the database model.
+                p.createTables( conn, db, true, true);
+
+                
             }
             finally {
                 disconnect( conn );
@@ -65,16 +82,7 @@ public class TestBeanManager {
   	
         @AfterClass
 	public static void term() throws Exception {
-	
-            Connection conn = connect();
-            
-            try {
-            dropDB( conn );
-            }
-            finally {
-                disconnect( conn );
-            }
-                
+	                
 	}
 
       
@@ -93,44 +101,6 @@ public class TestBeanManager {
             disconnect( conn );
 	}
 	
-	public static void createDB( Connection conn ) throws Exception {
-
-		String sql[] = {
-			"CREATE TABLE CUSTOMER ( " +
-				"FIRST_NAME VARCHAR(30) NOT NULL," +
-				"LAST_NAME VARCHAR(30) NOT NULL," +
-				"ID INTEGER NOT NULL CONSTRAINT EMP_NO_PK PRIMARY KEY,"+
-				"ACCOUNT_ID INTEGER NOT NULL, "+
-				"VIP CHAR(1) NOT NULL "+
-				")"
-                                ,
-                         "CREATE TABLE ACCOUNT ( " +
-				"NUMBER VARCHAR(30) NOT NULL," +
-				"BALANCE INTEGER DEFAULT 0 NOT NULL," +
-				"ID INTEGER NOT NULL CONSTRAINT ACC_NO_PK PRIMARY KEY"+
-				")"
-                };
-		
-		executeCommands( conn, sql );
-		
-		
-	}
-
-        public static void dropDB( Connection conn ) throws Exception {
-
-		String sql[] = {
-                    "DROP TABLE CUSTOMER"
-                            ,
-                    "DROP TABLE ACCOUNT"
-                            
-                };
-             
-		
-		executeCommands(conn, sql);
-		
-		
-	}
-
         @Test
 	public void getTables() throws Exception {
              String catalog = null; 

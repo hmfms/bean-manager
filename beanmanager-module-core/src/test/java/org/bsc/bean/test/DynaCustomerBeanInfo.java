@@ -25,7 +25,7 @@ public class DynaCustomerBeanInfo extends DynaManagedBeanInfo {
         super();
         try {
 
-            super.setBeanDescriptor(new BeanDescriptorEntity(DynaCustomer.class).setEntityName("DCUSTOMER"));
+            super.setBeanDescriptor(new BeanDescriptorEntity(DynaCustomer.class).setEntityName("CUSTOMER"));
 
             super.addPropertyDescriptor(new PropertyDescriptorPK("ID", DynaCustomer.class, "getId", "setId"));
             

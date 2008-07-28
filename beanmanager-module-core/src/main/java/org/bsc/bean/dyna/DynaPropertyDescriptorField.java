@@ -77,6 +77,7 @@ public class DynaPropertyDescriptorField extends PropertyDescriptorField impleme
   
         setSQLType( columnMetaData.getType() );
         setAdapter( DataAdapter.GENERIC );
+        setSize( columnMetaData.getSize() );
         
         if( null!=columnMetaData.getDefault())
             super.setValue(DEFAULT_VALUE, columnMetaData.getDefault());
