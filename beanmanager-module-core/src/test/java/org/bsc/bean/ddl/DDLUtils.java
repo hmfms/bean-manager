@@ -21,33 +21,33 @@ import org.bsc.bean.PropertyDescriptorPK;
  */
 public class DDLUtils {
     
-    /**
-     * 
-     * @param pd
-     * @return
-     */
-    public static Column fromPropertyDescriptorToColumn( PropertyDescriptor pd ) {
-		
-            Column result = null;
-
-            if( pd instanceof PropertyDescriptorField ) {
-
-                    if( pd instanceof PropertyDescriptorJoin ) return result;
-
-                    PropertyDescriptorField f = (PropertyDescriptorField)pd;
-
-                    result  = new Column();
-
-                    result.setName( f.getFieldName() );
-                    if( f.getSize()>0 ) result.setSizeAndScale( f.getSize(), 0 );
-                    result.setTypeCode( f.getSQLType() );
-                    result.setRequired(true);
-                    result.setPrimaryKey( f instanceof PropertyDescriptorPK );
-
-            }	
-
-            return result;
-	}
+/**
+ * 
+ * @param pd
+ * @return
+ */
+public static Column fromPropertyDescriptorToColumn( PropertyDescriptor pd ) {
+	
+	Column result = null;
+	
+	if( pd instanceof PropertyDescriptorField ) {
+	
+	        if( pd instanceof PropertyDescriptorJoin ) return result;
+	
+	        PropertyDescriptorField f = (PropertyDescriptorField)pd;
+	
+	        result  = new Column();
+	
+	        result.setName( f.getFieldName() );
+	        if( f.getSize()>0 ) result.setSizeAndScale( f.getSize(), 0 );
+	        result.setTypeCode( f.getSQLType() );
+	        result.setRequired(true);
+	        result.setPrimaryKey( f instanceof PropertyDescriptorPK );
+	
+	}	
+	
+	return result;
+}
 	
 	/**
 	 * 

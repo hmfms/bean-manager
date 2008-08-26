@@ -7,6 +7,7 @@ package org.bsc.bean.test;
 
 import java.beans.BeanDescriptor;
 import java.beans.PropertyDescriptor;
+import java.sql.Types;
 import org.bsc.bean.AbstractManagedBeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.PropertyDescriptorField;
@@ -16,11 +17,11 @@ import org.bsc.bean.PropertyDescriptorPK;
  *
  * @author Sorrentino
  */
-public class AccountBeanInfo extends AbstractManagedBeanInfo<Account> {
+public class BankAccountBeanInfo extends AbstractManagedBeanInfo<BankAccount> {
 
     
-    public AccountBeanInfo() {
-        super( Account.class );
+    public BankAccountBeanInfo() {
+        super( BankAccount.class );
     } 
     
     public BeanDescriptor getBeanDescriptor() {
@@ -33,6 +34,8 @@ public class AccountBeanInfo extends AbstractManagedBeanInfo<Account> {
             return new PropertyDescriptor[] {
                 new PropertyDescriptorPK( "id", getBeanClass(), "getAccountId", "setAccountId"),
                 new PropertyDescriptorField( "balance", getBeanClass(), "getBalance", "setBalance"),
+                new PropertyDescriptorField( "openDate", getBeanClass(), "getOpenDate", "setOpenDate")
+                        .setSQLType(Types.TIMESTAMP),                
                 new PropertyDescriptorField( "number", getBeanClass(), "getNumber", "setNumber")                
             };
             

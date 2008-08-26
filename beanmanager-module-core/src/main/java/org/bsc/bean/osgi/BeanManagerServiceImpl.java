@@ -3,6 +3,7 @@ package org.bsc.bean.osgi;
 import java.beans.BeanInfo;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -13,7 +14,10 @@ import org.bsc.bean.metadata.ColumnBean;
 import org.bsc.bean.metadata.ColumnBeanInfo;
 import org.bsc.bean.metadata.TableBean;
 import org.bsc.bean.metadata.TableBeanInfo;
+import org.bsc.util.Log;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * 
@@ -52,6 +56,34 @@ public class BeanManagerServiceImpl implements BeanManagerService {
 		return beanManager;
 	}
 
+        public BeanManager<?> lookupBeanManager(Class<?> beanClass, String entityName)  {
+		
+                BeanManager<?> result = null;
+                
+                BundleContext context = contextRef.get();
+                
+                if( null!=context ) {
+
+                    try {
+    
+                        String filter = MessageFormat.format("(entity={0})", entityName);
+
+                        ServiceReference[] entityRefs = context.getServiceReferences(BeanManager.class.getName(), filter);
+
+                        if( null!=entityRefs && entityRefs.length>0 ) {
+                            result = (BeanManager<?>) context.getService(entityRefs[0]);
+                        }
+                    
+                    } catch (InvalidSyntaxException ex) {
+                        Log.warn( "lookupBeanManager error ", ex );
+                    }
+			                    
+                }
+                    
+                return result;
+        }
+
+        
 	/**
 	 * 
 	 */

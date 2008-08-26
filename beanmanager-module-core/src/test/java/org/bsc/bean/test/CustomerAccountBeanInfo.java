@@ -9,7 +9,6 @@ import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.JoinCondition;
-import static org.bsc.bean.BeanManagerUtils.getBeanProperties;
 /**
  *
  * @author Sorrentino
@@ -35,7 +34,7 @@ public class CustomerAccountBeanInfo extends CustomerBeanInfo {
     @Override
     public BeanInfo[] getAdditionalBeanInfo() {
         return new BeanInfo[] {
-            new AccountBeanInfo()
+            new BankAccountBeanInfo()
         };
     }
 

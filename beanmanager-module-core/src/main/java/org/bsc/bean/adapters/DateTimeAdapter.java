@@ -70,18 +70,30 @@ public class DateTimeAdapter implements DataAdapter {
       return;
     }
 
+    long time = 0;
+    
+    Class<?> valueClass = p.getPropertyType();
+    
+    if( (valueClass.isPrimitive() && Long.TYPE.equals(valueClass)) || Long.class.equals(valueClass) ) {
+        time = (Long)value;
+    }
+    else if( java.util.Date.class.isAssignableFrom(valueClass)) {
+        time = ((java.util.Date)value).getTime();
+    }
+    else {
+        Log.warn( "DateTimeAdapter.setValue: value is not a vaild type {0}", valueClass);
+        return;
+    }
+
     switch( type ) {
     case Types.DATE:
-      {
-      long time = ((java.util.Date)value).getTime();
       ps.setDate( parameterIndex, new java.sql.Date( time ) );
-      }
       break;
     case Types.TIMESTAMP:
-      ps.setTimestamp( parameterIndex, (java.sql.Timestamp)value);
+      ps.setTimestamp( parameterIndex, new java.sql.Timestamp(time) );
       break;
     case Types.TIME:
-      ps.setTime( parameterIndex, (java.sql.Time)value);
+      ps.setTime( parameterIndex, new java.sql.Time(time));
       break;
     }
   }

@@ -34,7 +34,7 @@ import org.apache.ddlutils.PlatformFactory;
  */
 public class TestBeanManager extends BaseTestUtils {
 	private static BeanManager<Customer> customerManager = null; 
-	private static BeanManager<Account> accountManager = null; 
+	private static BeanManager<BankAccount> accountManager = null; 
 	private static BeanManager<CustomerAccount> customerAccountManager = null; 
 
         private Connection conn = null;
@@ -55,14 +55,14 @@ public class TestBeanManager extends BaseTestUtils {
                 BeanManagerFactory factory = BeanManagerFactory.getFactory();
                 
                 customerManager = (BeanManager<Customer>)factory.createBeanManager(Customer.class);
-                accountManager = (BeanManager<Account>) factory.createBeanManager(Account.class);
+                accountManager = (BeanManager<BankAccount>) factory.createBeanManager(BankAccount.class);
                 customerAccountManager = (BeanManager<CustomerAccount>) factory.createBeanManager(CustomerAccount.class);
                 
 		Database db = new Database();
 		
 		createTablesModel(db,                         
                         new CustomerBeanInfo(),
-                        new AccountBeanInfo(),
+                        new BankAccountBeanInfo(),
                         new CustomerAccountBeanInfo() 
                         );
 		
@@ -150,7 +150,7 @@ public class TestBeanManager extends BaseTestUtils {
         
 	Customer createCustomer( int id ) throws SQLException {
 		
-                Account account = createAccount(id);
+                BankAccount account = createAccount(id);
                 
 		Customer bean = new Customer();
 		
@@ -165,9 +165,9 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 
-        Account createAccount( int id) throws SQLException {
+        BankAccount createAccount( int id) throws SQLException {
 		
-		Account bean = new Account();
+		BankAccount bean = new BankAccount();
 		
 		bean.setAccountId(id);
 		bean.setBalance(1000);

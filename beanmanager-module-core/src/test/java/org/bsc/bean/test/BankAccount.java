@@ -5,15 +5,23 @@
 
 package org.bsc.bean.test;
 
+import java.util.Date;
+
 /**
  *
  * @author Sorrentino
  */
-public class Account {
+public class BankAccount {
     private int id;
     private int balance;
     private String number;
-            
+    private java.util.Date openDate;
+
+    public BankAccount() {
+        openDate = new Date();
+    }
+
+    
     public final int getAccountId() {
         return id;
     }        
@@ -36,6 +44,14 @@ public class Account {
 
     public final void setNumber(String value ) {
         number = value;
-    }        
+    }
+
+    public Date getOpenDate() {
+        return openDate;
+    }
+
+    public void setOpenDate(Date openDate) {
+        this.openDate = openDate;
+    }
             
 }

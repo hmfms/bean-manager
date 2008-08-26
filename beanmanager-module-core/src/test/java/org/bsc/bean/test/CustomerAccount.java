@@ -5,6 +5,8 @@
 
 package org.bsc.bean.test;
 
+import java.util.Date;
+
 /**
  *
  * @author Sorrentino
@@ -12,6 +14,11 @@ package org.bsc.bean.test;
 public class CustomerAccount extends Customer {
     private int account;
     private String number;
+    private java.util.Date openDate;
+
+    public CustomerAccount() {
+        openDate = new Date();
+    }
 
     public int getBalance() {
         return account;
@@ -28,4 +35,13 @@ public class CustomerAccount extends Customer {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    public Date getOpenDate() {
+        return openDate;
+    }
+
+    public void setOpenDate(Date openDate) {
+        this.openDate = openDate;
+    }
+    
 }
