@@ -30,6 +30,7 @@ public class PropertyDescriptorField extends PropertyDescriptor {
  public static final String  FUNC           = "_func";
  public static final String DEFAULT_VALUE   = "def.value";
  public static final String SIZE            = "f.size";
+ public static final String REQUIRED        = "f.required";
  
  
 
@@ -40,15 +41,6 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   //private boolean readOnly;
 
 
- /**
-  *
-  * @param key
-  * @param defValue
-  * @return
-  */
-  protected boolean getBooleanValue( String key ) {
-    return Boolean.TRUE.equals(this.getValue(key));
-  }
 
  /**
  *   for default SQL type is set to Types.VARCHAR
@@ -65,6 +57,7 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   this.setValue( SQLTYPE, new Integer(Types.VARCHAR) );
   this.setReadOnly( false );
   this.setSize(0);
+  this.setRequired(true);
  }
 
  /**
@@ -81,6 +74,7 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   this.setValue( SQLTYPE, new Integer(Types.VARCHAR) );
   this.setReadOnly( false );
   this.setSize(0);
+  this.setRequired(true);
  }
 
  /**
@@ -98,9 +92,19 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   * @return
   */
   protected void setBooleanValue( String key , boolean value ) {
-     this.setValue(key, new Boolean(value));
+     this.setValue(key, value);
   }
 
+ /**
+  *
+  * @param key
+  * @param defValue
+  * @return
+  */
+  protected boolean getBooleanValue( String key ) {
+    return Boolean.TRUE.equals(this.getValue(key));
+  }
+  
   /**
    * format the field name for query statements (find,findAll,findById)
    *
@@ -337,4 +341,23 @@ public class PropertyDescriptorField extends PropertyDescriptor {
   public int getSize() {
       return (Integer)this.getValue(SIZE);
   }
+  
+  /**
+   * 
+   * @param size
+   * @return
+   */
+  public PropertyDescriptorField setRequired( boolean value ) {
+        this.setValue(REQUIRED, value);          
+        return this;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public boolean isRequided() {
+      return getBooleanValue(REQUIRED);
+  }
+  
 }
