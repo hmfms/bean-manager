@@ -147,6 +147,19 @@ public interface BeanManager<T> {
   public int store( Connection conn, T bean, StoreConstraints constraints, String... properties ) throws SQLException ;
 
   /**
+   * update all rows using the property's values of the given bean having the possibility of
+   * include/exclude properties into update command
+   * 
+   * @param conn
+   * @param bean
+   * @param constraints
+   * @param properties
+   * @return
+   * @throws java.sql.SQLException
+   */
+  public int storeAll( Connection conn, T bean, StoreConstraints constraints, String... properties) throws SQLException;
+  
+  /**
   * delete bean from db using an id
   * @param conn database connection
   * @param id id value ( for composite key must be an Object array )
