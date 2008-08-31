@@ -37,7 +37,7 @@ public class DataBaseUtils {
   {
     try {
 
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
 
     // BUILD THE STORED PROCEDURE PARAMETER LIST ( ?,?,...)
     if( null!=params && params.length > 0 ) {
@@ -100,7 +100,7 @@ public class DataBaseUtils {
 
     try {
 
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
 
     // BUILD THE STORED PROCEDURE PARAMETER LIST ( ?,?,...)
     if( null!=params && params.length > 0 ) {
