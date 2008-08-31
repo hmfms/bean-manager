@@ -21,6 +21,7 @@ public abstract class AbstractBeanManager<T> implements BeanManager<T> {
 
   private static final String CREATECMD     = "INSERT INTO {0} {1} VALUES {2}";
   private static final String STORECMD      = "UPDATE {0} SET {1} WHERE {2}";
+  private static final String STOREALLCMD   = "UPDATE {0} SET {1} ";
   private static final String REMOVECMD     = "DELETE FROM {0} WHERE {1}";
   private static final String REMOVEALLCMD  = "DELETE FROM {0} {1}";
 
@@ -484,13 +485,11 @@ protected String getStorePropertyListInclude(  String begin,
    */
   public final String getCreateStatement() {
 
-    Object [] args = {
-      this.entity,
-      this.getCreatePropertyList( "(",")","," ),
-      this.getCreatePropertyValues()
-    };
-
-    return java.text.MessageFormat.format(CREATECMD,args);
+    return java.text.MessageFormat.format(CREATECMD,
+                        this.entity,
+                        this.getCreatePropertyList( "(",")","," ),
+                        this.getCreatePropertyValues()
+                        );
   }
 
   /**
@@ -498,27 +497,25 @@ protected String getStorePropertyListInclude(  String begin,
   */
   public final String getStoreStatement( ) {
 
-    Object [] args = {
-      this.entity,
-      this.getStorePropertyList( "","","=?,"),
-      this.getPrimaryKey().getStoreStatementParameters()
-    };
-
-    return java.text.MessageFormat.format(STORECMD,args);
+    return java.text.MessageFormat.format(STORECMD,      
+            this.entity,
+            this.getStorePropertyList( "","","=?,"),
+            this.getPrimaryKey().getStoreStatementParameters()
+            );
   }
 
   /**
    * @return SQL statement used into <b>store</b> method
   */
-  public final String getStoreStatement( String[] properties, boolean include ) {
+  public final String getStoreStatement( String[] properties, StoreConstraints constraints  ) {
 
     if( properties==null || properties.length==0 ) {
       throw new IllegalArgumentException(
-              BeanManagerUtils.getMessage("ex.parameter_is_empty",new Object[]{"properties"}) );
+              BeanManagerUtils.getMessage("ex.parameter_is_empty","properties") );
     }
 
 
-    String propertyList = (include) ?
+    String propertyList = (constraints==StoreConstraints.INCLUDE_PROPERTIES) ?
             getStorePropertyListInclude("","","=?,",properties) :
             getStorePropertyListExclude("","","=?,",properties) ;
 
@@ -526,13 +523,11 @@ protected String getStorePropertyListInclude(  String begin,
 
     if( !isEmpty(propertyList) ) {
 
-      Object [] args = {
-        this.entity,
-        propertyList,
-        this.getPrimaryKey().getStoreStatementParameters()
-      };
-
-      result =  java.text.MessageFormat.format(STORECMD,args);
+      result =  java.text.MessageFormat.format(STORECMD, 
+                    this.entity,
+                    propertyList,
+                    this.getPrimaryKey().getStoreStatementParameters()
+                );
     }
 
     return result;
@@ -543,12 +538,10 @@ protected String getStorePropertyListInclude(  String begin,
   */
   public final String getRemoveStatement() {
 
-    Object [] args = {
-      this.entity,
-      this.getPrimaryKey().getRemoveStatementParameters()
-    };
-
-    return java.text.MessageFormat.format(REMOVECMD,args);
+    return java.text.MessageFormat.format(REMOVECMD,      
+                    this.entity,
+                    this.getPrimaryKey().getRemoveStatementParameters()
+                );
   }
   
   /**
@@ -586,14 +579,13 @@ protected String getStorePropertyListInclude(  String begin,
       this.getPrimaryKey().getFindByIdStatementParameters(getEntity())
       );
     ////////////////////////////////////////////////////////////////////
-    Object [] args = {
-      this.getFindPropertyList( "","","," ),
-      this.getEntity(),
-      (joinRelations!=null) ? joinRelations.toString() : "",
-      conditions
-    };
 
-    return java.text.MessageFormat.format(FINDBYIDCMD,args);
+    return java.text.MessageFormat.format(FINDBYIDCMD,      
+                        this.getFindPropertyList( "","","," ),
+                        this.getEntity(),
+                        (joinRelations!=null) ? joinRelations.toString() : "",
+                        conditions
+                );
    }
 
   /**
@@ -1066,13 +1058,12 @@ private int setStoreStatementInclude( PreparedStatement ps,
  */
  public int store( Connection conn, Object bean, StoreConstraints constraints, String... properties ) throws SQLException {
     int result = 0;
-    boolean include = StoreConstraints.INCLUDE_PROPERTIES.equals(constraints);
     
-    if( !include ) {
+    if( StoreConstraints.EXCLUDE_PROPERTIES==constraints ) {
         java.util.Arrays.sort(properties);
     }
 
-    String sql = getStoreStatement(properties,include);
+    String sql = getStoreStatement(properties,constraints);
 
     Log.TRACE_CMD("store", sql );
 
@@ -1080,7 +1071,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
       PreparedStatement ps = conn.prepareStatement(sql);
 
-      if( include ) {
+      if( StoreConstraints.INCLUDE_PROPERTIES==constraints ) {
         setStoreStatementInclude( ps, bean, properties);
       }
       else {
@@ -1096,6 +1087,156 @@ private int setStoreStatementInclude( PreparedStatement ps,
     return result;
 
  }
+
+ 
+ /**
+  * 
+  * @param properties
+  * @param constraints
+  * @return
+  */
+ public final String getStoreAllStatement( String[] properties, StoreConstraints constraints  ) {
+
+    if( properties==null || properties.length==0 ) {
+      throw new IllegalArgumentException(
+              BeanManagerUtils.getMessage("ex.parameter_is_empty",new Object[]{"properties"}) );
+    }
+
+    String propertyList = (constraints==StoreConstraints.INCLUDE_PROPERTIES) ?
+            getStorePropertyListInclude("","","=?,",properties) :
+            getStorePropertyListExclude("","","=?,",properties) ;
+
+    String result = null;
+
+    if( !isEmpty(propertyList) ) {
+      result =  java.text.MessageFormat.format(STOREALLCMD, this.entity, propertyList );
+    }
+
+    return result;
+  }
+
+ /**
+   *
+   * @param ps
+   * @param bean
+   * @param properties
+   * @param include
+   * @return
+   * @throws SQLException
+   */
+    private int setStoreAllStatementExclude( PreparedStatement ps,  Object bean, String... properties ) throws java.sql.SQLException
+    {
+        int i = 0;
+        int ordinal = 1;
+        Object value;
+
+        try {
+
+            for( i=0; i<props.length ; ++i ) {
+
+              if( !props[i].isReadOnly() &&
+                java.util.Arrays.binarySearch(properties,props[i].getName())<0 )
+              {
+
+                if( !props[i].isReadOnly() ) {
+                  value = BeanManagerUtils.invokeReadMethod(props[i], bean);
+                  setStatementValue( ps, ordinal++, value, props[i] );
+                }
+              }
+            }
+
+        }
+        catch( Exception ex ) {
+          Object[] params = { ex.getMessage(), props[i].getName() };
+          throw new SQLException( BeanManagerUtils.getMessage("ex.set_store_stmt",params) );
+        }
+
+        return ordinal;
+
+    }
+    
+    /**
+    *
+    * @param ps
+    * @param bean
+    * @param properties
+    * @param include
+    * @return
+    * @throws SQLException
+    */
+    @SuppressWarnings("unchecked")
+    private int setStoreAllStatementInclude( PreparedStatement ps, Object bean, String... properties ) throws java.sql.SQLException
+    {
+
+        int i = 0;
+        int ordinal = 1;
+        Object value;
+
+        try {
+
+            PropertyDescriptorField p;
+
+            for( i=0; i<properties.length ; ++i ) {
+
+              p = (PropertyDescriptorField)allProps.get(properties[i]);
+
+              if( p.isReadOnly() || p instanceof PropertyDescriptorJoin )
+                continue;
+
+              value = BeanManagerUtils.invokeReadMethod(p, bean);
+              setStatementValue( ps, ordinal++, value, p );
+            }
+
+        }
+        catch( Exception ex ) {
+          Object[] params = { ex.getMessage(), props[i].getName() };
+          throw new SQLException( BeanManagerUtils.getMessage("ex.set_store_stmt",params) );
+        }
+
+        return ordinal;
+
+    }
+
+  /**
+   * 
+   * @param conn
+   * @param bean
+   * @param constraints
+   * @param properties
+   * @return
+   * @throws java.sql.SQLException
+   */
+  public int storeAll(Connection conn, T bean, StoreConstraints constraints, String... properties) throws SQLException {
+   int result = 0;
+    
+    if( StoreConstraints.EXCLUDE_PROPERTIES==constraints ) {
+        java.util.Arrays.sort(properties);
+    }
+
+    String sql = getStoreAllStatement(properties,constraints);
+
+    Log.TRACE_CMD("store", sql );
+
+    if( !isEmpty(sql) ) {
+
+      PreparedStatement ps = conn.prepareStatement(sql);
+
+      if( StoreConstraints.INCLUDE_PROPERTIES==constraints ) {
+        setStoreAllStatementInclude( ps, bean, properties);
+      }
+      else {
+        setStoreAllStatementExclude( ps, bean, properties);
+      }
+
+      result = ps.executeUpdate();
+
+      ps.close();
+
+    }
+
+    return result;
+
+  }
 
   /**
   *

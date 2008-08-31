@@ -317,6 +317,40 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
    }
 
    /**
+    * 
+    * @param conn
+    * @param bean
+    * @param constraints
+    * @param properties
+    * @return
+    * @throws java.sql.SQLException
+    */
+   public int storeAll( Connection conn, T bean, StoreConstraints constraints, String... properties ) throws java.sql.SQLException {
+    int result = 0;
+
+    Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
+
+    if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
+      result += base.storeAll( conn, bean, constraints, properties );
+    }
+
+    for( int i=0; i<aggregate.length; ++i ) {
+      try {
+        result += aggregate[i].storeAll(conn, bean, constraints, properties);
+      } catch( PropertyNotFoundException pnfEx ) { 
+        Log.warn( "Property not found!", pnfEx );
+      }
+    }
+
+    if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
+      result += base.storeAll( conn, bean, constraints, properties );
+    }
+
+    return result;
+
+   }
+
+   /**
     select bean from db using an primary key value
     Note:
     if you have a composite key must pass into id parameter a
