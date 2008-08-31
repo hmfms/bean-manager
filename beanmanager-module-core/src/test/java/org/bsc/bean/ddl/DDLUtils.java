@@ -41,7 +41,7 @@ public static Column fromPropertyDescriptorToColumn( PropertyDescriptor pd ) {
 	        result.setName( f.getFieldName() );
 	        if( f.getSize()>0 ) result.setSizeAndScale( f.getSize(), 0 );
 	        result.setTypeCode( f.getSQLType() );
-	        result.setRequired(true);
+	        result.setRequired( f.isRequided() );
 	        result.setPrimaryKey( f instanceof PropertyDescriptorPK );
 	
 	}	

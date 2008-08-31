@@ -42,6 +42,7 @@ public class CustomerBeanInfo extends AbstractManagedBeanInfo<Customer> {
                                                 .setSQLType(Types.INTEGER),
 					new PropertyDescriptorField("vip", getBeanClass(), "isVip", "setVip" )
                                                 .setSQLType(Types.CHAR)
+                                                .setSize(1)
                                                 .setAdapter( new CharBooleanAdapter())
 			};
 		} catch (IntrospectionException e) {

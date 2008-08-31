@@ -158,6 +158,7 @@ public class TestBeanManager extends BaseTestUtils {
 		bean.setFirstName("name1");
 		bean.setLastName("sname1");
                 bean.setAccountId( account.getAccountId() );
+                bean.setVip(true);
 		
 		customerManager.create(conn, bean);
 		
@@ -185,7 +186,7 @@ public class TestBeanManager extends BaseTestUtils {
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
 		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
-		Assert.assertFalse( "Customer.vip isn't false", bean.isVip() );
+		Assert.assertTrue( "Customer.vip isn't true", bean.isVip() );
 		
 		
 	}
