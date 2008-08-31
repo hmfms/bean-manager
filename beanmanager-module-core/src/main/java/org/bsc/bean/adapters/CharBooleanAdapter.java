@@ -21,6 +21,7 @@ import org.bsc.util.Log;
 public class CharBooleanAdapter implements DataAdapter {
 
   static final String TRUE = "Y";
+  static final char TRUECHAR = 'Y';
   static final String FALSE = "N";
 
   /**
@@ -37,8 +38,10 @@ public class CharBooleanAdapter implements DataAdapter {
 
     
     String booleanValue = resultSet.getString(fieldName);
+    
+    if( null==booleanValue || resultSet.wasNull() ) return null;
 
-    return resultSet.wasNull() ? null : TRUE.equalsIgnoreCase(booleanValue);
+    return (TRUECHAR==Character.toUpperCase(booleanValue.charAt(0)));
   }
 
   /**
