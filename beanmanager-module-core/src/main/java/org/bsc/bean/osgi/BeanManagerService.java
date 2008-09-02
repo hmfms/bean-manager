@@ -26,10 +26,18 @@ public interface BeanManagerService {
         /**
          * 
          * @param beanClass
+         * @param beanInfo
+         * @return
+         */
+	BeanManager<?> registerBeanManagerEx( Class<?> beanClass, BeanInfo beanInfo, String key );
+        
+        /**
+         * 
+         * @param beanClass
          * @param entityName
          * @return
          */
-        BeanManager<?> lookupBeanManager( Class<?> beanClass, String entityName );
+        BeanManager<?> lookupBeanManager( Class<?> beanClass, String key );
 
 	/**
 	 * 

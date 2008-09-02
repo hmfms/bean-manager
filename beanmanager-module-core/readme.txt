@@ -2,6 +2,7 @@ Release 1.1
 
 OSGI 
  added method lookupBeanManager() in org.bsc.bean.osgi.BeanManagerService
+ added method regiaterBeanManagerEx() in org.bsc.bean.osgi.BeanManagerService to register a beanManager using a custom key
  added org.bsc.bean.osgi.BeanManagerServiceTracker as OSGI ServiceTracker
 
 FIX

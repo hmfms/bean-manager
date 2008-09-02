@@ -44,7 +44,8 @@ public class BeanManagerServiceImpl implements BeanManagerService {
 	 * 
 	 */
 	public BeanManager<?> registerBeanManager(Class<?> beanClass, BeanInfo beanInfo) {
-		BeanManager<?> beanManager = factory.createBeanManager(beanClass, beanInfo);
+            
+            BeanManager<?> beanManager = factory.createBeanManager(beanClass, beanInfo);
 		
 		BundleContext context = contextRef.get();
 		
@@ -55,8 +56,36 @@ public class BeanManagerServiceImpl implements BeanManagerService {
 		}
 		return beanManager;
 	}
+        
+        /**
+         * 
+         * @param beanClass
+         * @param beanInfo
+         * @param key
+         * @return
+         */
+	public BeanManager<?> registerBeanManagerEx( Class<?> beanClass, BeanInfo beanInfo, String key) {
+		if( null==key ) throw new IllegalArgumentException( "key is null!");
+                
+                BeanManager<?> beanManager = factory.createBeanManager(beanClass, beanInfo);
+		
+		BundleContext context = contextRef.get();
+		
+		if( null!=context ) {
+			Dictionary<String,String> props = new Hashtable<String,String>(1);
+			props.put("entity", key);
+			context.registerService(BeanManager.class.getName(), beanManager, props);
+		}
+		return beanManager;
+	}
 
-        public BeanManager<?> lookupBeanManager(Class<?> beanClass, String entityName)  {
+        /**
+         * 
+         * @param beanClass
+         * @param key
+         * @return
+         */
+        public BeanManager<?> lookupBeanManager(Class<?> beanClass, String key)  {
 		
                 BeanManager<?> result = null;
                 
@@ -66,7 +95,7 @@ public class BeanManagerServiceImpl implements BeanManagerService {
 
                     try {
     
-                        String filter = MessageFormat.format("(entity={0})", entityName);
+                        String filter = MessageFormat.format("(entity={0})", key);
 
                         ServiceReference[] entityRefs = context.getServiceReferences(BeanManager.class.getName(), filter);
 
