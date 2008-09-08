@@ -12,7 +12,9 @@ BEANINFO
  Added 'required' properties to PropertyDescriptorField (useful to DdlUtils integration)
 
 BEANMANAGER
- Added 'storeAll' method to update all rows using one bean 
+ Added 'CLOBAdapter'
+ Added 'storeAll' method to update all rows using bean's properties
+ added 'findAndRemove' method to remove rows using filter
 
 IMPROVEMENTS
  Change StringBuffer to StringBuilder when possible

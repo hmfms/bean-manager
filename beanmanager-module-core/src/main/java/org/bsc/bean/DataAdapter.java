@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.bsc.bean.adapters.BLOBAdapter;
 import org.bsc.bean.adapters.CHARAdapter;
+import org.bsc.bean.adapters.CLOBAdapter;
 import org.bsc.bean.adapters.DateTimeAdapter;
 import org.bsc.bean.adapters.GenericAdapter;
 import org.bsc.bean.adapters.JAVA_OBJECTAdapter;
@@ -30,6 +31,7 @@ public interface DataAdapter {
   public static final DataAdapter CHAR        = new CHARAdapter();
   public static final DataAdapter JAVA_OBJECT = new JAVA_OBJECTAdapter();
   public static final DataAdapter BLOB        = new BLOBAdapter();
+  public static final DataAdapter CLOB        = new CLOBAdapter();
 
   /**
    * return right value from resultset

@@ -446,13 +446,15 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
      case Types.LONGVARCHAR:
        adapter = DataAdapter.VARCHAR;
        break;
-
-     case Types.BLOB:
-     case Types.LONGVARBINARY:
-     case Types.VARBINARY:
-     case Types.BINARY:
-       adapter = DataAdapter.BLOB;
-       break;
+    case Types.CLOB:
+        adapter = DataAdapter.CLOB;
+        break;
+    case Types.BLOB:
+    case Types.LONGVARBINARY:
+    case Types.VARBINARY:
+    case Types.BINARY:
+        adapter = DataAdapter.BLOB;
+        break;
 
      default:
        adapter = DataAdapter.GENERIC;

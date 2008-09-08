@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Blob;
 
+import javax.sql.rowset.serial.SerialBlob;
 import org.bsc.bean.BeanManagerUtils;
 import org.bsc.util.Log;
 import org.bsc.bean.PropertyDescriptorField;
@@ -91,8 +92,10 @@ public class JAVA_OBJECTAdapter implements DataAdapter {
 
       oos.writeObject( value );
 
-      PropertyBlob blob = new PropertyBlob(baos.toByteArray());
+      //Blob blob = new PropertyBlob(baos.toByteArray());
 
+      Blob blob = new SerialBlob(baos.toByteArray());
+      
       // SET BINARY
       //ps.setBinaryStream( ordinal, blob.getBinaryStream(), (int)blob.length() );
       // SET BYTES

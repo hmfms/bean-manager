@@ -520,4 +520,16 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
     return base.prepareCustomFind(conn,commandKey,where);
   }
 
+    /**
+     * 
+     * @param conn
+     * @param where
+     * @param values
+     * @return
+     * @throws java.sql.SQLException
+     */
+    public int findAndRemove(Connection conn, String where, Object... values) throws SQLException {
+        throw new UnsupportedOperationException("This method is not supported for aggregateBean!");
+    }
+
 }

@@ -191,6 +191,17 @@ public interface BeanManager<T> {
   public int removeAll( Connection conn ) throws SQLException;
   
   /**
+   * delete all rows that accomplish the filter criterias
+   * 
+   * @param conn
+   * @param where
+   * @param values
+   * @return
+   * @throws java.sql.SQLException
+   */
+  public int findAndRemove( Connection conn, String where, Object... values ) throws SQLException;
+  
+  /**
   * select bean from db using an primary key value
   * Note:
   * if you have a composite key must pass into id parameter a

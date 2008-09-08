@@ -7,8 +7,8 @@ public class Customer {
 	private int id;
 	private int accountId;
         private boolean vip = false;
+        private String note;
 
-        
         @Override
         public String toString() {
             return new StringBuilder(100)
@@ -16,6 +16,8 @@ public class Customer {
                     .append(";firstName=").append(firstName)
                     .append(";lastName=").append(lastName)
                     .append(";vip=").append(vip)
+                    .append("\nNOTE\n")
+                    .append(note)
                     .toString();
         }
 
@@ -53,4 +55,12 @@ public class Customer {
             this.vip = vip;
         }
 	
+        public String getNote() {
+            return note;
+        }
+
+        public void setNote(String note) {
+            this.note = note;
+        }
+        
 }

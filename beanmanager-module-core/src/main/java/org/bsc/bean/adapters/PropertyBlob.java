@@ -10,10 +10,13 @@ import org.bsc.util.*;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      ITD
+ * 
+ * deprecated use SerialBlob instead
+ * 
  * @author Bartolomeo Sorrentino
  * @version 1.0
  */
-
+ @Deprecated
 public class PropertyBlob implements Blob {
   private byte[] content;
 

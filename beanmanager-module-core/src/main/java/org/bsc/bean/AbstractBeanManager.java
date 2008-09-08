@@ -1381,6 +1381,64 @@ private int setStoreStatementInclude( PreparedStatement ps,
     return result;
      
  }
+
+    /**
+     * 
+     * @param conn
+     * @param where
+     * @param values
+     * @return
+     * @throws java.sql.SQLException
+     */
+    public int findAndRemove(Connection conn, String where, Object... values) throws SQLException {
+        final String method = "findAndRemove";
+        
+        java.util.List<PropertyPosition> positions = new java.util.ArrayList<PropertyPosition>(10);
+
+        String wc = parseWhere( where, positions );
+        String c = this.getIdentityConditions();
+
+        // BUILD WHERE CONDITIONS //////////////////////////////////////////
+        StringBuilder conditions = new StringBuilder(256);
+        if( !isEmpty(c) ) {
+          conditions.append( c );
+          if( !isEmpty( wc ) ) {
+            conditions.append( " AND ");
+          }
+        }
+        conditions.append( wc );
+        ///////////////////////////////////////////////////////////////////
+
+        String sql = java.text.MessageFormat.format(REMOVECMD, this.entity, conditions);
+
+        Log.TRACE_CMD( method, sql );
+
+        //Debug.assert( values.length==positions.size() );
+
+        if( values.length<positions.size() )
+          throw new Error( BeanManagerUtils.getMessage("find.assertion") );
+
+        PreparedStatement ps = null;
+
+        ps = conn.prepareStatement(sql);
+
+        java.util.Collections.sort(positions);
+
+        int startIndex = 1;
+
+        for( int i=0; i<positions.size(); ++i ) {
+          PropertyPosition pp = positions.get(i);
+          this.setStatementValue(ps,startIndex++,values[i], pp.getProperty() );
+        }
+
+        int result = ps.executeUpdate();
+
+        ps.close();
+
+        return result;
+
+    }
+ 
  
  
  /**

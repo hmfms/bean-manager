@@ -101,7 +101,7 @@ public class TestBeanManager extends BaseTestUtils {
             disconnect( conn );
 	}
 	
-        @Test
+        //@Test
 	public void getTables() throws Exception {
              String catalog = null; 
              String schemaPattern = null; 
@@ -130,20 +130,20 @@ public class TestBeanManager extends BaseTestUtils {
 	@Test
         public void customerManagement() throws Exception {
             
-            createCustomer( 100 );
+            final int id = 100;
+            
+            createCustomer( id );
+            findCustomerById( id );
         
             CustomerAccount ca = customerAccountManager.findById(conn, 1);
             
-            findCustomerById();
+            updateCustomer( id,  "BARTOLOMEO", "SORRENTINO" );
             
-            updateCustomer( "BARTOLOMEO", "SORRENTINO" );
-            
-            updateCustomerInclude( "LUIGI");
-            
-
+            updateCustomerInclude( id, "LUIGI");
+         
             findCustomers();
             
-            removeCustomer();
+            removeCustomer( id );
             
         }
         
@@ -154,11 +154,12 @@ public class TestBeanManager extends BaseTestUtils {
                 
 		Customer bean = new Customer();
 		
-		bean.setCustomerId(1);
+		bean.setCustomerId(id);
 		bean.setFirstName("name1");
 		bean.setLastName("sname1");
                 bean.setAccountId( account.getAccountId() );
                 bean.setVip(true);
+                bean.setNote( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		
 		customerManager.create(conn, bean);
 		
@@ -180,68 +181,71 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 	
-	void findCustomerById() throws SQLException {
+	void findCustomerById( int id) throws SQLException {
 		
-		Customer bean = customerManager.findById(conn, 1);
+		Customer bean = customerManager.findById(conn, id);
 		
+                
 		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), id );
 		Assert.assertTrue( "Customer.vip isn't true", bean.isVip() );
-		
+		Assert.assertNotNull( "Customer.note is Null", bean.getNote());
+                
+                System.out.printf( "Customer %s\n", bean );
 		
 	}
 
-	void updateCustomerInclude( String firstName ) throws SQLException {
+	void updateCustomerInclude( int id, String firstName ) throws SQLException {
 		
 		Customer bean = new Customer();
 		
-		bean.setCustomerId(1);
+		bean.setCustomerId(id);
 		bean.setFirstName(firstName);
 		
 		customerManager.store(conn, bean, StoreConstraints.INCLUDE_PROPERTIES, "firstName");
 		
-		bean = customerManager.findById(conn, 1);
+		bean = customerManager.findById(conn, id);
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), id );
 		Assert.assertEquals( "Customer.firstName doesn't match", bean.getFirstName(), firstName );
 		
 		
 	}
 
-	void updateCustomernExclude() throws SQLException {
+	void updateCustomernExclude( int id ) throws SQLException {
 		
 		Customer bean = new Customer();
 		
-		bean.setCustomerId(1);
+		bean.setCustomerId(id);
 		bean.setLastName("sorrentino");
 		
 		customerManager.store(conn, bean, StoreConstraints.EXCLUDE_PROPERTIES, "firstName");
 		
-		bean = customerManager.findById(conn, 1);
+		bean = customerManager.findById(conn, id);
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), id );
 		Assert.assertEquals( "Customer.lastName doesn't match", bean.getLastName(), "sorrentino" );
 		
 		
 	}
 
-	void updateCustomer( String firstName, String lastName ) throws SQLException {
+	void updateCustomer( int id,  String firstName, String lastName ) throws SQLException {
 		
-		Customer bean = customerManager.findById(conn, 1);
+		Customer bean = customerManager.findById(conn, id);
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), id );
 
 		bean.setFirstName(firstName);
 		bean.setLastName(lastName);
 		customerManager.store(conn, bean);
 		
-		bean = customerManager.findById(conn, 1);
+		bean = customerManager.findById(conn, id);
 		
 		Assert.assertNotNull("Customer retreived is null", bean );
-		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), 1 );
+		Assert.assertEquals( "Customer.id doesn't match", bean.getCustomerId(), id );
 		Assert.assertEquals( "Customer.firstName doesn't match", bean.getFirstName(), firstName );
 		Assert.assertEquals( "Customer.lastName doesn't match", bean.getLastName(), lastName );
 		
@@ -260,9 +264,9 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 	
-	public void removeCustomer() throws SQLException {
+	public void removeCustomer( int id ) throws SQLException {
 		
-		customerManager.removeById(conn, 1);
+		customerManager.removeById(conn, id);
 		
 		
 	}
