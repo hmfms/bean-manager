@@ -1,8 +1,10 @@
 package org.bsc.bean;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Iterator;
+import org.bsc.util.Log;
 
 /**
  * Title:        Bartolomeo Sorrentino Classi
@@ -85,6 +87,16 @@ public class BeanEnumeration<T> implements Enumeration<T>, Iterable<T> {
     rs.close();
   }
 
-
+ 
+  public static <T> void close( BeanEnumeration<T> enums ) {
+      
+      if( null!=enums ) {
+            try {
+                enums.close();
+            } catch (SQLException ex) {
+                Log.warn( "error occurred on BeanEnumeration close", ex );
+            }
+      } 
+  }
 
 }
