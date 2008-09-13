@@ -3,7 +3,7 @@
 
 <groupId>org.bsc.framework</groupId>
 <artifactId>beanmanager-core</artifactId>
-<version>1.1</version>
+<version>1.1-SNAPSHOT</version>
 <name>bean manager core</name>
   
 <parent>
@@ -16,8 +16,8 @@
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmgr-core-1.1</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmgr-core-1.1</developerConnection>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</developerConnection>
 </scm>
 
 <licenses>
