@@ -28,6 +28,11 @@
 </scm>
 
 <distributionManagement>
+    <site>
+        <id>google-project</id>
+        <name>beanmanager</name>
+        <url>svn:https://bean-manager.googlecode.com/svn/trunk/site</url>
+    </site>
     <repository>
         <id>google-project</id>
         <url>svn:https://bean-manager.googlecode.com/svn/trunk/mavenrepo</url>
