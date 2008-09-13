@@ -20,6 +20,33 @@
 <developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</developerConnection>
 </scm>
 
+<licenses>
+    <license>
+        <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+        <url>http://www.gnu.org/licenses/lgpl.html</url>
+    </license>
+</licenses>
+    
+<developers>
+    <developer>
+        <name>Bartolomeo Sorrentino</name>
+        <email>bartolomeo.sorrentino@gmail.com</email>
+        <roles>
+            <role>project leader</role>
+        </roles>
+    </developer>
+        
+</developers>
+
+<reporting>
+<plugins>
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+  </plugin>
+</plugins>
+</reporting>
+
  <dependencies>
  
  <dependency>
