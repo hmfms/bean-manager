@@ -19,7 +19,7 @@
     <!-- SCM properties  -->
     <addTimestamp>true</addTimestamp>
     <!--tag>${pom.artifactId}-${pom.version}</tag-->
-    <tagBase>https://swixml2.googlecode.com/svn/tags/</tagBase>    
+    <tagBase>https://bean-manager.googlecode.com/svn/tags/</tagBase>    
 </properties>
 
 <scm>
