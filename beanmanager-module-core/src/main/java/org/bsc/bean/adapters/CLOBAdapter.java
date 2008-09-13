@@ -48,38 +48,42 @@ public class CLOBAdapter implements DataAdapter {
       Class<?> type = p.getPropertyType();
 
       Clob value = rs.getClob( p.getFieldName() );
+
       Object result = null;
 
-      if( isCharArray(type) ) {
-        result = value.getCharacterStream();
-      }
-      else if( type.equals(String.class) ){
-        StringBuffer sb = new StringBuffer();
-        Reader reader = value.getCharacterStream();
-        char buffer[] = new char[1024]; 
-        int len;
-        try {
+      if( !rs.wasNull() ) {
+      
+          if( isCharArray(type) ) {
+            result = value.getCharacterStream();
+          }
+          else if( type.equals(String.class) ){
+            StringBuffer sb = new StringBuffer();
+            Reader reader = value.getCharacterStream();
+            char buffer[] = new char[1024]; 
+            int len;
+            try {
 
-            while ((len = reader.read(buffer)) == 1024) {
-                sb.append(buffer, 0, 1024);
+                while ((len = reader.read(buffer)) == 1024) {
+                    sb.append(buffer, 0, 1024);
+                }
+                if( len>0 ) {
+                    sb.append( buffer, 0, len);
+                }
+                result = sb.toString();
+
+                value.free();
+
+            } catch (IOException ex) {            
+                Log.warn( "{0} error ", ex, method);
+                result = null;
             }
-            if( len>0 ) {
-                sb.append( buffer, 0, len);
-            }
-            result = sb.toString();
-            
-            value.free();
-            
-        } catch (IOException ex) {            
-            Log.warn( "{0} error ", ex, method);
-            result = null;
-        }
-      }
-      else {
-          Log.error( "{0} type not recognized {1}", method, type.getName());
+          }
+          else {
+              Log.error( "{0} type not recognized {1}", method, type.getName());
+          }
+      
       }
       
-
       return result;
     }
 

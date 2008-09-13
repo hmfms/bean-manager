@@ -16,7 +16,6 @@ import org.bsc.util.*;
  * @author Bartolomeo Sorrentino
  * @version 1.0
  */
- @Deprecated
 public class PropertyBlob implements Blob {
   private byte[] content;
 

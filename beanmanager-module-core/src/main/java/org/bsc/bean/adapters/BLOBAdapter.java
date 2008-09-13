@@ -66,7 +66,7 @@ public class BLOBAdapter implements DataAdapter {
     }
 
     Class<?> type = value.getClass();
-    PropertyBlob prop = null;
+    Blob prop = null;
 
     if( type.isArray() ) {
       prop = new PropertyBlob( (byte[])value );
