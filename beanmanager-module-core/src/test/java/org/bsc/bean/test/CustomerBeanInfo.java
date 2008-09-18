@@ -45,6 +45,10 @@ public class CustomerBeanInfo extends AbstractManagedBeanInfo<Customer> {
                                 .setSQLType(Types.CHAR)
                                 .setSize(1)
                                 .setAdapter( new CharBooleanAdapter()),
+                        new PropertyDescriptorField("birthDate", getBeanClass(), "getBirthDate", "setBirthDate" )
+                                .setSQLType(Types.TIMESTAMP)
+                                //.setSize(20)
+                                .setRequired(false),
                         new PropertyDescriptorField("note", getBeanClass(), "getNote", "setNote" )
                                 .setSQLType(Types.CLOB)
                                 .setSize(32*1024)

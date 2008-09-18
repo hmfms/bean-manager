@@ -1,4 +1,5 @@
 Release 1.1
+================
 
 OSGI 
  added method lookupBeanManager() in org.bsc.bean.osgi.BeanManagerService
@@ -20,3 +21,16 @@ IMPROVEMENTS
  Change StringBuffer to StringBuilder when possible
  Use var args instead of Object array when possible 
  
+Release 1.2
+================
+
+OSGI 
+
+FIX
+ DateTimeAdapter didn't return time information
+
+BEANINFO
+
+BEANMANAGER
+
+IMPROVEMENTS

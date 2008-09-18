@@ -1,10 +1,10 @@
 package org.bsc.bean.test;
 
-import java.beans.BeanInfo;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,7 +160,7 @@ public class TestBeanManager extends BaseTestUtils {
                 bean.setAccountId( account.getAccountId() );
                 bean.setVip(true);
                 bean.setNote( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-		
+		bean.setBirthDate( new java.util.Date() ); 
 		customerManager.create(conn, bean);
 		
                 return bean;
@@ -191,7 +191,8 @@ public class TestBeanManager extends BaseTestUtils {
 		Assert.assertTrue( "Customer.vip isn't true", bean.isVip() );
 		Assert.assertNotNull( "Customer.note is Null", bean.getNote());
                 
-                System.out.printf( "Customer %s\n", bean );
+                
+                System.out.printf( "Customer %s\ndate=%s\n", bean, DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG).format( bean.getBirthDate() ) );
 		
 	}
 

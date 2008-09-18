@@ -1,5 +1,7 @@
 package org.bsc.bean.test;
 
+import java.util.Date;
+
 public class Customer {
 
 	private String firstName;
@@ -8,6 +10,15 @@ public class Customer {
 	private int accountId;
         private boolean vip = false;
         private String note;
+        private java.util.Date birthDate;
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
         @Override
         public String toString() {
@@ -16,6 +27,7 @@ public class Customer {
                     .append(";firstName=").append(firstName)
                     .append(";lastName=").append(lastName)
                     .append(";vip=").append(vip)
+                    .append(";birthDate=").append(birthDate)
                     .append("\nNOTE\n")
                     .append(note)
                     .toString();
