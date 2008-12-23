@@ -32,8 +32,7 @@ public abstract class BeanManagerFactory {
    *
    * @return
    */
-  @SuppressWarnings("unchecked")
-public static BeanManagerFactory getFactory( String factoryClass ) {
+  public static BeanManagerFactory getFactory( String factoryClass ) {
     BeanManagerFactory result = null;
 
     if( factoryClass!=null ) {
@@ -83,7 +82,7 @@ public static BeanManagerFactory getFactory( String factoryClass ) {
    * @param beanInfo
    * @return
    */
-  public abstract BeanManager<?> createBeanManager( Class<?> beanClass, BeanInfo beanInfo );
+  public abstract <T> BeanManager<T> createBeanManager( Class<T> beanClass, BeanInfo beanInfo );
 
   /**
    * method for creation of bean manager instance using the default
@@ -93,7 +92,7 @@ public static BeanManagerFactory getFactory( String factoryClass ) {
    * @param beanClass
    * @return BeanManager instance
    */
-  public BeanManager<?> createBeanManager( Class<?> beanClass ) {
+  public <T> BeanManager<T> createBeanManager( Class<T> beanClass ) {
     BeanInfo info = BeanManagerUtils.loadBeanInfo( beanClass.getClassLoader(), beanClass );
     return createBeanManager( beanClass, info );
   }

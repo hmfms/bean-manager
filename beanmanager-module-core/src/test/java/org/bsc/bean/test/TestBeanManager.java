@@ -40,7 +40,6 @@ public class TestBeanManager extends BaseTestUtils {
         private Connection conn = null;
 	
 	@BeforeClass
-	@SuppressWarnings("unchecked")
 	public static void init() throws Exception {
             
             loadDriver();
@@ -87,7 +86,6 @@ public class TestBeanManager extends BaseTestUtils {
 
       
 	@Before
-	@SuppressWarnings("unchecked")
 	public void openConnection() throws Exception {
 
                 conn = connect(); 

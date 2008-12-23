@@ -29,9 +29,9 @@ public class BaseBeanManagerFactory extends BeanManagerFactory {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public BeanManager<?> createBeanManager( Class<?> beanClass, BeanInfo beanInfo ) {
+	public <T> BeanManager<T> createBeanManager( Class<T> beanClass, BeanInfo beanInfo ) {
 
-      BeanManager<?> base = new BeanManagerImpl(beanClass, beanInfo);
+      BeanManager<T> base = new BeanManagerImpl<T>(beanClass, beanInfo);
 
       BeanInfo[] additional = beanInfo.getAdditionalBeanInfo();
 

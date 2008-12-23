@@ -41,7 +41,6 @@ public class ManagedBeanInfoProxy<T> implements ManagedBeanInfo<T> {
 	 * @param beanInfo
 	 * @param beanClass
 	 */
-	@SuppressWarnings("unchecked")
 	public ManagedBeanInfoProxy( ManagedBeanInfo<? extends T> beanInfo ) {
 		if( null==beanInfo ) throw new IllegalArgumentException("beaninfo is null!");
 		

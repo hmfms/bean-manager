@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 
 public class Log {
 
-    private static final Logger out = Logger.getLogger("bsc");
-    private static final Logger cmd = Logger.getLogger("bsc.command");
+    public static final Logger out = Logger.getLogger("bsc");
+    public static final Logger cmd = Logger.getLogger("bsc.command");
 
     public static void trace( String msgPattern, Object ...params ) {
         out.log( Level.FINER, MessageFormat.format(msgPattern, params) );
