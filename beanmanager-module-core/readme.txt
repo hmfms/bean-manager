@@ -1,3 +1,11 @@
+Release 1.2
+================
+
+add property size to PropertyDescriptorField
+add property required to PropertyDescriptorField
+
+generic improvements
+
 Release 1.1
 ================
 
