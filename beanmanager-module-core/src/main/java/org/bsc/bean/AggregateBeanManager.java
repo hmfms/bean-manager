@@ -194,7 +194,7 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
    @param id id value ( for composite key must be an Object array )
    @exception SQLException
    */
-  public int removeById(Connection conn, Object id) throws SQLException {
+  public int removeById(Connection conn, Object...id) throws SQLException {
     int result = 0;
     Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
 
@@ -369,7 +369,7 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
     @return bean | <b>null</b>
     @exception SQLException
     */
-   public T findById(Connection conn, Object id) throws SQLException {
+   public T findById(Connection conn, Object...id) throws SQLException {
      return base.findById(conn,id);
    }
 

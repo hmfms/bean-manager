@@ -168,13 +168,13 @@ public class TestDynaBeanManager extends BaseTestUtils {
         public void createBean() throws Exception {
 		
             for( int i=1; i < 10 ; ++i ) {
-		DynaCustomer bean = manager.instantiateBean();
+            	DynaCustomer bean = manager.instantiateBean();
 		   
-		bean.setId(i);
+				bean.setId(i);
 		
                 bean.set( "FIRST_NAME", "name"+i);
-		bean.set( "LAST_NAME", "sname"+i);
-		bean.set( "ACCOUNT_ID", 1);
+                bean.set( "LAST_NAME", "sname"+i);
+				bean.set( "ACCOUNT_ID", 1);
                 bean.set( "VIP", true);
 		
                 bean.set("AGE", 20+i);

@@ -34,7 +34,10 @@ public class CustomerBeanInfo extends AbstractManagedBeanInfo<Customer> {
 		try {
                     return new PropertyDescriptor[] {
 
-                        new PropertyDescriptorPK("id", getBeanClass(), "getCustomerId", "setCustomerId" ),
+                        new PropertyDescriptorPK("id", getBeanClass(), "getCustomerId", "setCustomerId" )
+                        	.setFieldName("CUSTOMER_ID")                 	
+                        ,
+                        
                         new PropertyDescriptorField("firstName", getBeanClass(), "getFirstName", "setFirstName" )
                                 .setFieldName("FIRST_NAME"),
                         new PropertyDescriptorField("lastName", getBeanClass(), "getLastName", "setLastName" )

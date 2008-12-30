@@ -161,11 +161,22 @@ public interface BeanManager<T> {
   
   /**
   * delete bean from db using an id
+  * Note:
+  * if you have a composite key must pass all key's values in right order (i.e. the same declared within BeanInfo)
+  * <pre>
+  * Ex.:
+  * SINGLE KEY (string)
+  * String id = "xxxxx";
+  * manager.removeById( conn, id );
+  * MULTIPLE KEY (string,integer)
+  * manager.removeById( conn, "xxxx", 1 );
+  * </pre>
   * @param conn database connection
-  * @param id id value ( for composite key must be an Object array )
+  * @param id  primary key value(s)  
+  * @return 1 if success removed
   * @exception SQLException
   */
-  public int removeById(Connection conn, Object id) throws SQLException;
+  public int removeById(Connection conn, Object...id) throws SQLException;
 
   /**
   * delete bean from db ( perform SQL DELETE )
@@ -204,23 +215,21 @@ public interface BeanManager<T> {
   /**
   * select bean from db using an primary key value
   * Note:
-  * if you have a composite key must pass into id parameter a
-  * Object array that contains the PK values
+  * if you have a composite key must pass all key's values in right order (i.e. the same declared within BeanInfo)
   * <pre>
   * Ex.:
   * SINGLE KEY (string)
   * String id = "xxxxx";
   * MyBean bean = (MyBean)manager.findById( conn, id );
   * MULTIPLE KEY (string,integer)
-  * String id[] = {"xxxxx", new Integer(1) };
-  * MyBean bean = (MyBean)manager.findById( conn, id );
+  * MyBean bean = (MyBean)manager.findById( conn, "xxxx", 1 );
   * </pre>
   * @param conn database connection
-  * @param id  primary key value
+  * @param id  primary key value(s)  
   * @return bean | <b>null</b>
   * @exception SQLException
   */
-  public T findById(Connection conn, Object id) throws SQLException;
+  public T findById(Connection conn, Object...id) throws SQLException;
 
   /**
    reload bean instance from db

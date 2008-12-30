@@ -7,13 +7,15 @@ package org.bsc.bean.adapters;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.sql.rowset.serial.SerialClob;
+
 import org.bsc.bean.DataAdapter;
 import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.util.Log;
@@ -31,6 +33,21 @@ public class CLOBAdapter implements DataAdapter {
      */
     private boolean isCharArray( Class<?> type ) {
        return (type.isArray() && (type.getComponentType().equals(Character.class) || type.getComponentType().equals(Character.TYPE))); 
+    }
+    
+    private void free( Clob value ) {
+    	try {
+			Method m = Clob.class.getMethod( "free" );
+			
+			if( null!=m ){
+				m.invoke(value);
+			}
+			
+		} catch (Exception e) {
+			Log.warn( "Clob free error: {0}", (e.getCause()!=null) ? e.getCause().getMessage() : e.getMessage() );
+		} 
+    	
+    	
     }
     
     /**
@@ -71,7 +88,7 @@ public class CLOBAdapter implements DataAdapter {
                 }
                 result = sb.toString();
 
-                value.free();
+                free( value );
 
             } catch (IOException ex) {            
                 Log.warn( "{0} error ", ex, method);

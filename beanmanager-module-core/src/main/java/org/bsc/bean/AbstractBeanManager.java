@@ -1245,21 +1245,13 @@ private int setStoreStatementInclude( PreparedStatement ps,
   * @param ordinal
   * @throws SQLException
   */
-  private void setPrimaryKeyValues( PreparedStatement ps, Object id, int ordinal ) throws SQLException {
+  private void setPrimaryKeyValues( PreparedStatement ps, Object[] ids, int ordinal ) throws SQLException {
     //int ordinal = 1;
 
     if( getPrimaryKey().getKeyCount() == 1 ) {
-      this.setStatementValue(ps,ordinal,id,getPrimaryKey().get(0));
+      this.setStatementValue(ps,ordinal,ids[0],getPrimaryKey().get(0));
     }
     else {
-
-      if ( !id.getClass().isArray() ) {
-        throw new java.lang.IllegalArgumentException(
-          BeanManagerUtils.getMessage( "ex.invalid_key_param_type" )
-          );
-      }
-
-      Object[] ids = (Object[])id;
 
       if ( ids.length != getPrimaryKey().getKeyCount() ) {
         throw new java.lang.IllegalArgumentException(
@@ -1281,7 +1273,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
  @param id id value ( for composite key must be an Object array )
  @exception SQLException
  */
- public int removeById( Connection conn,  Object id ) throws SQLException {
+ public int removeById( Connection conn,  Object...id ) throws SQLException {
     String sql = this.getRemoveStatement();
 
     Log.TRACE_CMD( "removeById", sql );
@@ -1468,7 +1460,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
  @return bean | <b>null</b>
  @exception SQLException
  */
- public T findById( Connection conn, Object id ) throws SQLException {
+ public T findById( Connection conn, Object...id ) throws SQLException {
     String sql      = null;
     T bean     = null;
     PreparedStatement ps = null;

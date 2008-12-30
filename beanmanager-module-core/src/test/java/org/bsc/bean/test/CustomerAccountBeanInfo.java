@@ -22,7 +22,7 @@ public class CustomerAccountBeanInfo extends CustomerBeanInfo {
         setBeanClass( CustomerAccount.class );
         
         descriptor.createJoinRelation("ACCOUNT", 
-                    new JoinCondition("id","id") );
+                    new JoinCondition("customer_id","id") );
         return descriptor;
     }
 
