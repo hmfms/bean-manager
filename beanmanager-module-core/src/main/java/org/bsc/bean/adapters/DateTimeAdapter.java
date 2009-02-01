@@ -39,20 +39,23 @@ public class DateTimeAdapter implements DataAdapter {
     Log.debug( "DateTimeAdapter.getValue targetClass " + targetClass );
 
     int sqlType = p.getSQLType();
-    
+
     long time = 0;
     
     switch( sqlType ) {
         case Types.DATE:
             java.util.Date d = rs.getDate(fieldName);
+            if( d==null ) return null;
             time = d.getTime();
             break;
         case Types.TIMESTAMP:
             Timestamp ts = rs.getTimestamp(fieldName);
+            if( ts==null ) return null;
             time = ts.getTime();
             break;
         case Types.TIME:
             Time t = rs.getTime(fieldName);
+            if( t==null ) return null;
             time = t.getTime();
             break;
     }
