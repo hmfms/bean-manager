@@ -2,7 +2,10 @@ Release 1.3
 ================
 change signature for findById method from findById(Connection conn, Object id) to findById(Connection conn, Object...id);
 change signature for removeById method from removeById(Connection conn, Object id) to removeById(Connection conn, Object...id);
+add method Configurator.loadCustomCommands to load/cache custom commands
 
+FIX
+DateTimeAdapter NullPointerException on getValue when null value come in
 
 Release 1.2
 ================
