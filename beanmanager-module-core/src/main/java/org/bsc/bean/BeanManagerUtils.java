@@ -481,7 +481,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 
    String result = getMessage(key);
 
-   return java.text.MessageFormat.format(result, params);
+   return java.text.MessageFormat.format(result, (Object[])params);
  }
 
  /**

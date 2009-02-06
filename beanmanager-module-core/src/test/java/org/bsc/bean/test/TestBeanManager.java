@@ -1,5 +1,6 @@
 package org.bsc.bean.test;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -8,12 +9,14 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Properties;
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.bsc.bean.BeanManager;
 import org.bsc.bean.BeanManagerFactory;
@@ -25,6 +28,7 @@ import org.junit.AfterClass;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
+import org.bsc.util.Configurator;
 
 
 /**
@@ -124,7 +128,72 @@ public class TestBeanManager extends BaseTestUtils {
             }
 
         }
+
+    @Test
+    public void loadCustomCommands() {
+
+        Properties cc = Configurator.loadCustomCommands();
+        //assertEquals("cc.size != 3",  3, cc.size());
+
+        {
+        String k = "command0";
+        String p = cc.getProperty(k);
+
+        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+        System.out.println(p);
+
+        }
+
+        {
+        String k = "command1";
+        String p = cc.getProperty(k);
+
+        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+        System.out.println(p);
+
+        }
         
+        {
+        String k = "command2";
+        String p = cc.getProperty(k);
+
+        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+        System.out.println(p);
+
+        }
+
+/*
+        Properties commands = Configurator.loadCustomCommands( new File("target/test-classes/commands"), "sql");
+
+        assertEquals("commands.size != 2",  2, commands.size());
+
+        {
+        String k = "command1";
+        String p = commands.getProperty(k);
+
+        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+        System.out.println(p);
+
+        }
+
+        {
+        String k = "command2";
+        String p = commands.getProperty(k);
+
+        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+        System.out.println(p);
+
+        }
+*/
+
+    }
+
+
 	@Test
         public void customerManagement() throws Exception {
             
@@ -190,7 +259,7 @@ public class TestBeanManager extends BaseTestUtils {
 		Assert.assertNotNull( "Customer.note is Null", bean.getNote());
                 
                 
-                System.out.printf( "Customer %s\ndate=%s\n", bean, DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG).format( bean.getBirthDate() ) );
+         System.out.printf( "Customer %s\ndate=%s\n", bean, DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG).format( bean.getBirthDate() ) );
 		
 	}
 

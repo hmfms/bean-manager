@@ -1,6 +1,7 @@
 package org.bsc.bean;
 
 import java.sql.*;
+
 import org.bsc.util.*;
 
 /**

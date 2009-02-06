@@ -20,31 +20,31 @@ public class Log {
     public static final Logger cmd = Logger.getLogger("bsc.command");
 
     public static void trace( String msgPattern, Object ...params ) {
-        out.log( Level.FINER, MessageFormat.format(msgPattern, params) );
+        out.log( Level.FINER, MessageFormat.format(msgPattern, (Object[])params) );
     }
     
     public static void debug( String msgPattern, Object ...params ) {
-        out.log( Level.FINE,  MessageFormat.format(msgPattern, params) );
+        out.log( Level.FINE,  MessageFormat.format(msgPattern, (Object[])params) );
     }
     
     public static void info( String msgPattern, Object ...params ) {
-        out.log( Level.INFO, MessageFormat.format(msgPattern, params) );
+        out.log( Level.INFO, MessageFormat.format(msgPattern, (Object[])params) );
     }
 
     public static void error( String msgPattern, Object ...params ) {
-        out.severe( MessageFormat.format(msgPattern, params) );
+        out.severe( MessageFormat.format(msgPattern, (Object[])params) );
     }
 
     public static void error( String msgPattern, Throwable t, Object ...params ) {
-        out.log( Level.SEVERE, MessageFormat.format(msgPattern, params), t );
+        out.log( Level.SEVERE, MessageFormat.format(msgPattern, (Object[])params), t );
     }
     
     public static void warn( String msgPattern, Object ...params ) {
-        out.warning( MessageFormat.format(msgPattern, params) );
+        out.warning( MessageFormat.format(msgPattern, (Object[])params) );
     }
 
     public static void warn( String msgPattern, Throwable t, Object ...params ) {
-        out.log( Level.WARNING, MessageFormat.format(msgPattern, params), t );
+        out.log( Level.WARNING, MessageFormat.format(msgPattern, (Object[])params), t );
     }
     
     public static boolean isTraceEnabled() {
@@ -58,7 +58,7 @@ public class Log {
     /////////////////// TRACE SECTION ///////////////////////
 
     public static void TRACE_CMD( String descr, CharSequence value ) {
-      cmd.info( descr + ": " + value );
+      cmd.info(  String.format( "%s:%s", descr, value ) );
     }
 
     public static long TRACE_TIME_BEGIN( ) {
