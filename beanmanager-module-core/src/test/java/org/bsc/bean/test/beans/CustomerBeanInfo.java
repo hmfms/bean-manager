@@ -1,5 +1,6 @@
-package org.bsc.bean.test;
+package org.bsc.bean.test.beans;
 
+import org.bsc.bean.test.beans.Customer;
 import static org.bsc.bean.BeanManagerUtils.EMPTY_PROPERTYDESCRIPTOR;
 
 import java.beans.BeanDescriptor;

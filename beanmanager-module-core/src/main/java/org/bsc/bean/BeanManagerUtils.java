@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import java.util.Collection;
 import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
 
 /**
@@ -604,5 +605,30 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
      
      return result;
      
+ }
+
+ /**
+  * Utility function that generate IN clause parameters - i.e.  (?,?,?, .... )
+  *
+  * Usage.:
+  *
+  *  Collection<String> params = Arrays.AsList( {"P1", "P2", "P3" } );
+  *
+  *  manager.find( conn, result, String.format( "${field} IN %s ", IN(params) ), params );
+  *
+  * @param parameters parameters collection
+  * @return IN parameters
+  */
+ public static String IN( Collection<?> parameters ) {
+     if( parameters==null ) throw new IllegalArgumentException("argument parameters is null!");
+     if( parameters.isEmpty() ) throw new IllegalArgumentException("argument parameters is empty!");
+     StringBuilder sb = new StringBuilder(100);
+     sb.append('(');
+     sb.append( '?');
+     for( int i=1 ; i<parameters.size(); ++i ) {
+        sb.append(',').append('?');
+     }
+     sb.append(')');
+     return sb.toString();
  }
 }

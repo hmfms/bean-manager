@@ -3,8 +3,10 @@
  * and open the template in the editor.
  */
 
-package org.bsc.bean.test;
+package org.bsc.bean.test.beans;
 
+import org.bsc.bean.test.beans.BankAccountBeanInfo;
+import org.bsc.bean.test.beans.CustomerBeanInfo;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;

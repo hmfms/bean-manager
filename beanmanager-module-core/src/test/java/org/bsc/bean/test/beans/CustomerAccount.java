@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.bsc.bean.test;
+package org.bsc.bean.test.beans;
 
+import org.bsc.bean.test.beans.Customer;
 import java.util.Date;
 
 /**

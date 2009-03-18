@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.bsc.bean.test;
+package org.bsc.bean.test.beans;
 
 import java.util.Date;
 

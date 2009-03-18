@@ -1,5 +1,6 @@
 package org.bsc.bean.test;
 
+import org.bsc.bean.test.beans.CustomerBeanInfo;
 import java.sql.Connection;
 
 

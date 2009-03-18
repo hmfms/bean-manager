@@ -3,6 +3,7 @@ package org.bsc.bean;
 import java.beans.*;
 import java.sql.*;
 
+import java.util.Collection;
 import org.bsc.util.Log;
 import org.bsc.util.Configurator;
 
@@ -1758,9 +1759,18 @@ private int setStoreStatementInclude( PreparedStatement ps,
     int startIndex = 1;
 
     for( int i=0; i<positions.size(); ++i ) {
-      PropertyPosition pp = positions.get(i);
-      this.setStatementValue(ps,startIndex++,values[i], pp.getProperty() );
-      //ps.setObject( i+1, values[i], pp.getProperty().getSQLType(), 0 );
+        PropertyPosition pp = positions.get(i);
+        if( values[i] instanceof Collection ) {
+            Collection<Object> valueCollection = (Collection<Object>) values[i];
+
+            for( Object v : valueCollection ) {
+                this.setStatementValue(ps,startIndex++, v, pp.getProperty() );
+            }
+        }
+        else {
+            this.setStatementValue(ps,startIndex++,values[i], pp.getProperty() );
+        }
+        //ps.setObject( i+1, values[i], pp.getProperty().getSQLType(), 0 );
     }
 
     return ps;

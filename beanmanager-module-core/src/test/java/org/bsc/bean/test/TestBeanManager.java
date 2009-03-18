@@ -1,12 +1,18 @@
 package org.bsc.bean.test;
 
-import java.io.File;
+import org.bsc.bean.test.beans.CustomerAccountBeanInfo;
+import org.bsc.bean.test.beans.CustomerAccount;
+import org.bsc.bean.test.beans.BankAccountBeanInfo;
+import org.bsc.bean.test.beans.BankAccount;
+import org.bsc.bean.test.beans.CustomerBeanInfo;
+import org.bsc.bean.test.beans.Customer;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Properties;
@@ -28,6 +34,7 @@ import org.junit.AfterClass;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
+import org.bsc.bean.BeanManagerUtils;
 import org.bsc.util.Configurator;
 
 
@@ -41,7 +48,7 @@ public class TestBeanManager extends BaseTestUtils {
 	private static BeanManager<BankAccount> accountManager = null; 
 	private static BeanManager<CustomerAccount> customerAccountManager = null; 
 
-        private Connection conn = null;
+    private Connection conn = null;
 	
 	@BeforeClass
 	public static void init() throws Exception {
@@ -57,9 +64,9 @@ public class TestBeanManager extends BaseTestUtils {
                 
                 BeanManagerFactory factory = BeanManagerFactory.getFactory();
                 
-                customerManager = (BeanManager<Customer>)factory.createBeanManager(Customer.class);
-                accountManager = (BeanManager<BankAccount>) factory.createBeanManager(BankAccount.class);
-                customerAccountManager = (BeanManager<CustomerAccount>) factory.createBeanManager(CustomerAccount.class);
+                customerManager = factory.createBeanManager(Customer.class);
+                accountManager = factory.createBeanManager(BankAccount.class);
+                customerAccountManager = factory.createBeanManager(CustomerAccount.class);
                 
 		Database db = new Database();
 		
@@ -194,15 +201,53 @@ public class TestBeanManager extends BaseTestUtils {
     }
 
 
+    /**
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testINClause() throws Exception {
+		Customer bean = new Customer();
+
+        for( int i=0; i<100 ; ++i ) {
+            bean.setCustomerId(1000 + i);
+            bean.setFirstName("name" + i);
+            bean.setLastName("sname" + i);
+            bean.setAccountId( i );
+            bean.setVip(true);
+            bean.setNote( "Note" + i );
+            bean.setBirthDate( new java.util.Date() );
+            customerManager.create(conn, bean);
+        }
+
+        List<String> names = Arrays.asList( "name5", "name6", "name7");
+
+        List<Customer> result  = new ArrayList<Customer>( names.size());
+
+        customerManager.find(conn, result, String.format( "${firstName} IN %s order by #{firstName}", BeanManagerUtils.IN(names) ), names);
+
+        assertTrue( result.size()==3 );
+
+        assertEquals( "name5", result.get(0).getFirstName());
+        assertEquals( "name6", result.get(1).getFirstName());
+        assertEquals( "name7", result.get(2).getFirstName());
+
+        customerManager.removeAll(conn);
+
+    }
+
 	@Test
-        public void customerManagement() throws Exception {
+    public void customerManagement() throws Exception {
             
             final int id = 100;
             
-            createCustomer( id );
+            final BankAccount account = createAccount(id);
+            
+            createCustomer( id, account );
+
             findCustomerById( id );
         
-            CustomerAccount ca = customerAccountManager.findById(conn, 1);
+            //CustomerAccount ca = customerAccountManager.findById(conn, 1);
             
             updateCustomer( id,  "BARTOLOMEO", "SORRENTINO" );
             
@@ -215,36 +260,36 @@ public class TestBeanManager extends BaseTestUtils {
         }
         
         
-	Customer createCustomer( int id ) throws SQLException {
+	private Customer createCustomer( int id, BankAccount account ) throws SQLException {
 		
-                BankAccount account = createAccount(id);
                 
 		Customer bean = new Customer();
 		
 		bean.setCustomerId(id);
-		bean.setFirstName("name1");
-		bean.setLastName("sname1");
-                bean.setAccountId( account.getAccountId() );
-                bean.setVip(true);
-                bean.setNote( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		bean.setFirstName("name" + id);
+		bean.setLastName("sname1" + id);
+        bean.setAccountId( account.getAccountId() );
+        bean.setVip(true);
+        bean.setNote( "NOTE " + id);
 		bean.setBirthDate( new java.util.Date() ); 
-		customerManager.create(conn, bean);
+
+        customerManager.create(conn, bean);
 		
-                return bean;
+        return bean;
 		
 	}
 
-        BankAccount createAccount( int id) throws SQLException {
+    private BankAccount createAccount( int id) throws SQLException {
 		
 		BankAccount bean = new BankAccount();
 		
 		bean.setAccountId(id);
 		bean.setBalance(1000);
-		bean.setNumber("N0001");
+		bean.setNumber("N000" + id);
 		
 		accountManager.create(conn, bean);
 		
-                return bean;
+        return bean;
 		
 	}
 	
