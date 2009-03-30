@@ -640,11 +640,8 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 
  /**
   */
- public static PropertyDescriptor[] aggregateProperties( BeanInfo owner,  BeanInfo...aggregate )
+ public static PropertyDescriptor[] aggregateProperties( Class<?> beanClass, PropertyDescriptor[] properties,  BeanInfo...aggregate )
  {
-    if( !(owner instanceof ManagedBeanInfo) ) throw new IllegalArgumentException( "aggregateProperties method is suitable only for ManagedBeanInfo!");
-
-    PropertyDescriptor[] properties = owner.getPropertyDescriptors();
 
     java.util.Map<String,PropertyDescriptor> result = new java.util.LinkedHashMap<String,PropertyDescriptor>();
 
@@ -660,7 +657,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 
          if( !(bi instanceof ManagedBeanInfo) ) throw new IllegalArgumentException( "aggregateProperties method is suitable only for ManagedBeanInfo!");
 
-        ((ManagedBeanInfo)bi).setBeanClass( ((ManagedBeanInfo)owner).getBeanClass() );
+        ((ManagedBeanInfo)bi).setBeanClass( beanClass );
         
         aggregateProperties(result, bi);
      }
