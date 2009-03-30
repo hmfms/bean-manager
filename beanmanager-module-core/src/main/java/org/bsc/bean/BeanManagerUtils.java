@@ -224,7 +224,9 @@ public static Object getPropertyValue( PropertyDescriptor p, Object bean ) {
   * @todo implement the join condition(s) inheritance
   * @param beanInfo BeanInfo
   * @return PropertyDescriptor[] all properties as array
+  * @Deprecated use aggregateProperties
   */
+ @Deprecated
  public static PropertyDescriptor[] getBeanProperties( BeanInfo beanInfo ) {
    if (beanInfo == null) {
      throw new java.lang.IllegalArgumentException(getMessage(
@@ -304,36 +306,9 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 
       item = propFrom.get(key);
 
-      if( item instanceof PropertyDescriptorField ) {
+      inheritAggregateProperty(propTo, item, entityName);
 
-        if( !(item instanceof PropertyDescriptorJoin) ) {
-
-            try {
-              PropertyDescriptorField field = (PropertyDescriptorField)item;
-              PropertyDescriptorJoin joinP = new PropertyDescriptorJoin(field.getName(),
-                                                 field.getReadMethod(),
-                                                 field.getWriteMethod());
-              joinP.setFieldName( field.getFieldName() );
-              joinP.setSQLType(field.getSQLType());
-              joinP.setAdapter( field.getAdapter() );
-              joinP.setDerefName( field.isDerefName() );
-              joinP.setFunctionPattern( field.getFunctionPattern() );
-              joinP.setJoinTable(entityName);
-
-              item = joinP;
-              joinP = null;
-
-            }
-            catch (IntrospectionException ex) {
-              Log.warn( "joinProperties "+ item.getName() + " exception ", ex );
-            }
-
-          }
-
-        }
-        propTo.put(key, item);
-      }
-
+    }
   }
 
   /**
@@ -605,6 +580,96 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
      
      return result;
      
+ }
+
+    /**
+    * inherit property from a aggregate beanInfo
+    *
+    * @param propTo Map
+    * @param propFrom Map
+    * @param entityName String
+    */
+    private static void inheritAggregateProperty( java.util.Map<String,PropertyDescriptor> propTo, PropertyDescriptor item, String entityName )  {
+
+      if( item instanceof PropertyDescriptorField ) {
+
+        if( !(item instanceof PropertyDescriptorJoin) ) {
+
+            try {
+              PropertyDescriptorField field = (PropertyDescriptorField)item;
+              PropertyDescriptorJoin joinP = new PropertyDescriptorJoin(field.getName(),
+                                                 field.getReadMethod(),
+                                                 field.getWriteMethod());
+              joinP.setFieldName( field.getFieldName() );
+              joinP.setSQLType(field.getSQLType());
+              joinP.setAdapter( field.getAdapter() );
+              joinP.setDerefName( field.isDerefName() );
+              joinP.setFunctionPattern( field.getFunctionPattern() );
+              joinP.setJoinTable(entityName);
+
+              item = joinP;
+              joinP = null;
+
+            }
+            catch (IntrospectionException ex) {
+              Log.warn( "joinProperties "+ item.getName() + " exception ", ex );
+            }
+
+          }
+
+        }
+        propTo.put(item.getName(), item);
+  }
+
+ private static void aggregateProperties( java.util.Map<String,PropertyDescriptor> propertyMap, BeanInfo bi ) {
+    BeanDescriptor bd = bi.getBeanDescriptor();
+    Object entityName =null;
+    boolean aggregate = (bd != null && (entityName = bd.getValue(BeanDescriptorEntity.ENTITY_NAME)) != null);
+
+    for( PropertyDescriptor p: bi.getPropertyDescriptors() ) {
+        if( propertyMap.containsKey(p.getName())) continue;
+
+        if( aggregate )
+            inheritAggregateProperty(propertyMap, p, (String)entityName);
+        else
+            propertyMap.put( p.getName(), p );
+    }
+
+
+ }
+
+ /**
+  */
+ public static PropertyDescriptor[] aggregateProperties( BeanInfo owner,  BeanInfo...aggregate )
+ {
+    if( !(owner instanceof ManagedBeanInfo) ) throw new IllegalArgumentException( "aggregateProperties method is suitable only for ManagedBeanInfo!");
+
+    PropertyDescriptor[] properties = owner.getPropertyDescriptors();
+
+    java.util.Map<String,PropertyDescriptor> result = new java.util.LinkedHashMap<String,PropertyDescriptor>();
+
+    for( PropertyDescriptor p: properties ) {
+     result.put( p.getName(), p );
+    }
+
+    BeanInfo[] add = aggregate;
+
+    if( add!=null && add.length>0 ) {
+
+     for ( BeanInfo bi: add ) {
+
+         if( !(bi instanceof ManagedBeanInfo) ) throw new IllegalArgumentException( "aggregateProperties method is suitable only for ManagedBeanInfo!");
+
+        ((ManagedBeanInfo)bi).setBeanClass( ((ManagedBeanInfo)owner).getBeanClass() );
+        
+        aggregateProperties(result, bi);
+     }
+    }
+
+    PropertyDescriptor[] propArray = new PropertyDescriptor[ result.size() ];
+    result.values().toArray( propArray );
+
+    return propArray;
  }
 
  /**
