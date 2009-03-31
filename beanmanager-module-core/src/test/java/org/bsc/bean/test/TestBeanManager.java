@@ -247,7 +247,7 @@ public class TestBeanManager extends BaseTestUtils {
 
             findCustomerById( id );
         
-            //CustomerAccount ca = customerAccountManager.findById(conn, 1);
+            CustomerAccount ca = customerAccountManager.findById(conn, id);
             
             updateCustomer( id,  "BARTOLOMEO", "SORRENTINO" );
             

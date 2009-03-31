@@ -9,7 +9,9 @@ import org.bsc.bean.test.beans.BankAccountBeanInfo;
 import org.bsc.bean.test.beans.CustomerBeanInfo;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
 import org.bsc.bean.BeanDescriptorEntity;
+import org.bsc.bean.BeanManagerUtils;
 import org.bsc.bean.JoinCondition;
 /**
  *
@@ -28,6 +30,8 @@ public class CustomerAccountBeanInfo extends CustomerBeanInfo {
         return descriptor;
     }
 
+    final BeanInfo[] aggregate = new BeanInfo[] { new BankAccountBeanInfo() };
+
     /**
      * Aggregate BeanInfo
      * 
@@ -35,9 +39,13 @@ public class CustomerAccountBeanInfo extends CustomerBeanInfo {
      */
     @Override
     public BeanInfo[] getAdditionalBeanInfo() {
-        return new BeanInfo[] {
-            new BankAccountBeanInfo()
-        };
+        return aggregate;
+    }
+
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+
+        return BeanManagerUtils.aggregateProperties( getBeanClass(), super.getPropertyDescriptors(), aggregate );
     }
 
 

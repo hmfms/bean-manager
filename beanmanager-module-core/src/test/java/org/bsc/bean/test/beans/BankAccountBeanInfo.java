@@ -33,7 +33,8 @@ public class BankAccountBeanInfo extends AbstractManagedBeanInfo<BankAccount> {
             
             return new PropertyDescriptor[] {
                 new PropertyDescriptorPK( "id", getBeanClass(), "getAccountId", "setAccountId"),
-                new PropertyDescriptorField( "balance", getBeanClass(), "getBalance", "setBalance"),
+                new PropertyDescriptorField( "balance", getBeanClass(), "getBalance", "setBalance")
+                        .setSQLType(Types.INTEGER),
                 new PropertyDescriptorField( "openDate", getBeanClass(), "getOpenDate", "setOpenDate")
                         .setSQLType(Types.TIMESTAMP),                
                 new PropertyDescriptorField( "number", getBeanClass(), "getNumber", "setNumber")                

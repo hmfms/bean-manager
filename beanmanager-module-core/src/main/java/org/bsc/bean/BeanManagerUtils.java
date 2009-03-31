@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.util.Collection;
+import java.util.Enumeration;
 import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
 
 /**
@@ -600,11 +601,12 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
               PropertyDescriptorJoin joinP = new PropertyDescriptorJoin(field.getName(),
                                                  field.getReadMethod(),
                                                  field.getWriteMethod());
-              joinP.setFieldName( field.getFieldName() );
-              joinP.setSQLType(field.getSQLType());
-              joinP.setAdapter( field.getAdapter() );
-              joinP.setDerefName( field.isDerefName() );
-              joinP.setFunctionPattern( field.getFunctionPattern() );
+
+              Enumeration<String> names = field.attributeNames();
+              while( names.hasMoreElements() ) {
+                  final String n = names.nextElement();
+                  joinP.setValue(n, field.getValue(n));
+              }
               joinP.setJoinTable(entityName);
 
               item = joinP;
@@ -639,6 +641,34 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
  }
 
  /**
+  *
+  * This method is useful to join properties between bean infos.
+  *
+  * The field properties belonging to aggregates are transformed in PropertyJoin automatically
+  *
+  * It is very useful for create aggregate Bean Info
+  *
+  * <pre>
+    final BeanInfo aggregate = new AggregateBeanInfo();
+
+    @Override
+    public BeanInfo[] getAdditionalBeanInfo() {
+        return new BeanInfo[] { aggregate };
+    }
+
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+
+        return BeanManagerUtils.aggregateProperties( getBeanClass(), super.getPropertyDescriptors(), aggregate );
+
+   }
+  * </pre>
+  *
+  *
+  * @param beanClass class of the Owner Bean
+  * @param properties properties of the Owner BeanInfo
+  * @param aggregate BeanInfo array
+  * @return
   */
  public static PropertyDescriptor[] aggregateProperties( Class<?> beanClass, PropertyDescriptor[] properties,  BeanInfo...aggregate )
  {
