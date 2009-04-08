@@ -9,8 +9,9 @@
   <name>bean manager parent</name>
 
 <modules>
+<!--
 	<module>beanmanager-module-test</module>
-	
+-->
 </modules>  
 
 <properties>
