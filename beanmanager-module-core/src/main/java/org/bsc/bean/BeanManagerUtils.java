@@ -1,6 +1,7 @@
 package org.bsc.bean;
 
-import org.bsc.bean.dyna.DynaPropertyDescriptor;
+import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.Beans;
@@ -8,19 +9,19 @@ import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Collections;
-
-import org.bsc.util.Configurator;
-import org.bsc.util.Log;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
-import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
+
+import org.bsc.bean.dyna.DynaPropertyDescriptor;
+import org.bsc.bean.dyna.DynaPropertyDescriptorJoin;
+import org.bsc.util.Configurator;
+import org.bsc.util.Log;
 
 /**
  * Class utility
@@ -90,7 +91,6 @@ static public BeanInfo loadBeanInfo( ClassLoader loader, String uri ) {
  *
  * @see bsc.bean.PropertyDescriptorField
 */
-@SuppressWarnings("unchecked")
 static public <T> java.util.Map<String, PropertyDescriptorField> getPropertyFieldMap( PropertyDescriptor [] pp ) {
 
   if(pp==null) return Collections.emptyMap();
@@ -293,7 +293,6 @@ public static Object getPropertyValue( PropertyDescriptor p, Object bean ) {
    * @param propFrom Map
    * @param entityName String
    */
-  @SuppressWarnings("unchecked")
 private static void _inheritAggregateProperties(    java.util.Map<String,PropertyDescriptor> propTo,
                                                     java.util.Map<String,PropertyDescriptor> propFrom,
                                                     String entityName )
@@ -598,10 +597,19 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 
             try {
               PropertyDescriptorField field = (PropertyDescriptorField)item;
-              PropertyDescriptorJoin joinP = new PropertyDescriptorJoin(field.getName(),
+              PropertyDescriptorJoin joinP = null;
+              
+              if( field instanceof DynaPropertyDescriptor ) {
+
+            	  joinP = new DynaPropertyDescriptorJoin((DynaPropertyDescriptor)field);
+            	  
+              }
+              else {
+            	  joinP = new PropertyDescriptorJoin(field.getName(),
                                                  field.getReadMethod(),
                                                  field.getWriteMethod());
-
+              }
+              
               Enumeration<String> names = field.attributeNames();
               while( names.hasMoreElements() ) {
                   final String n = names.nextElement();
@@ -613,7 +621,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
               joinP = null;
 
             }
-            catch (IntrospectionException ex) {
+            catch (Exception ex) {
               Log.warn( "joinProperties "+ item.getName() + " exception ", ex );
             }
 

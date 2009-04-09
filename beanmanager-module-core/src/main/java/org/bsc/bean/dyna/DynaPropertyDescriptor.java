@@ -13,9 +13,11 @@ import java.lang.reflect.Method;
  */
 public interface DynaPropertyDescriptor {
 
+	String getName();
+	
     Method getMappedReadMethod();
     
     Method getMappedWriteMethod();
     
-    
+    Class<?> getPropertyType();
 }
