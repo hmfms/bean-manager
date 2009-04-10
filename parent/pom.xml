@@ -10,7 +10,7 @@
 
 <modules>
 <!--
-	<module>beanmanager-module-test</module>
+	<module>beanmanager-module-core</module>
 -->
 </modules>  
 
