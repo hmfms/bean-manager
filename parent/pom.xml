@@ -9,9 +9,15 @@
   <name>bean manager parent</name>
 
 <modules>
+<<<<<<< .mine
+	<module>beanmanager-module-core</module>
+	<module>beanmanager-ddlutils</module>	
+
+=======
 <!--
 	<module>beanmanager-module-core</module>
 -->
+>>>>>>> .theirs
 </modules>  
 
 <properties>
@@ -26,6 +32,7 @@
 <connection>${scm.url}/trunk/parent</connection>
 <developerConnection>${scm.url}/trunk/parent</developerConnection>
 </scm>
+
 
 <distributionManagement>
     <site>
