@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.bsc.beanmanager</groupId>
+  <artifactId>ddlutils-wizard</artifactId>
+  <name>bean manager ddlutils wizard</name>
+  <version>1.0-SNAPSHOT</version>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  			<configuration>
+  				<source>1.5</source>
+  				<target>1.5</target>
+  			</configuration>
+  		</plugin>
+<plugin>
+<groupId>org.codehaus.mojo.webstart</groupId>
+<artifactId>webstart-maven-plugin</artifactId>
+<version>1.0-alpha-2</version>
+
+<executions>
+<execution>
+<goals>
+<goal>jnlp</goal>
+</goals>
+<phase>install</phase>
+<configuration>
+
+	<dependencies>
+		<includes />
+		<excludes />
+	</dependencies>
+	<!-- 
+	<resourcesDirectory>${project.basedir}/src/jnlp/resources</resourcesDirectory>
+	<resourcesDirectory>src/main/native</resourcesDirectory>
+	-->
+	<jnlp>
+		<!-- we play with the resource path and template relative path to test MOJO-391	-->
+		<inputTemplateResourcePath>${project.basedir}/src/main</inputTemplateResourcePath>
+		<inputTemplate>jnlp/template.xml</inputTemplate>
+		<outputFile>beanmanager.jnlp</outputFile>	
+		<mainClass>org.bsc.beanmanager.DDLWizardApplication</mainClass>		
+	</jnlp>
+
+<!-- 
+=====================
+SIGNING
+
+defining this will automatically sign the jar and its dependencies 
+=====================
+-->
+	<unsignAlreadySignedJars>true</unsignAlreadySignedJars>
+	
+	<sign>
+		<alias>BeanManager</alias>
+		<validity></validity>
+	
+		<dnameCn>BSC</dnameCn>
+		<dnameOu>BSC</dnameOu>
+		<dnameO>BSC</dnameO>
+		<dnameL>Avellino</dnameL>
+		<dnameSt>Italy</dnameSt>
+		<dnameC>IT</dnameC>
+	
+		<verify>true</verify>
+        <keystore>${project.basedir}/softphone.keystore</keystore>
+        <keypass>bartolomeo.sorrentino@gmail.com</keypass>
+        <storepass>bartolo2009</storepass>
+
+		<keystoreConfig>
+			<delete>true</delete>
+			<gen>true</gen>
+		</keystoreConfig>
+	</sign>
+
+	<verbose>false</verbose>
+
+</configuration>
+
+</execution>
+
+</executions>
+
+</plugin>
+
+</plugins>
+  		
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>sqljdbc4-unsigned</artifactId>
+      <version>2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>oracle</groupId>
+      <artifactId>ojdbc14</artifactId>
+      <version>9.2.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ddlutils</groupId>
+      <artifactId>ddlutils</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.4.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.swixml</groupId>
+    	<artifactId>swixml</artifactId>
+    	<version>2.5-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.netbeans.api</groupId>
+    	<artifactId>wizard</artifactId>
+    	<version>0.998.1</version>
+    </dependency>
+  </dependencies>
+
+<repositories>
+    <repository>
+      <id>google-swixml2</id>
+      <url>http://swixml2.googlecode.com/svn/trunk/mavenrepo</url>
+    </repository>
+</repositories>   
+</project>
