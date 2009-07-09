@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<panel resizable="false" title="Select JDBC Info"  >
+
+<vbox gap="20">
+
+	<hbox>
+	<combobox id="cmbDriver" bindList="${supportedDrivers}" action="selectDriver" editable="false"/>
+	</hbox>
+	
+	<hbox border="TitledBorder(Driver class)" >
+	<textfield columns="10" bindWith="driverClass" editable="false"/>
+	</hbox>
+	
+	<hbox border="TitledBorder(Connection Url)"  >
+	<textfield  columns="30"  bindWith="connectionUrl" />
+	</hbox>
+
+	<panel border="TitledBorder(Authentication)"  layout="GridLayout(2,2)">
+		<label text="Login:"/>
+		<textfield  columns="7"  bindWith="user" />
+		<label text="Password:"/>
+		<textfield  columns="7"  bindWith="passwd" />
+	</panel>
+
+	<panel layout="FlowLayout(RIGHT)">
+		<button text="Test Connection" action="test"/>
+	</panel>
+</vbox>
+
+</panel>
