@@ -1,9 +1,8 @@
 package org.bsc.beanmanager;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +74,7 @@ public class SetJDBCInfoPage extends JPanel {
 											"jdbc:derby:DB_PATH/DB_NAME;create=false" ));
 		
         wizardController.setProblem( WIZARD_MESSAGE);
+
 	}
 
 	public final String getDriverClass() {
@@ -121,15 +121,17 @@ public class SetJDBCInfoPage extends JPanel {
 	}
 	
 	@Action
-	public void selectDriver( ActionEvent ev ) {
-		int index = cmbDriver.getSelectedIndex();
-		if( index > 0 ) {
-			JDBCInfo selectedInfo = supportedDrivers.get(index);
+	public void selectDriver() {
+
+		int selectedIndex = cmbDriver.getSelectedIndex();
+		if( selectedIndex > 0 ) {
+			JDBCInfo selectedInfo = supportedDrivers.get(selectedIndex);
 			
 			setDriverClass(selectedInfo.getDriver());
 			setConnectionUrl(selectedInfo.getConnectionUrl());
 			
-	        wizardController.setProblem( "Test Connection");
+	        //wizardController.setProblem( "Test Connection");
+	        wizardController.setProblem( null);
 			
 		}
 		else {
