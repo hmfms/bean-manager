@@ -25,9 +25,6 @@ import org.swixml.jsr296.SwingApplication;
 
 public class DDLWizardApplication extends SwingApplication {
 
-	private SetJDBCInfoPage page1;
-	private SetDBSchema page2;
-
         public static boolean isEmpty( String value ) {
 
             if( value==null ) return true;
@@ -70,6 +67,9 @@ public class DDLWizardApplication extends SwingApplication {
 	
     @Override
     protected void startup() {
+	SetJDBCInfoPage page1 = null;
+	SetDBSchema page2 = null;
+
 
         try {
             page1 = render(new SetJDBCInfoPage(), "SetJDBCInfoPage.xml");
