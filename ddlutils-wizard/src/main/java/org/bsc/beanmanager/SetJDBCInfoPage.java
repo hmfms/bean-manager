@@ -1,24 +1,28 @@
 package org.bsc.beanmanager;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.Component;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import org.jdesktop.application.Action;
-import org.netbeans.spi.wizard.WizardController;
+import org.netbeans.spi.wizard.ResultProgressHandle;
+import org.netbeans.spi.wizard.Wizard;
+import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardPanelNavResult;
+
+import static org.bsc.beanmanager.DDLWizardConstants.*;
 
 @SuppressWarnings("serial")
-public class SetJDBCInfoPage extends JPanel {
+public class SetJDBCInfoPage extends WizardPage {
+    
+        public static final String DESCRIPTION = "JDBC connection";
 	
-	private static final String DATA_IS_VALID = "dataValid";
-	private static final String WIZARD_MESSAGE = "please select the JDBC Driver";
+	private static final String SELECT_DRIVER_MESSAGE = "please select the JDBC Driver";
 
 	static class JDBCInfo {
 	
@@ -48,68 +52,116 @@ public class SetJDBCInfoPage extends JPanel {
 		
 		
 	}
+
+        class OpenConnectionTask extends WizardPanelNavResult {
+
+            @Override
+            public void start(Map properties, ResultProgressHandle progress) {
+
+                progress.setBusy("Connecting...");
+
+                Connection conn = null;
+
+		try {
+
+                    conn = DDLWizardApplication.getConnection( getDriverClass(), getConnectionUrl(), getUser(), getPasswd() );
+
+                    progress.finished(WizardPanelNavResult.PROCEED);
+
+		} catch (Exception e) {
+			//JOptionPane.showMessageDialog(SetJDBCInfoPage.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        progress.failed (e.getMessage(), true);
+		}
+		finally {
+			DDLWizardApplication.closeConnection(conn);
+		}
+
+            }
+
+        }
 	
-    final WizardController wizardController;
-    final Map<String,Object> parameters ;
+        List<JDBCInfo> supportedDrivers = new ArrayList<JDBCInfo>(3);
     
-    List<JDBCInfo> supportedDrivers = new ArrayList<JDBCInfo>(3);
-    
-    JComboBox cmbDriver;
-    
-	public SetJDBCInfoPage(WizardController wizardController, Map<String, Object> parameters) {
-		super();
-		this.wizardController = wizardController;
-		this.parameters = parameters;
+        JComboBox cmbDriver;
+
+	public SetJDBCInfoPage() {
+		super( STEP,DESCRIPTION, true);
 		
 		
 		supportedDrivers.add( new JDBCInfo( "<Select Driver>", null, null) ); 
 		supportedDrivers.add( new JDBCInfo( "Oracle Driver", 
-											oracle.jdbc.driver.OracleDriver.class, 
-											"dbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
+                                                    oracle.jdbc.driver.OracleDriver.class,
+                                                    "dbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
 		supportedDrivers.add( new JDBCInfo( "MSSQL Driver", 
-											com.microsoft.sqlserver.jdbc.SQLServerDriver.class, 
-											"jdbc:sqlserver://SQL_SERVER:1433;databaseName=DB_NAME;integratedSecurity=false;" ));
+                                                    com.microsoft.sqlserver.jdbc.SQLServerDriver.class,
+                                                    "jdbc:sqlserver://SQL_SERVER:1433;databaseName=DB_NAME;integratedSecurity=false;" ));
 		supportedDrivers.add( new JDBCInfo( "Derby DB [Embed]", 
-											org.apache.derby.jdbc.EmbeddedDriver.class, 
-											"jdbc:derby:DB_PATH/DB_NAME;create=false" ));
+                                                     org.apache.derby.jdbc.EmbeddedDriver.class,
+                                                     "jdbc:derby:DB_PATH/DB_NAME;create=false" ));
 		
-        wizardController.setProblem( WIZARD_MESSAGE);
-
 	}
 
+        @Override
+        public WizardPanelNavResult allowBack(String stepName, Map settings, Wizard wizard) {
+            return super.allowBack(stepName, settings, wizard);
+        }
+
+        @Override
+        public WizardPanelNavResult allowFinish(String stepName, Map settings, Wizard wizard) {
+            return super.allowFinish(stepName, settings, wizard);
+        }
+
+        @Override
+        public WizardPanelNavResult allowNext(String stepName, Map settings, Wizard wizard) {
+            return new OpenConnectionTask();
+        }
+
+        @Override
+        protected String validateContents(Component component, Object event) {
+            if( cmbDriver==null || cmbDriver.getSelectedIndex()<=0 ) {
+                return SELECT_DRIVER_MESSAGE;
+            }
+
+            if( DDLWizardApplication.isEmpty( getConnectionUrl() )) {
+                return "Connection Url is required!";
+            }
+            
+            return null;
+        }
+
+
 	public final String getDriverClass() {
-		return (String)parameters.get("driverClass");
+		return (String)getWizardData(DRIVERCLASS);
 	}
 
 	public final void setDriverClass(String driverClass) {
-		parameters.put("driverClass", driverClass);
-		firePropertyChange("driverClass", null, null);
+                putWizardData(DRIVERCLASS, driverClass);
+		firePropertyChange(DRIVERCLASS, null, null);
 	}
 
 	public final String getConnectionUrl() {
-		return (String)parameters.get("connectionUrl");
+		return (String)getWizardData(CONNECTIONURL);
 	}
 
 	public final void setConnectionUrl(String connectionUrl) {
-		parameters.put("connectionUrl", connectionUrl);
-		firePropertyChange("connectionUrl", null, null);
-		firePropertyChange(DATA_IS_VALID, null, null);
+		putWizardData( CONNECTIONURL, connectionUrl);
+		firePropertyChange(CONNECTIONURL, null, null);
 	}
 
 	public final String getUser() {
-		return (String)parameters.get("user");
+		return (String)getWizardData(USER);
 	}
 
 	public final void setUser(String user) {
-		parameters.put("user", user);
+		putWizardData( USER, user);
 	}
 
 	public final String getPasswd() {
-		return (String)parameters.get("passwd");
+		return (String)getWizardData(PASSWORD);
 	}
 
 	public final void setPasswd(String passwd) {
-		parameters.put("passwd", passwd);
+		putWizardData( PASSWORD, passwd);
 	}
 
 	public final List<JDBCInfo> getSupportedDrivers() {
@@ -130,35 +182,12 @@ public class SetJDBCInfoPage extends JPanel {
 			setDriverClass(selectedInfo.getDriver());
 			setConnectionUrl(selectedInfo.getConnectionUrl());
 			
-	        //wizardController.setProblem( "Test Connection");
-	        wizardController.setProblem( null);
-			
 		}
 		else {
 			setDriverClass("");
 			setConnectionUrl("");
-	        wizardController.setProblem( WIZARD_MESSAGE);
 		}
-		firePropertyChange(DATA_IS_VALID, null, null);
 		
 	}
 
-	@Action( enabledProperty=DATA_IS_VALID)
-	public void test() {
-		Connection conn = null;
-		
-		try {
-			
-			conn = DDLWizardApplication.getConnection( getDriverClass(), getConnectionUrl(), getUser(), getPasswd() );
-			
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		finally {
-			DDLWizardApplication.closeConnection(conn);
-		}
-		
-		wizardController.setProblem(null);
-	}
 }

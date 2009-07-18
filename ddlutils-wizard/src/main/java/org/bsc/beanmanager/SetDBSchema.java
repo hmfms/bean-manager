@@ -1,40 +1,125 @@
 package org.bsc.beanmanager;
 
+import java.awt.Component;
 import java.io.File;
+import java.io.FileWriter;
+import java.sql.Connection;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+import org.apache.ddlutils.io.DatabaseIO;
+import org.apache.ddlutils.model.Database;
 import org.jdesktop.application.Action;
-import org.netbeans.spi.wizard.WizardController;
+import org.netbeans.spi.wizard.ResultProgressHandle;
+import org.netbeans.spi.wizard.Wizard;
+import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardPanelNavResult;
+
+import static org.bsc.beanmanager.DDLWizardConstants.*;
+import static org.bsc.beanmanager.DDLWizardApplication.*;
 
 @SuppressWarnings("serial")
-public class SetDBSchema extends JPanel {
-    
-	private static final String WIZARD_MESSAGE = "Select DB Schema File";
-	final WizardController wizardController;
-    final Map<String,Object> parameters ;
-    
-	public SetDBSchema(WizardController wizardController,
-			Map<String, Object> parameters) {
-		super();
-		this.wizardController = wizardController;
-		this.parameters = parameters;
-		
-		setGenerateSQL(true);
-		setDropTables(true);
-		setContinueOnError(true);
-		
-		wizardController.setProblem(WIZARD_MESSAGE);
-	}
+public class SetDBSchema extends WizardPage {
 
-	
-	public final boolean isDataValid() {
-		return (null != getDbSchema() );
-	}
+    class GenerateSchemaTask extends WizardPanelNavResult {
 
+        @Override
+        public void start(Map settings, ResultProgressHandle progress) {
+            progress.setBusy("Generating...");
+
+            final String driverClass = (String)settings.get(DRIVERCLASS);
+            final String connectionUrl = (String)settings.get(CONNECTIONURL);
+            final String user = (String)settings.get(USER);
+            final String password = (String)settings.get(PASSWORD);
+
+            final boolean dropTables = Boolean.TRUE.equals(settings.get(DROPTABLES));
+            final boolean continueOnError = Boolean.TRUE.equals(settings.get(CONTINUEONERROR));
+            final boolean generateSql = Boolean.TRUE.equals(settings.get(GENERATESQL));
+
+            final java.io.File dbSchema = (java.io.File)settings.get( DBSCHEMA );
+
+            Connection conn = null;
+
+            try {
+
+                Database db = new DatabaseIO().read( dbSchema );
+
+                Platform platform = PlatformFactory.createNewPlatformInstance( driverClass , connectionUrl );
+
+                if( generateSql ) {
+
+                    String ddl = platform.getCreateTablesSql(db,
+                            dropTables,
+                            continueOnError );
+
+                    FileWriter fw = new FileWriter( (java.io.File)settings.get(SQLFILE));
+                    fw.write(ddl);
+                    fw.close();
+
+                }
+
+                conn = getConnection( driverClass, connectionUrl, user, password);
+
+                conn.setAutoCommit(true);
+
+                platform.createTables( conn, db,  dropTables, continueOnError);
+
+		//JOptionPane.showMessageDialog(SetDBSchema.this, "Database created succesfully!", "Message", JOptionPane.INFORMATION_MESSAGE);
+                progress.finished(WizardPanelNavResult.PROCEED);
+
+            }
+            catch( Exception e ) {
+/*
+		JOptionPane.showMessageDialog(SetDBSchema.this,
+                        String.format("Error on Database creation Database\n%s", e.getMessage()),
+                        "Message", JOptionPane.ERROR_MESSAGE);
+ */
+                progress.failed(String.format("Error on Database creation\n%s", e.getMessage()), true /*canNavigateBack*/);
+            }
+            finally {
+                    closeConnection(conn);
+            }
+
+
+        }
+        
+    }
+
+    private static final String WIZARD_MESSAGE = "Select DB Schema File";
+
+    public SetDBSchema() {
+            super("schema", "Generate Schema", true );
+
+
+    }
+
+    @Override
+    protected void renderingPage() {
+        super.renderingPage();
+
+        setGenerateSQL(true);
+        setDropTables(true);
+        setContinueOnError(true);
+}
+
+    @Override
+    public WizardPanelNavResult allowFinish(String stepName, Map settings, Wizard wizard) {
+        return new GenerateSchemaTask();
+    }
+
+    @Override
+    protected String validateContents(Component component, Object event) {
+        if( DDLWizardApplication.isEmpty(getSelectedFile()) ) {
+            return WIZARD_MESSAGE;
+        }
+        
+        return null;
+    }
 
 	public String getSelectedFile() {
 	
@@ -44,49 +129,50 @@ public class SetDBSchema extends JPanel {
 	}
 	
 	public final boolean isDropTables() {
-		return Boolean.TRUE.equals(parameters.get( "dropTables"));
+		return Boolean.TRUE.equals(getWizardDataMap().get( DROPTABLES));
 	}
 
 
 	public final void setDropTables(boolean dropTables) {
-		parameters.put("dropTables", dropTables);
-		firePropertyChange("dropTables", null, null);
+		putWizardData( DROPTABLES, dropTables);
+		firePropertyChange(DROPTABLES, null, null);
 	}
 
 	public final boolean isContinueOnError() {
-		return Boolean.TRUE.equals(parameters.get( "continueOnError"));
+		return Boolean.TRUE.equals(getWizardData( CONTINUEONERROR));
 	}
 
 
 	public final void setContinueOnError(boolean continueOnError) {
-		parameters.put("continueOnError", continueOnError);
-		firePropertyChange("continueOnError", null, null);
+		putWizardData( CONTINUEONERROR, continueOnError);
+		firePropertyChange(CONTINUEONERROR, null, null);
 	}
 
 
 	public final boolean isGenerateSQL() {
-		return Boolean.TRUE.equals(parameters.get( "generateSQL"));
+		return Boolean.TRUE.equals(getWizardData( GENERATESQL));
 	}
 
 	public final void setGenerateSQL(boolean generateXML) {
-		parameters.put("generateSQL", generateXML);
+		putWizardData( GENERATESQL, generateXML);
+		firePropertyChange(GENERATESQL, null, null);
 	}
 
 	public final File getDbSchema() {
-		return (File) parameters.get( "dbSchema");
+		return (File) getWizardData( DBSCHEMA);
 	}
 
 	public final void setDbSchema(File dbSchema) {
-		parameters.put("dbSchema", dbSchema);
+		putWizardData( DBSCHEMA, dbSchema);
 		firePropertyChange("selectedFile", null, null);
 	}
 
 	public void setSQLFile( File value ) {
-		parameters.put("sqlFile", value);
+		putWizardData( SQLFILE, value);
 		
 	}
 	public File getSQLFile() {
-		return (File) parameters.get( "sqlFile");
+		return (File) getWizardData( SQLFILE);
 	}
 	
 	@Action
@@ -104,12 +190,7 @@ public class SetDBSchema extends JPanel {
 		    	String path = file.getPath();
 				
 		    	setDbSchema( file );
-				setSQLFile( new File( path.substring(0, path.lastIndexOf('.')).concat(".sql") ) );
-		    	
-		    	wizardController.setProblem(null);
-		    }
-		    else {
-				wizardController.setProblem(WIZARD_MESSAGE);
+			setSQLFile( new File( path.substring(0, path.lastIndexOf('.')).concat(".sql") ) );
 		    	
 		    }
 

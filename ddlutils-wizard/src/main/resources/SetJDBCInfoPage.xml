@@ -22,10 +22,11 @@
 		<label text="Password:"/>
 		<textfield  columns="7"  bindWith="passwd" />
 	</panel>
-
+<!--
 	<panel layout="FlowLayout(RIGHT)">
 		<button text="Test Connection" action="test"/>
 	</panel>
+-->
 </vbox>
 
 </panel>

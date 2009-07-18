@@ -1,15 +1,13 @@
 package org.bsc.beanmanager;
 
-import java.awt.Cursor;
+import java.io.File;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
@@ -19,9 +17,9 @@ import org.jdesktop.application.Application;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardException;
-import org.netbeans.spi.wizard.WizardPanelProvider;
+import org.netbeans.spi.wizard.WizardPage;
+import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import org.swixml.jsr296.SwingApplication;
 
 
@@ -29,7 +27,16 @@ public class DDLWizardApplication extends SwingApplication {
 
 	private SetJDBCInfoPage page1;
 	private SetDBSchema page2;
-	
+
+        public static boolean isEmpty( String value ) {
+
+            if( value==null ) return true;
+            if( value.length()==0) return true;
+            if( value.trim().length()==0 ) return true;
+
+            return false;
+        }
+
 	public static Connection getConnection( String driverClass, String connectionUrl, String user, String password ) throws Exception {
 		try {
 			Class.forName( driverClass );
@@ -61,114 +68,43 @@ public class DDLWizardApplication extends SwingApplication {
 	}
 	
 	
-	private Object commit( Object result ) throws Exception {
-		
-		Connection conn = null;
-		
-		try {
-			
-        	Database db = new DatabaseIO().read( page2.getDbSchema() );
-
-        	Platform platform = PlatformFactory.createNewPlatformInstance(page1.getDriverClass(), page1.getConnectionUrl());
-
-        	if( page2.isGenerateSQL() ) {
-            	String ddl = platform.getCreateTablesSql(db, page2.isDropTables(), page2.isContinueOnError());
-
-                FileWriter fw = new FileWriter(page2.getSQLFile());
-                fw.write(ddl);
-                fw.close();
-        		
-        	}
-            
-			conn = getConnection( page1.getDriverClass(), page1.getConnectionUrl(), page1.getUser(), page1.getPasswd());
-            
-            conn.setAutoCommit(true);
-                            		
-            platform.createTables( conn, db,  page2.isDropTables(), page2.isContinueOnError());
-
-		}
-		finally {
-			closeConnection(conn);
-		}
-		
-		return result;
-	}
-
-	protected boolean cancel( Map<String,Object> settings ) {
-		
-		return true;
-	}
-	
     @Override
     protected void startup() {
 
-       
-       WizardPanelProvider provider = new  WizardPanelProvider( "Create DB Schema", 
-    		   new String [] {"page1", "page2"}, 
-    		   new String [] {"JDBC connection", "DB Schema"}) 
-       {
+        try {
+            page1 = render(new SetJDBCInfoPage(), "SetJDBCInfoPage.xml");
+            page2 = render( new SetDBSchema(), "SetDBSchema.xml");
+        } catch (Exception ex) {
 
-            @SuppressWarnings("unchecked")
-			@Override
-            protected JComponent createPanel(WizardController controller, String id, Map parameters) {
-            	JComponent result = null;
+            JOptionPane.showMessageDialog(null, "Fatal Error on render component!", "Error", JOptionPane.ERROR_MESSAGE);
+            exit();
 
-            	try {
-                	if( "page1".equals(id) ) {
-                		page1 = new SetJDBCInfoPage(controller, parameters);
-                        result = render(page1, "SetJDBCInfoPage.xml");                		
-                	}
-                	if( "page2".equals(id)) {
-                		page2 = new SetDBSchema(controller, parameters);
-                		result = render( page2, "SetDBSchema.xml");
-                	}
-                	
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        }
+
+        Wizard wizard = WizardPage.createWizard( new WizardPage[] { page1, page2 }, new WizardResultProducer(){
+
+            public Object finish(Map settings) throws WizardException {
+
+
+                final Map<String,Object> map = settings;
+                String [] summary = new String[ map.size() ];
+                        int i=0;
+                for( Map.Entry<String,Object> e : map.entrySet() ) {
+                    summary[i++] = String.format("%s=%s", e.getKey(), e.getValue());
                 }
-                return result;
+
+                return Summary.create( summary, settings );
+
             }
 
-            @SuppressWarnings("unchecked")
-			@Override
-            public boolean cancel(Map settings) {
+            public boolean cancel(Map wizardData) {
+                exit();
                 return true;
             }
+         
+        });
 
-            @SuppressWarnings("unchecked")
-			@Override
-            protected Object finish(Map settings) throws WizardException {
-            	
-				try {
-					
-					
-					commit( settings );
-
-					JOptionPane.showMessageDialog(null, "Database created succesfully!", "Message", JOptionPane.INFORMATION_MESSAGE);
-
-            		final Map<String,Object> map = settings;
-	                String [] summary = new String[ map.size() ];
-	
-	                int i=0;
-	                for( Map.Entry<String,Object> e : map.entrySet() ) {
-	                    summary[i++] = String.format("%s=%s", e.getKey(), e.getValue());
-	                }
-	                
-	                return Summary.create( summary, settings );
-
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
-            	
-            	return null;
-            	
-            }
-
-
-       };
-
-      Wizard wizard = provider.createWizard();
-      
+ 
       
       Object result = WizardDisplayer.showWizard(wizard);
 

@@ -68,8 +68,8 @@ defining this will automatically sign the jar and its dependencies
         <storepass>bartolo2009</storepass>
 
 		<keystoreConfig>
-			<delete>true</delete>
-			<gen>true</gen>
+			<delete>false</delete>
+			<gen>false</gen>
 		</keystoreConfig>
 	</sign>
 
@@ -120,7 +120,30 @@ defining this will automatically sign the jar and its dependencies
     	<groupId>org.netbeans.api</groupId>
     	<artifactId>wizard</artifactId>
     	<version>0.998.1</version>
-    </dependency>
+    </dependency>  
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.1</version>
+	</dependency> 
+    
+<!--       
+	<dependency>
+	    <groupId>jaxme</groupId>
+	    <artifactId>jaxme-js</artifactId>
+	    <version>0.3.1</version>
+	</dependency> 
+	<dependency>
+		<groupId>org.bsc.framework</groupId>
+		<artifactId>beanmanager-core</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</dependency>
+-->
+	<dependency>
+		<groupId>miniTemplator</groupId>
+		<artifactId>miniTemplator</artifactId>
+		<version>1.0</version>
+	</dependency>     
   </dependencies>
 
 <repositories>
