@@ -1,7 +1,5 @@
 package org.bsc.beanmanager;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,10 +7,6 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.apache.ddlutils.Platform;
-import org.apache.ddlutils.PlatformFactory;
-import org.apache.ddlutils.io.DatabaseIO;
-import org.apache.ddlutils.model.Database;
 import org.jdesktop.application.Application;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Summary;
@@ -106,7 +100,7 @@ public class DDLWizardApplication extends SwingApplication {
 
  
       
-      Object result = WizardDisplayer.showWizard(wizard);
+      /* Object result = */WizardDisplayer.showWizard(wizard);
 
    }
 
