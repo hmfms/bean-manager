@@ -1,9 +1,15 @@
 package org.bsc.beanmanager;
 
+import static org.bsc.beanmanager.DDLWizardConstants.CONNECTIONURL;
+import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
+import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
+import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
+import static org.bsc.beanmanager.DDLWizardConstants.PAGE1_STEP;
+import static org.bsc.beanmanager.DDLWizardConstants.USER;
+
 import java.awt.Component;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,12 +21,10 @@ import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelNavResult;
 
-import static org.bsc.beanmanager.DDLWizardConstants.*;
-
 @SuppressWarnings("serial")
 public class SetJDBCInfoPage extends WizardPage {
     
-        public static final String DESCRIPTION = "JDBC connection";
+    public static final String DESCRIPTION = "JDBC connection";
 	
 	private static final String SELECT_DRIVER_MESSAGE = "please select the JDBC Driver";
 
@@ -85,7 +89,7 @@ public class SetJDBCInfoPage extends WizardPage {
         JComboBox cmbDriver;
 
 	public SetJDBCInfoPage() {
-		super( STEP,DESCRIPTION, true);
+		super( PAGE1_STEP,DESCRIPTION);
 		
 		
 		supportedDrivers.add( new JDBCInfo( "<Select Driver>", null, null) ); 
@@ -167,7 +171,7 @@ public class SetJDBCInfoPage extends WizardPage {
 	public final List<JDBCInfo> getSupportedDrivers() {
 		return supportedDrivers;
 	}
-
+	
 	public boolean isDataValid() {
 		return (cmbDriver!=null && cmbDriver.getSelectedIndex()>0) && (null!=getConnectionUrl());
 	}

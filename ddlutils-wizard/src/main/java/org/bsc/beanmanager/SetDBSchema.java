@@ -1,10 +1,23 @@
 package org.bsc.beanmanager;
 
+import static org.bsc.beanmanager.DDLWizardApplication.closeConnection;
+import static org.bsc.beanmanager.DDLWizardApplication.getConnection;
+import static org.bsc.beanmanager.DDLWizardConstants.CONNECTIONURL;
+import static org.bsc.beanmanager.DDLWizardConstants.CONTINUEONERROR;
+import static org.bsc.beanmanager.DDLWizardConstants.DBSCHEMA;
+import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
+import static org.bsc.beanmanager.DDLWizardConstants.DROPTABLES;
+import static org.bsc.beanmanager.DDLWizardConstants.GENERATESQL;
+import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
+import static org.bsc.beanmanager.DDLWizardConstants.SQLFILE;
+import static org.bsc.beanmanager.DDLWizardConstants.USER;
+import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
+import static org.bsc.beanmanager.DDLWizardConstants.PAGE2_STEP;
+
 import java.awt.Component;
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.Connection;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
@@ -20,13 +33,11 @@ import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelNavResult;
 
-import static org.bsc.beanmanager.DDLWizardConstants.*;
-import static org.bsc.beanmanager.DDLWizardApplication.*;
-
 @SuppressWarnings("serial")
 public class SetDBSchema extends WizardPage {
 
-    class GenerateSchemaTask extends WizardPanelNavResult {
+
+	class GenerateSchemaTask extends WizardPanelNavResult {
 
         @Override
         public void start(Map settings, ResultProgressHandle progress) {
@@ -93,7 +104,7 @@ public class SetDBSchema extends WizardPage {
     private static final String WIZARD_MESSAGE = "Select DB Schema File";
 
     public SetDBSchema() {
-            super("schema", "Generate Schema", true );
+            super(PAGE2_STEP, "Generate Schema");
 
 
     }
@@ -109,10 +120,15 @@ public class SetDBSchema extends WizardPage {
 
     @Override
     public WizardPanelNavResult allowFinish(String stepName, Map settings, Wizard wizard) {
-        return new GenerateSchemaTask();
+    	return new GenerateSchemaTask();
     }
 
     @Override
+	public WizardPanelNavResult allowNext(String stepName, Map settings, Wizard wizard) {
+        return new GenerateSchemaTask() ;
+	}
+
+	@Override
     protected String validateContents(Component component, Object event) {
         if( DDLWizardApplication.isEmpty(getSelectedFile()) ) {
             return WIZARD_MESSAGE;
@@ -174,6 +190,7 @@ public class SetDBSchema extends WizardPage {
 	public File getSQLFile() {
 		return (File) getWizardData( SQLFILE);
 	}
+	
 	
 	@Action
 	public void selectFile() {
