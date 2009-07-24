@@ -1,27 +1,26 @@
 package org.bsc.bean;
 
-import org.bsc.bean.dyna.DynaPropertyDescriptor;
+import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
+
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.Beans;
 import java.beans.EventSetDescriptor;
-import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Collections;
-
-import org.bsc.util.Configurator;
-import org.bsc.util.Log;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
-import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
+
+import org.bsc.bean.dyna.DynaPropertyDescriptor;
+import org.bsc.bean.dyna.DynaPropertyDescriptorJoin;
+import org.bsc.util.Configurator;
+import org.bsc.util.Log;
 
 /**
  * Class utility
@@ -700,7 +699,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
             	  joinP = new PropertyDescriptorJoin(field.getName(),
                                                  field.getReadMethod(),
                                                  field.getWriteMethod());
-
+              }
               Enumeration<String> names = field.attributeNames();
               while( names.hasMoreElements() ) {
                   final String n = names.nextElement();
