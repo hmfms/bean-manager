@@ -1,7 +1,6 @@
 package org.bsc.bean;
 
-import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
-
+import org.bsc.bean.dyna.DynaPropertyDescriptor;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.Beans;
@@ -9,19 +8,20 @@ import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Collections;
+
+import org.bsc.util.Configurator;
+import org.bsc.util.Log;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
 
-import org.bsc.bean.dyna.DynaPropertyDescriptor;
-import org.bsc.bean.dyna.DynaPropertyDescriptorJoin;
-import org.bsc.util.Configurator;
-import org.bsc.util.Log;
+import java.util.Collection;
+import java.util.Enumeration;
+import static org.bsc.bean.PropertyDescriptorField.DEFAULT_VALUE;
 
 /**
  * Class utility
@@ -91,6 +91,7 @@ static public BeanInfo loadBeanInfo( ClassLoader loader, String uri ) {
  *
  * @see bsc.bean.PropertyDescriptorField
 */
+@SuppressWarnings("unchecked")
 static public <T> java.util.Map<String, PropertyDescriptorField> getPropertyFieldMap( PropertyDescriptor [] pp ) {
 
   if(pp==null) return Collections.emptyMap();
@@ -293,6 +294,7 @@ public static Object getPropertyValue( PropertyDescriptor p, Object bean ) {
    * @param propFrom Map
    * @param entityName String
    */
+  @SuppressWarnings("unchecked")
 private static void _inheritAggregateProperties(    java.util.Map<String,PropertyDescriptor> propTo,
                                                     java.util.Map<String,PropertyDescriptor> propFrom,
                                                     String entityName )
@@ -329,6 +331,93 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 	  }
   }
 
+  /**
+   * 
+   * @param sqlType			sql type belong to java.sql.Types
+   * @param returnRawType	if true will be returned the raw java type (byte, char, int ...), otherwise not (Byte, Character, Integer, ...)
+   * @param ignoreSqlType   if true the class belong to java.sql package will be ignored. (e.g. instead of Blob will be returned Byte[] or byte[] depends on previous flag) 
+   * @return related java class
+   */
+  public static Class<?> getJavaType( int sqlType, boolean returnRawType, boolean ignoreSqlType ) {
+	
+	  switch( sqlType ) {
+	 
+	  case Types.CHAR:
+	  case	Types.VARCHAR:
+	  case	Types.LONGVARCHAR:
+		return String.class;
+	  case	Types.NUMERIC:
+	  case	Types.DECIMAL:
+		  return java.math.BigDecimal.class;
+	  case Types.BIT:
+	  	return (returnRawType) ? boolean.class : Boolean.class;
+	  case Types.TINYINT:
+		  return (returnRawType) ? byte.class : Byte.class;
+	  case Types.SMALLINT:
+		  return (returnRawType) ? short.class : Short.class;
+	  case Types.INTEGER:
+		  return (returnRawType) ? int.class : Integer.class;
+	  case Types.BIGINT:
+		  return (returnRawType) ? long.class : Long.class;
+	  case Types.REAL:
+		  return (returnRawType) ? float.class : Float.class;
+	  case Types.FLOAT:
+	  case Types.DOUBLE:
+		  return (returnRawType) ? double.class : Double.class;
+	  case Types.BINARY:
+	  case Types.VARBINARY:
+	  case Types.LONGVARBINARY:
+		  return (returnRawType) ? byte[].class : Byte[].class;
+	  case Types.DATE:
+		  return (ignoreSqlType) ? java.util.Date.class : java.sql.Date.class;
+	  case Types.TIME:
+		  return (ignoreSqlType) ? java.util.Date.class : java.sql.Time.class;
+	  case Types.TIMESTAMP:
+		  return (ignoreSqlType) ? java.util.Date.class : java.sql.Timestamp.class;
+	  case Types.CLOB:
+		  if( ignoreSqlType ) {
+			  return ( returnRawType ) ? char[].class : Character[].class;				  
+		  }
+		  else {
+			  return java.sql.Clob.class;
+		  }
+	  case Types.BLOB:
+		  if( ignoreSqlType ) {
+			  return ( returnRawType ) ? byte[].class : Byte[].class;				  
+		  }
+		  else {
+			  return java.sql.Blob.class;
+		  }
+	  case Types.ARRAY:
+	  if( ignoreSqlType ) {
+		  return Object[].class;				  
+	  }
+	  else {
+		  return java.sql.Array.class;
+	  }
+	  case Types.STRUCT:
+		  if( ignoreSqlType ) {
+			  return Object.class;				  
+		  }
+		  else {
+			  return java.sql.Struct.class;
+		  }
+	  case Types.REF:
+		  if( ignoreSqlType ) {
+			  return Object.class;				  
+		  }
+		  else {
+			  return java.sql.Ref.class;
+		  }
+	  case Types.JAVA_OBJECT:
+	  case Types.DISTINCT:
+		  return Object.class;
+	  }
+	  
+	  return Object.class;
+}
+  
+  
  /**
   * 
   * @param clazz
@@ -364,6 +453,9 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
          if((Byte.class.equals(clazz.getComponentType()) || Byte.TYPE.equals(clazz.getComponentType()))) {
             return Types.VARBINARY;
          }
+         if((Character.class.equals(clazz.getComponentType()) || Character.TYPE.equals(clazz.getComponentType()))) {
+             return Types.VARCHAR;
+          }
          return Types.ARRAY;
      }
      if( java.sql.Date.class.equals(clazz)) {
@@ -608,8 +700,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
             	  joinP = new PropertyDescriptorJoin(field.getName(),
                                                  field.getReadMethod(),
                                                  field.getWriteMethod());
-              }
-              
+
               Enumeration<String> names = field.attributeNames();
               while( names.hasMoreElements() ) {
                   final String n = names.nextElement();
