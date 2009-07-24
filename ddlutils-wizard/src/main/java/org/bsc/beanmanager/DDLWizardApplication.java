@@ -118,7 +118,7 @@ public class DDLWizardApplication extends SwingApplication {
         
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
                    
-        int w = 650;
+        int w = 700;
         int h = 500;
         int x = (dim.width-w)/2;
         int y = (dim.height-h)/2;    

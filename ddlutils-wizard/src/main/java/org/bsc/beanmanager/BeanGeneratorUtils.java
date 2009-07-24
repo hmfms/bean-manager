@@ -103,10 +103,24 @@ public class BeanGeneratorUtils {
 		if( null==outputDir ) throw new IllegalArgumentException( "outputDir parameter is null!");
 		
 		final String sep = System.getProperty("file.separator");
+
+		if( !DDLWizardApplication.isEmpty(packageName)) {
+			String newPath = new StringBuilder()
+				.append( outputDir.getAbsolutePath() )
+				.append( sep )
+				.append( packageName.replace(".", sep) )
+				.toString();
+			outputDir = new File( newPath );
+		}
+
+		outputDir.mkdirs();
 		
-		java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("Bean.txt"));
-		  	
 		for( GenerateBean bean : beanList ) {
+			
+			if( !bean.isSelected()) continue;
+
+			java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("Bean.txt"));
+		  	
 			MiniTemplator t = new MiniTemplator(reader);
 			
 			t.setVariable ("className", bean.getBeanName());
@@ -124,17 +138,6 @@ public class BeanGeneratorUtils {
 		
 			}
 
-			if( !DDLWizardApplication.isEmpty(packageName)) {
-				String newPath = new StringBuilder()
-					.append( outputDir.getAbsolutePath() )
-					.append( sep )
-					.append( packageName.replace(".", sep) )
-					.toString();
-				outputDir = new File( newPath );
-			}
-
-
-			outputDir.mkdirs();
 			
 			File beanFile = new File( outputDir, String.format("%s.java", bean.getBeanName() ) );
 
@@ -147,10 +150,25 @@ public class BeanGeneratorUtils {
 		if( null==outputDir ) throw new IllegalArgumentException( "outputDir parameter is null!");
 
 		final String sep = System.getProperty("file.separator");
+		
+		if( !DDLWizardApplication.isEmpty(packageName)) {
+			String newPath = new StringBuilder()
+				.append( outputDir.getAbsolutePath() )
+				.append( sep )
+				.append( packageName.replace(".", sep) )
+				.toString();
+			outputDir = new File( newPath );
+		}
 
-		java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("BeanInfo.txt"));
-		  	
+		outputDir.mkdirs();
+		
+
 		for( GenerateBean bean : beanList ) {
+			
+			if( !bean.isSelected()) continue;
+
+			java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("BeanInfo.txt"));
+		  	
 			MiniTemplator t = new MiniTemplator(reader);
 			
 			if( !DDLWizardApplication.isEmpty(packageName)) {
@@ -186,21 +204,10 @@ public class BeanGeneratorUtils {
 				addPropertyDescriptorField( t, c, (++i==fieldList.size()));
 			}
 
-			
-			if( !DDLWizardApplication.isEmpty(packageName)) {
-				String newPath = new StringBuilder()
-					.append( outputDir.getAbsolutePath() )
-					.append( sep )
-					.append( packageName.replace(".", sep) )
-					.toString();
-				outputDir = new File( newPath );
-			}
-
-			outputDir.mkdirs();
-			
 			File beanInfo = new File( outputDir, String.format("%sBeanInfo.java", bean.getBeanName() ) );
 			
 			t.generateOutput(beanInfo);
+			
 		}
 
 	}
