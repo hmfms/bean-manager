@@ -1,0 +1,26 @@
+
+${package}
+
+/**
+ *
+ * @author Sorrentino
+ */
+public class ${className} {
+<!-- $BeginBlock attributes -->
+	private ${type} ${name};
+<!-- $EndBlock attributes -->
+
+
+<!-- $BeginBlock properties -->
+	
+	public ${type} get${name}() {
+		return ${attributeName};
+	}
+
+	public void set${name}( ${type} value ) {
+		${attributeName} = value;
+	}
+
+<!-- $EndBlock properties -->
+
+}

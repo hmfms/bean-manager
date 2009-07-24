@@ -4,15 +4,15 @@ import static org.bsc.beanmanager.DDLWizardApplication.closeConnection;
 import static org.bsc.beanmanager.DDLWizardApplication.getConnection;
 import static org.bsc.beanmanager.DDLWizardConstants.CONNECTIONURL;
 import static org.bsc.beanmanager.DDLWizardConstants.CONTINUEONERROR;
+import static org.bsc.beanmanager.DDLWizardConstants.DATABASE_MODEL;
 import static org.bsc.beanmanager.DDLWizardConstants.DBSCHEMA;
 import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
 import static org.bsc.beanmanager.DDLWizardConstants.DROPTABLES;
 import static org.bsc.beanmanager.DDLWizardConstants.GENERATESQL;
+import static org.bsc.beanmanager.DDLWizardConstants.PAGE2_STEP;
 import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
 import static org.bsc.beanmanager.DDLWizardConstants.SQLFILE;
 import static org.bsc.beanmanager.DDLWizardConstants.USER;
-import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
-import static org.bsc.beanmanager.DDLWizardConstants.PAGE2_STEP;
 
 import java.awt.Component;
 import java.io.File;
@@ -39,7 +39,7 @@ public class SetDBSchema extends WizardPage {
 
 	class GenerateSchemaTask extends WizardPanelNavResult {
 
-        @Override
+		@Override
         public void start(Map settings, ResultProgressHandle progress) {
             progress.setBusy("Generating...");
 
@@ -59,7 +59,9 @@ public class SetDBSchema extends WizardPage {
             try {
 
                 Database db = new DatabaseIO().read( dbSchema );
-
+                
+                settings.put(DATABASE_MODEL, db);
+                
                 Platform platform = PlatformFactory.createNewPlatformInstance( driverClass , connectionUrl );
 
                 if( generateSql ) {

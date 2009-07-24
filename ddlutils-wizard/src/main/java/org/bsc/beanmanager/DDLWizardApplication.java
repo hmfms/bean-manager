@@ -1,5 +1,8 @@
 package org.bsc.beanmanager;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,13 +16,10 @@ import org.jdesktop.application.Application;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardBranchController;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
-import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import org.swixml.jsr296.SwingApplication;
-import static org.bsc.beanmanager.DDLWizardConstants.*;
 
 public class DDLWizardApplication extends SwingApplication {
 
@@ -27,7 +27,7 @@ public class DDLWizardApplication extends SwingApplication {
 	
 	SetJDBCInfoPage page1 = new SetJDBCInfoPage();
 	SetDBSchema page2 = new SetDBSchema();
-	GenerateBean page3 = new GenerateBean();
+	GenerateBeanPage page3 = new GenerateBeanPage();
 	
 	WizardResultProducer producer = new WizardResultProducer(){
 
@@ -115,7 +115,15 @@ public class DDLWizardApplication extends SwingApplication {
         wizard = WizardPage.createWizard( new WizardPage[] { page1, page2, page3 }, producer );
  
       
-      /* Object result = */WizardDisplayer.showWizard(wizard);
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                   
+        int w = 650;
+        int h = 500;
+        int x = (dim.width-w)/2;
+        int y = (dim.height-h)/2;    
+        
+      /* Object result = */WizardDisplayer.showWizard(wizard, new Rectangle(x,y,w,h));
 
    }
 

@@ -1,99 +1,40 @@
 package org.bsc.beanmanager;
 
-import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
-import static org.bsc.beanmanager.DDLWizardConstants.PACKAGE_NAME;
+import org.apache.ddlutils.model.Table;
 
-import java.awt.Component;
-import java.io.File;
-import java.util.Map;
+public class GenerateBean {
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.jdesktop.application.Action;
-import org.netbeans.spi.wizard.ResultProgressHandle;
-import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardPage;
-import org.netbeans.spi.wizard.WizardPanelNavResult;
-
-@SuppressWarnings("serial")
-public class GenerateBean extends WizardPage {
-
-	class GenerateBeanTask extends WizardPanelNavResult {
-
-		@Override
-		public void start(Map wizardData, ResultProgressHandle progress) {
-		}
-
+	private boolean selected;
+	private String tableName;
+	private String beanName;
+	public final Table table;
+	
+	public GenerateBean(Table table) {
+		super();
+		this.table = table;
+		this.tableName = table.getName();
+		this.beanName = table.getName();
+		this.selected = true;
 	}
 	
-	public GenerateBean() {
-		super("generate", "Generate Bean&BeanInfo");
+	public final boolean isSelected() {
+		return selected;
 	}
-
-	@Override
-	public WizardPanelNavResult allowFinish(String stepName, Map settings,	Wizard wizard) {
-		return new GenerateBeanTask();
+	public final void setSelected(boolean selected) {
+		this.selected = selected;
 	}
-
-	@Override
-	protected void renderingPage() {
-		super.renderingPage();
-		
-		setGenerateBean(true);
+	public final String getTableName() {
+		return tableName;
 	}
-
-	@Override
-	protected String validateContents(Component component, Object event) {
-		if( !isGenerateBean() ) return null;
-		if( DDLWizardApplication.isEmpty( getOutputDir() )) return "Select Output directory";
-		
-		return null;
+	public final void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
-
-	public final String getPackageName() {
-		return (String) getWizardData(PACKAGE_NAME);
+	public final String getBeanName() {
+		return beanName;
 	}
-
-	public final void setPackageName(String packageName) {
-		super.putWizardData(PACKAGE_NAME, packageName);
-		firePropertyChange(PACKAGE_NAME, null, null);
+	public final void setBeanName(String beanName) {
+		this.beanName = beanName;
 	}
-
-	public final boolean isGenerateBean() {
-		return Boolean.TRUE.equals(getWizardData(GENERATE_BEAN));
-	}
-
-	public final void setGenerateBean(boolean generateBean) {
-		putWizardData(GENERATE_BEAN, generateBean);
-		firePropertyChange(GENERATE_BEAN, null, null);
-	}
-
-	File outputDir;
 	
-	public final String getOutputDir() {
-		return (String) getWizardData("outputDir");
-	}
-
-	public final void setOutputDir(String outputDir) {
-		putWizardData("outputDir", outputDir);
-		firePropertyChange("outputDir", null, null);
-	}
-
-	@Action
-	public void selectOutputDir() {
-		 JFileChooser chooser = new JFileChooser();
-		    chooser.setCurrentDirectory( new File(System.getProperty("user.home")));
-		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		    int returnVal = chooser.showOpenDialog(this);
-		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		           
-		    	outputDir = chooser.getSelectedFile();
-		    	setOutputDir(outputDir.getPath());
-				
-		    }
-
-
-	}
-
+	
 }

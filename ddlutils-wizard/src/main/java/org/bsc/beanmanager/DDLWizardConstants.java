@@ -25,9 +25,11 @@ public class DDLWizardConstants {
     public static final String DROPTABLES = "dropTables";
     public static final String GENERATESQL = "generateSQL";
     public static final String SQLFILE = "sqlFile";
-    public static final String GENERATE_BEAN = "generateBean";
+    public static final String DATABASE_MODEL = "databaseModel";
+
 
     // PAGE3
 	public static final String PACKAGE_NAME = "packageName";
+    public static final String GENERATE_BEAN = "generateBean";
 
 }

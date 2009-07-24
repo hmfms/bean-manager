@@ -143,7 +143,6 @@ defining this will automatically sign the jar and its dependencies
 		<groupId>miniTemplator</groupId>
 		<artifactId>miniTemplator</artifactId>
 		<version>1.0</version>
-		<scope>test</scope>
 	</dependency>
 	<dependency>
 		<groupId>org.bsc.framework</groupId>

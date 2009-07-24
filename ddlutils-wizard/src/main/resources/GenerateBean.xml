@@ -2,7 +2,7 @@
 
 <panel resizable="false" title="Generate bean"  >
 
-<vbox gap="20">
+<vbox gap="10">
 	
 	<checkbox text="generate bean" bindWith="generateBean" />
 
@@ -11,10 +11,13 @@
 	<button text="choose" action="selectOutputDir"/>
 	</hbox>
 
-	<hbox border="TitledBorder(package)" >
-	<textfield columns="30" bindWith="packageName"/>
+	<hbox>
+	<label text="Package"/><textfield columns="30" bindWith="packageName"/>
 	</hbox>
-	
+		
+	<scrollpane>
+		<table bindList="${generateBeanList}" bindClass="${generateBeanClass}" />
+	</scrollpane>	
 	
 </vbox>
 

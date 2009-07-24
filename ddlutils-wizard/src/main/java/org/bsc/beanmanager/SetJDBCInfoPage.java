@@ -2,9 +2,8 @@ package org.bsc.beanmanager;
 
 import static org.bsc.beanmanager.DDLWizardConstants.CONNECTIONURL;
 import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
-import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
-import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
 import static org.bsc.beanmanager.DDLWizardConstants.PAGE1_STEP;
+import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
 import static org.bsc.beanmanager.DDLWizardConstants.USER;
 
 import java.awt.Component;

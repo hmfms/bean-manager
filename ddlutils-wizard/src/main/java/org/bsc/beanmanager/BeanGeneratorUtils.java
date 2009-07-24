@@ -1,10 +1,17 @@
 package org.bsc.beanmanager;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.ddlutils.model.Column;
+import org.apache.ddlutils.model.Database;
+import org.apache.ddlutils.model.Table;
 import org.bsc.bean.BeanManagerUtils;
 
 import biz.source_code.miniTemplator.MiniTemplator;
@@ -91,5 +98,111 @@ public class BeanGeneratorUtils {
 			t.addBlock("properties");	
 	}
 	 
+	public static void generateBean( List<GenerateBean> beanList, String packageName, File outputDir ) throws Exception {
+		if( null==beanList ) throw new IllegalArgumentException( "beanList parameter is null!");
+		if( null==outputDir ) throw new IllegalArgumentException( "outputDir parameter is null!");
+		
+		final String sep = System.getProperty("file.separator");
+		
+		java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("Bean.txt"));
+		  	
+		for( GenerateBean bean : beanList ) {
+			MiniTemplator t = new MiniTemplator(reader);
+			
+			t.setVariable ("className", bean.getBeanName());
+			if( !DDLWizardApplication.isEmpty(packageName)) {
+				t.setVariable ("package", String.format("package %s;",packageName));				
+			}
+					
+			for( Column c : bean.table.getColumns() ) {
+					addAttribute( t, c );
+			
+			}
+			
+			for( Column c : bean.table.getColumns() ) {
+				addProperty( t, c );
+		
+			}
+
+			if( !DDLWizardApplication.isEmpty(packageName)) {
+				String newPath = new StringBuilder()
+					.append( outputDir.getAbsolutePath() )
+					.append( sep )
+					.append( packageName.replace(".", sep) )
+					.toString();
+				outputDir = new File( newPath );
+			}
+
+
+			outputDir.mkdirs();
+			
+			File beanFile = new File( outputDir, String.format("%s.java", bean.getBeanName() ) );
+
+			t.generateOutput(beanFile);
+		}
+	}
+	
+	public static void generateBeanInfo(List<GenerateBean> beanList, String packageName, File outputDir ) throws Exception {
+		if( null==beanList ) throw new IllegalArgumentException( "beanList parameter is null!");
+		if( null==outputDir ) throw new IllegalArgumentException( "outputDir parameter is null!");
+
+		final String sep = System.getProperty("file.separator");
+
+		java.io.Reader reader = new java.io.InputStreamReader( BeanGeneratorUtils.class.getClassLoader().getResourceAsStream("BeanInfo.txt"));
+		  	
+		for( GenerateBean bean : beanList ) {
+			MiniTemplator t = new MiniTemplator(reader);
+			
+			if( !DDLWizardApplication.isEmpty(packageName)) {
+				t.setVariable ("package", String.format("package %s;",packageName));				
+			}
+			t.setVariable ("className", bean.getBeanName());
+			t.setVariable ("tableName", bean.getTableName());
+			
+			java.util.List<Column> pkList = new java.util.ArrayList<Column>(bean.table.getColumnCount());
+			java.util.List<Column> fieldList = new java.util.ArrayList<Column>(bean.table.getColumnCount());
+			
+			Predicate pkPredicate = new Predicate() {
+				public boolean evaluate(Object o) {
+					Column c = (Column) o;
+						
+					return c.isPrimaryKey();
+				}			
+			};
+			
+			CollectionUtils.select( Arrays.asList(bean.table.getColumns()), pkPredicate, pkList );
+			CollectionUtils.selectRejected( Arrays.asList(bean.table.getColumns()), pkPredicate, fieldList );
+			
+			
+			// PK
+			int i = 0;
+			for( Column c : pkList ) {
+				addPropertyDescriptorPK( t, c, fieldList.isEmpty() && (++i==pkList.size()) );
+			}
+
+			// FIELD
+			i = 0 ;
+			for( Column c : fieldList ) {
+				addPropertyDescriptorField( t, c, (++i==fieldList.size()));
+			}
+
+			
+			if( !DDLWizardApplication.isEmpty(packageName)) {
+				String newPath = new StringBuilder()
+					.append( outputDir.getAbsolutePath() )
+					.append( sep )
+					.append( packageName.replace(".", sep) )
+					.toString();
+				outputDir = new File( newPath );
+			}
+
+			outputDir.mkdirs();
+			
+			File beanInfo = new File( outputDir, String.format("%sBeanInfo.java", bean.getBeanName() ) );
+			
+			t.generateOutput(beanInfo);
+		}
+
+	}
 
 }
