@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<panel resizable="false" title="Generate bean"  >
+
+<vbox gap="20">
+	
+	<checkbox text="generate bean" bindWith="generateBean" />
+
+	<hbox border="TitledBorder(Output dir)" >
+	<textfield columns="20" bindWith="outputDir" editable="false"/>
+	<button text="choose" action="selectOutputDir"/>
+	</hbox>
+
+	<hbox border="TitledBorder(package)" >
+	<textfield columns="30" bindWith="packageName"/>
+	</hbox>
+	
+	
+</vbox>
+
+</panel>
