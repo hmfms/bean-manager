@@ -1,0 +1,40 @@
+
+/**
+ *
+ * @author Sorrentino
+ */
+public class ${className}BeanInfo extends AbstractManagedBeanInfo<${className}> {
+
+    
+    public ${className}BeanInfo() {
+        super( ${className}.class );
+    } 
+    
+    public BeanDescriptor getBeanDescriptor() {
+        return new BeanDescriptorEntity(getBeanClass(), "${tableName}");
+    }
+
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        try {
+            
+            
+            return new PropertyDescriptor[] {
+<!-- $BeginBlock propertiesPK -->
+               new PropertyDescriptorPK( "${name}", getBeanClass(), "${propGet}", "${propSet}")
+                        .setSQLType(${sqlType})${sep}
+<!-- $EndBlock propertiesPK -->
+<!-- $BeginBlock propertiesField -->
+                new PropertyDescriptorField( "${name}", getBeanClass(), "${propGet}", "${propSet}")
+                        .setSQLType(${sqlType})${sep}
+<!-- $EndBlock propertiesField -->
+
+            };
+            
+        }
+        catch( Exception ex ) {
+            throw new IllegalStateException(ex);
+        } 
+        
+    }
+
+}

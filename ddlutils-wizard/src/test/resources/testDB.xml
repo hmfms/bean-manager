@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database.dtd">
+
+<database name="Test">
+
+<table name="Test_Login" >
+	<column name="id" type="VARCHAR" size="50" primaryKey="true"/>
+	<column name="username" type="VARCHAR" size="50" />
+	<column name="logindate" type="TIMESTAMP" />
+	<column name="fullname" type="VARCHAR" size="100" />
+	<unique name="ID">
+		<unique-column name="id"/>
+	</unique>	
+</table>
+
+<!-- 
+<table name="SP_RecFiles">
+	<column name="idrecfile" type="VARCHAR" size="50" primaryKey="true"/>
+	<column name="daterec" type="TIMESTAMP" />
+	<column name="path" type="VARCHAR" size="250" />
+	<column name="filename" type="VARCHAR" size="100" />
+	<column name="sipname" type="VARCHAR" size="100" />
+	<column name="agentid" type="VARCHAR" size="100" />
+        <column name="idattachdata" type="VARCHAR" size="50" />
+	<unique name="RecFilesId">
+		<unique-column name="idrecfile"/>
+	</unique>
+</table>
+
+<table name="SP_AttachData" >
+	<column name="idattachdata" type="VARCHAR" size="50" primaryKey="true"/>
+	<column name="ani" type="VARCHAR" size="50" />
+	<column name="dnis" type="VARCHAR" size="50" />
+	<column name="connid" type="VARCHAR" size="150" />
+        <column name="attach1" type="VARCHAR" size="150" />
+        <column name="attach2" type="VARCHAR" size="150" />
+        <column name="attach3" type="VARCHAR" size="150" />
+        <column name="attach4" type="VARCHAR" size="150" />
+	<unique name="IdAttachData">
+		<unique-column name="idattachdata"/>
+	</unique>	
+</table>
+
+<table name="SP_Audit_RecFiles">
+	<column name="id" type="VARCHAR" size="50" primaryKey="true"/>
+	<column name="idrecfile" type="VARCHAR" size="50" />
+	<column name="dateaction" type="TIMESTAMP" />
+	<column name="action" type="VARCHAR" size="10" />
+	<column name="username" type="VARCHAR" size="50" />
+        <column name="fullname" type="VARCHAR" size="100" />	
+	<unique name="AuditRecFilesId">
+		<unique-column name="id"/>
+	</unique>	
+</table>
+
+ -->
+</database>
