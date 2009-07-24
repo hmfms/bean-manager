@@ -12,7 +12,6 @@ import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 import javax.sql.rowset.serial.SerialClob;
 
@@ -74,7 +73,7 @@ public class CLOBAdapter implements DataAdapter {
             result = value.getCharacterStream();
           }
           else if( type.equals(String.class) ){
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             Reader reader = value.getCharacterStream();
             char buffer[] = new char[1024]; 
             int len;
