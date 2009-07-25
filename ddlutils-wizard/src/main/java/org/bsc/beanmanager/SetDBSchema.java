@@ -45,8 +45,6 @@ public class SetDBSchema extends WizardPage {
 
             final String driverClass = (String)settings.get(DRIVERCLASS);
             final String connectionUrl = (String)settings.get(CONNECTIONURL);
-            final String user = (String)settings.get(USER);
-            final String password = (String)settings.get(PASSWORD);
 
             final boolean dropTables = Boolean.TRUE.equals(settings.get(DROPTABLES));
             final boolean continueOnError = Boolean.TRUE.equals(settings.get(CONTINUEONERROR));
@@ -76,7 +74,7 @@ public class SetDBSchema extends WizardPage {
 
                 }
 
-                conn = getConnection( driverClass, connectionUrl, user, password);
+                conn = getConnection( settings );
 
                 conn.setAutoCommit(true);
 

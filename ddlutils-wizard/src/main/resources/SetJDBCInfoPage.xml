@@ -23,6 +23,12 @@
 		<textfield  columns="7"  bindWith="passwd" />
 	</panel>
 
+	<hbox gap="5">
+	<buttonGroup>
+		<radiobutton label="Create DB &amp; generate bean" bindWith="createDB"/>
+		<radiobutton label="Generate bean from live DB" bindWith="fromDB"/>
+	</buttonGroup>
+	</hbox>
 <!--
 	<panel layout="FlowLayout(RIGHT)">
 		<button text="Test Connection" action="test"/>

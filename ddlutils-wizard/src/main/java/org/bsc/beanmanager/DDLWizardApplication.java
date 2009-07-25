@@ -16,18 +16,21 @@ import org.jdesktop.application.Application;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
+import org.netbeans.spi.wizard.WizardBranchController;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import org.swixml.jsr296.SwingApplication;
 
+import static org.bsc.beanmanager.DDLWizardConstants.*;
+
 public class DDLWizardApplication extends SwingApplication {
 
-	private static final boolean USE_BRANCH = false;
+	private static final boolean USE_BRANCH = true;
 	
-	SetJDBCInfoPage page1 = new SetJDBCInfoPage();
-	SetDBSchema page2 = new SetDBSchema();
-	GenerateBeanPage page3 = new GenerateBeanPage();
+	SetJDBCInfoPage		page1 = new SetJDBCInfoPage();
+	SetDBSchema 		page2 = new SetDBSchema();
+	GenerateBeanPage	page3 = new GenerateBeanPage();
 	
 	WizardResultProducer producer = new WizardResultProducer(){
 
@@ -52,19 +55,51 @@ public class DDLWizardApplication extends SwingApplication {
      
     };
 	
+    /**
+     * 
+     * @author softphone
+     *
+     */
+	class Brancher extends WizardBranchController {
+
+		Wizard wizardCreateDb = WizardPage.createWizard( new WizardPage[] { page2, page3 }, producer);
+		Wizard wizardImportDb = WizardPage.createWizard( new WizardPage[] { page3 }, producer);
+
+		protected Brancher() {
+			super(page1);
+		}
+
+		@Override
+		protected Wizard getWizardForStep(String step, Map wizardData) {
+
+			if( PAGE1_STEP.equalsIgnoreCase(step) && Boolean.TRUE.equals(wizardData.get(CREATEDB))) {
+				return wizardCreateDb;
+			}
+			else {
+				return wizardImportDb;
+			}
+		}
+		
+		
+	}
 	
-	
-        public static boolean isEmpty( String value ) {
+    public static boolean isEmpty( String value ) {
 
-            if( value==null ) return true;
-            if( value.length()==0) return true;
-            if( value.trim().length()==0 ) return true;
+        if( value==null ) return true;
+        if( value.length()==0) return true;
+        if( value.trim().length()==0 ) return true;
 
-            return false;
-        }
+        return false;
+    }
 
-	public static Connection getConnection( String driverClass, String connectionUrl, String user, String password ) throws Exception {
-		try {
+	public static Connection getConnection( Map<String,Object> wizardData ) throws Exception {
+
+		final String driverClass = (String)wizardData.get(DRIVERCLASS);
+        final String connectionUrl = (String)wizardData.get(CONNECTIONURL);
+        final String user = (String)wizardData.get(USER);
+        final String password = (String)wizardData.get(PASSWORD);
+
+        try {
 			Class.forName( driverClass );
 		} catch (ClassNotFoundException e) {
 			throw new Exception( "Error Loading Driver!");
@@ -111,8 +146,14 @@ public class DDLWizardApplication extends SwingApplication {
         
         Wizard wizard = null;   
         
-
-        wizard = WizardPage.createWizard( new WizardPage[] { page1, page2, page3 }, producer );
+if( USE_BRANCH ) {
+    Brancher brancher = new Brancher();
+    wizard = brancher.createWizard();
+}
+else {
+    wizard = WizardPage.createWizard( new WizardPage[] { page1, page2, page3 }, producer );
+	
+}
  
       
         

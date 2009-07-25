@@ -5,6 +5,7 @@ import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
 import static org.bsc.beanmanager.DDLWizardConstants.PAGE1_STEP;
 import static org.bsc.beanmanager.DDLWizardConstants.PASSWORD;
 import static org.bsc.beanmanager.DDLWizardConstants.USER;
+import static org.bsc.beanmanager.DDLWizardConstants.*;
 
 import java.awt.Component;
 import java.sql.Connection;
@@ -59,42 +60,48 @@ public class SetJDBCInfoPage extends WizardPage {
         class OpenConnectionTask extends WizardPanelNavResult {
 
             @Override
-            public void start(Map properties, ResultProgressHandle progress) {
+            public void start(Map wizardData, ResultProgressHandle progress) {
 
                 progress.setBusy("Connecting...");
 
                 Connection conn = null;
 
-		try {
-
-                    conn = DDLWizardApplication.getConnection( getDriverClass(), getConnectionUrl(), getUser(), getPasswd() );
-
-                    progress.finished(WizardPanelNavResult.PROCEED);
-
-		} catch (Exception e) {
-			//JOptionPane.showMessageDialog(SetJDBCInfoPage.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        progress.failed (e.getMessage(), true);
-		}
-		finally {
-			DDLWizardApplication.closeConnection(conn);
-		}
+				try {
+		
+		                    conn = DDLWizardApplication.getConnection( wizardData );
+		
+		                    progress.finished(WizardPanelNavResult.PROCEED);
+		
+				} catch (Exception e) {
+					//JOptionPane.showMessageDialog(SetJDBCInfoPage.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		                        progress.failed (e.getMessage(), true);
+				}
+				finally {
+					DDLWizardApplication.closeConnection(conn);
+				}
 
             }
 
         }
 	
-        List<JDBCInfo> supportedDrivers = new ArrayList<JDBCInfo>(3);
-    
-        JComboBox cmbDriver;
+    List<JDBCInfo> supportedDrivers = new ArrayList<JDBCInfo>(3);
 
+    JComboBox cmbDriver;
+ 
+    /**
+     * 
+     */
 	public SetJDBCInfoPage() {
 		super( PAGE1_STEP,DESCRIPTION);
 		
 		
 		supportedDrivers.add( new JDBCInfo( "<Select Driver>", null, null) ); 
+		supportedDrivers.add( new JDBCInfo( "MySql Driver", 
+				com.mysql.jdbc.Driver.class,
+                "jdbc:mysql://mysql_server:3306/db_name;" ));
 		supportedDrivers.add( new JDBCInfo( "Oracle Driver", 
                                                     oracle.jdbc.driver.OracleDriver.class,
-                                                    "dbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
+                                                    "jdbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
 		supportedDrivers.add( new JDBCInfo( "MSSQL Driver", 
                                                     com.microsoft.sqlserver.jdbc.SQLServerDriver.class,
                                                     "jdbc:sqlserver://SQL_SERVER:1433;databaseName=DB_NAME;integratedSecurity=false;" ));
@@ -104,34 +111,58 @@ public class SetJDBCInfoPage extends WizardPage {
 		
 	}
 
-        @Override
-        public WizardPanelNavResult allowBack(String stepName, Map settings, Wizard wizard) {
-            return super.allowBack(stepName, settings, wizard);
+    @Override
+	protected void renderingPage() {
+    	
+    	setCreateDB(true);
+	}
+
+	@Override
+    public WizardPanelNavResult allowBack(String stepName, Map settings, Wizard wizard) {
+        return super.allowBack(stepName, settings, wizard);
+    }
+
+    @Override
+    public WizardPanelNavResult allowFinish(String stepName, Map settings, Wizard wizard) {
+        return super.allowFinish(stepName, settings, wizard);
+    }
+
+    @Override
+    public WizardPanelNavResult allowNext(String stepName, Map settings, Wizard wizard) {
+        return new OpenConnectionTask();
+    }
+
+    @Override
+    protected String validateContents(Component component, Object event) {
+        if( cmbDriver==null || cmbDriver.getSelectedIndex()<=0 ) {
+            return SELECT_DRIVER_MESSAGE;
         }
 
-        @Override
-        public WizardPanelNavResult allowFinish(String stepName, Map settings, Wizard wizard) {
-            return super.allowFinish(stepName, settings, wizard);
+        if( DDLWizardApplication.isEmpty( getConnectionUrl() )) {
+            return "Connection Url is required!";
         }
+        
+        return null;
+    }
 
-        @Override
-        public WizardPanelNavResult allowNext(String stepName, Map settings, Wizard wizard) {
-            return new OpenConnectionTask();
-        }
 
-        @Override
-        protected String validateContents(Component component, Object event) {
-            if( cmbDriver==null || cmbDriver.getSelectedIndex()<=0 ) {
-                return SELECT_DRIVER_MESSAGE;
-            }
+	public final boolean isCreateDB() {
+		return Boolean.TRUE.equals( getWizardData(CREATEDB));
+	}
 
-            if( DDLWizardApplication.isEmpty( getConnectionUrl() )) {
-                return "Connection Url is required!";
-            }
-            
-            return null;
-        }
+	public final void setCreateDB(boolean createDB) {
+		putWizardData(CREATEDB, createDB);
+		firePropertyChange(CREATEDB, null, null);
+	}
 
+	public final boolean isFromDB() {
+		return Boolean.TRUE.equals( getWizardData(FROMDB));
+	}
+
+	public final void setFromDB(boolean fromDB) {
+		putWizardData(FROMDB, fromDB);
+		firePropertyChange(FROMDB, null, null);
+	}
 
 	public final String getDriverClass() {
 		return (String)getWizardData(DRIVERCLASS);

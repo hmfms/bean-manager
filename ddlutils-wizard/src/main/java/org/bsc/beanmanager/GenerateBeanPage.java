@@ -2,9 +2,11 @@ package org.bsc.beanmanager;
 
 import static org.bsc.beanmanager.BeanGeneratorUtils.generateBean;
 import static org.bsc.beanmanager.BeanGeneratorUtils.generateBeanInfo;
+import static org.bsc.beanmanager.DDLWizardConstants.CONNECTIONURL;
 import static org.bsc.beanmanager.DDLWizardConstants.DATABASE_MODEL;
+import static org.bsc.beanmanager.DDLWizardConstants.DRIVERCLASS;
 import static org.bsc.beanmanager.DDLWizardConstants.GENERATE_BEAN;
-import static org.bsc.beanmanager.DDLWizardConstants.PACKAGE_NAME;
+import static org.bsc.beanmanager.DDLWizardConstants.*;
 
 import java.awt.Component;
 import java.beans.PropertyDescriptor;
@@ -15,11 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.netbeans.spi.wizard.Wizard;
@@ -33,11 +39,11 @@ public class GenerateBeanPage extends WizardPage {
 
 	class GenerateBeanTask extends WizardPanelNavResult {
 
+		
 		@Override
 		public void start(Map wizardData, ResultProgressHandle progress) {
             progress.setBusy("Generating...");
             
-            Database db = (Database) wizardData.get(DATABASE_MODEL);
             
             try {
             	progress.setBusy("Generating Beans!");
@@ -62,10 +68,8 @@ public class GenerateBeanPage extends WizardPage {
 		super("generate", "Generate Bean&BeanInfo");
 		
 		try {
-			Map<String,PropertyDescriptor> map = new HashMap<String,PropertyDescriptor>();
-			for( PropertyDescriptor pd : PropertyUtils.getPropertyDescriptors(GenerateBean.class) ) {
-				map.put( pd.getName(), pd);
-			}
+			
+			Map<String,PropertyDescriptor> map = BindingUtils.getPropertyMap(GenerateBean.class);
 			
 			{
 			PropertyDescriptor pd = map.get("selected"); 
@@ -98,19 +102,66 @@ public class GenerateBeanPage extends WizardPage {
 		return new GenerateBeanTask();
 	}
 
+	/**
+	 * 
+	 * @param wizardData
+	 * @return
+	 */
+	private Database createFormLiveDatabase(Map<String,Object> wizardData) throws Exception {
+		final String driverClass = (String)wizardData.get(DRIVERCLASS);
+        final String connectionUrl = (String)wizardData.get(CONNECTIONURL);
+
+		
+		Platform platform = PlatformFactory.createNewPlatformInstance(driverClass, connectionUrl);
+		
+		java.sql.Connection connection = null;
+		
+		try {
+			connection = DDLWizardApplication.getConnection(wizardData);
+
+			return platform.readModelFromDatabase( connection, "model");
+		}
+		finally {
+			DDLWizardApplication.closeConnection(connection);
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param wizardData
+	 * @return
+	 */
+	private Database getCreatedDatabase(Map<String,Object> wizardData) {
+        Database db = (Database) wizardData.get(DATABASE_MODEL);
+		
+		return db;
+	}
+	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void renderingPage() {
 		super.renderingPage();
 		
 		setGenerateBean(true);
 		
-        Database db = (Database) getWizardData(DATABASE_MODEL);
-        
-        for( Table table : db.getTables() ) {
-        	
-        	getGenerateBeanList().add( new GenerateBean( table ) );
-        }
+        Database db = null;
+		try {
+			db = (Boolean.TRUE.equals(getWizardData(CREATEDB))) ? getCreatedDatabase(getWizardDataMap()) : createFormLiveDatabase(getWizardDataMap());
 
+			for( Table table : db.getTables() ) {
+	        	
+	        	getGenerateBeanList().add( new GenerateBean( table ) );
+	        }
+
+			
+		} catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Fatal Error on render component! \n" + e.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+            Application.getInstance().exit();
+		}
+        
+        
 		
 	}
 

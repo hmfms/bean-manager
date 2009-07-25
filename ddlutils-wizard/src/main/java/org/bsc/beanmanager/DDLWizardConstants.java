@@ -17,6 +17,9 @@ public class DDLWizardConstants {
     public static final String DRIVERCLASS = "driverClass";
     public static final String PASSWORD = "password";
     public static final String USER = "user";
+    public static final String CREATEDB = "createDB";
+    public static final String FROMDB = "fromDB";
+    
 
     // PAGE2
 	public static final String PAGE2_STEP = "schema";
