@@ -98,6 +98,15 @@
             <!-- outputDirectory>${target.osgi.platform}</outputDirectory-->
     </configuration>
 </plugin>    
+<plugin>
+	<artifactId>maven-release-plugin</artifactId>
+	<configuration>
+		<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+		<goals>clean,deploy</goals>
+		<tag>beanmanager-core-${releaseVersion}</tag>
+	</configuration>
+</plugin>
+
 </plugins>
 </build>
 </project>
