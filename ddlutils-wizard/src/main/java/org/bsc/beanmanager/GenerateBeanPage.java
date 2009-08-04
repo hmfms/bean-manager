@@ -119,7 +119,9 @@ public class GenerateBeanPage extends WizardPage {
 		try {
 			connection = DDLWizardApplication.getConnection(wizardData);
 
-			return platform.readModelFromDatabase( connection, "model");
+			Database result = platform.readModelFromDatabase( connection, null);
+			
+			return result; 
 		}
 		finally {
 			DDLWizardApplication.closeConnection(connection);
