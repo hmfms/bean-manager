@@ -97,8 +97,8 @@ public class SetJDBCInfoPage extends WizardPage {
 		
 		
 		supportedDrivers.add( new JDBCInfo( "<Select Driver>", null, null) ); 
-		//supportedDrivers.add( new JDBCInfo( "MySql Driver", com.mysql.jdbc.Driver.class,  "jdbc:mysql://mysql_server:3306/db_name" ));
-		supportedDrivers.add( new JDBCInfo( "MySql Driver", com.mysql.jdbc.Driver.class,  "jdbc:mysql://192.168.2.101:3306/aacc" ));
+		supportedDrivers.add( new JDBCInfo( "MySql Driver", com.mysql.jdbc.Driver.class,  "jdbc:mysql://mysql_server:3306/db_name" ));
+		//supportedDrivers.add( new JDBCInfo( "MySql Driver", com.mysql.jdbc.Driver.class,  "jdbc:mysql://192.168.2.101:3306/aacc" ));
 		supportedDrivers.add( new JDBCInfo( "Oracle Driver", 
                                                     oracle.jdbc.driver.OracleDriver.class,
                                                     "jdbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
