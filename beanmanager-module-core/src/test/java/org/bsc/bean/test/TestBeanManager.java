@@ -1,11 +1,9 @@
 package org.bsc.bean.test;
 
-import org.bsc.bean.test.beans.CustomerAccountBeanInfo;
-import org.bsc.bean.test.beans.CustomerAccount;
-import org.bsc.bean.test.beans.BankAccountBeanInfo;
-import org.bsc.bean.test.beans.BankAccount;
-import org.bsc.bean.test.beans.CustomerBeanInfo;
-import org.bsc.bean.test.beans.Customer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -14,28 +12,33 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.Properties;
+
 import junit.framework.Assert;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+import org.apache.ddlutils.model.Database;
 import org.bsc.bean.BeanManager;
 import org.bsc.bean.BeanManagerFactory;
+import org.bsc.bean.BeanManagerUtils;
 import org.bsc.bean.StoreConstraints;
 import org.bsc.bean.metadata.TableBean;
 import org.bsc.bean.metadata.TableBeanInfo;
-import org.junit.AfterClass;
-
-import org.apache.ddlutils.model.Database;
-import org.apache.ddlutils.Platform;
-import org.apache.ddlutils.PlatformFactory;
-import org.bsc.bean.BeanManagerUtils;
+import org.bsc.bean.test.beans.Attachment;
+import org.bsc.bean.test.beans.AttachmentBeanInfo;
+import org.bsc.bean.test.beans.BankAccount;
+import org.bsc.bean.test.beans.BankAccountBeanInfo;
+import org.bsc.bean.test.beans.Customer;
+import org.bsc.bean.test.beans.CustomerAccount;
+import org.bsc.bean.test.beans.CustomerAccountBeanInfo;
+import org.bsc.bean.test.beans.CustomerBeanInfo;
 import org.bsc.util.Configurator;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -47,6 +50,7 @@ public class TestBeanManager extends BaseTestUtils {
 	private static BeanManager<Customer> customerManager = null; 
 	private static BeanManager<BankAccount> accountManager = null; 
 	private static BeanManager<CustomerAccount> customerAccountManager = null; 
+	private static BeanManager<Attachment> attachmentManager = null; 
 
     private Connection conn = null;
 	
@@ -67,13 +71,14 @@ public class TestBeanManager extends BaseTestUtils {
                 customerManager = factory.createBeanManager(Customer.class);
                 accountManager = factory.createBeanManager(BankAccount.class);
                 customerAccountManager = factory.createBeanManager(CustomerAccount.class);
-                
+                attachmentManager = factory.createBeanManager(Attachment.class);
 		Database db = new Database();
 		
 		createTablesModel(db,                         
                         new CustomerBeanInfo(),
                         new BankAccountBeanInfo(),
-                        new CustomerAccountBeanInfo() 
+                        new CustomerAccountBeanInfo(),
+                        new AttachmentBeanInfo()
                         );
 		
               
@@ -259,7 +264,27 @@ public class TestBeanManager extends BaseTestUtils {
             
         }
         
-        
+	@Test
+    public void attachManagement() throws Exception {
+    	
+		final String content = "small clob";
+		
+		Attachment a = new Attachment();
+		
+		a.setContent( content.toCharArray() );
+		
+		attachmentManager.create( conn, a );
+
+		Attachment a1 = attachmentManager.findById(conn, a.getId());
+
+		assertNotNull( a1 );
+		assertEquals( content, String.valueOf(a1.getContent()));
+		
+		attachmentManager.removeAll(conn);
+		
+		
+    }
+	
 	private Customer createCustomer( int id, BankAccount account ) throws SQLException {
 		
                 
