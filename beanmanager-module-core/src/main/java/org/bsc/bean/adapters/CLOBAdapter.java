@@ -5,6 +5,7 @@
 
 package org.bsc.bean.adapters;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
@@ -25,6 +26,8 @@ import org.bsc.util.Log;
  */
 public class CLOBAdapter implements DataAdapter {
 
+	static final int READING_BUFFER_SIZE = 1024;
+	
     /**
      * 
      * @param type
@@ -49,6 +52,37 @@ public class CLOBAdapter implements DataAdapter {
     	
     }
     
+    private char[] getValueAsCharArray(Clob value) throws java.sql.SQLException {
+        
+    	char [] result = null;
+    	
+    	CharArrayWriter sb = new CharArrayWriter();
+        
+    	Reader reader = value.getCharacterStream();
+        
+        try {
+
+        	char buffer[] = new char[READING_BUFFER_SIZE]; 
+        	int len;
+
+            while ((len = reader.read(buffer)) == READING_BUFFER_SIZE) {
+                sb.write(buffer, 0, READING_BUFFER_SIZE);
+            }
+            if( len>0 ) {
+                sb.write( buffer, 0, len);
+            }
+            result = sb.toCharArray();
+
+            free( value );
+
+        } catch (IOException ex) {            
+            Log.warn( "{0} error ", ex, "getValueAsCharArray");
+            return new char[0];
+		}
+        
+        return result;
+    }
+    
     /**
      * 
      * @param rs
@@ -70,30 +104,17 @@ public class CLOBAdapter implements DataAdapter {
       if( !rs.wasNull() ) {
       
           if( isCharArray(type) ) {
-            result = value.getCharacterStream();
+            result = getValueAsCharArray(value);
           }
           else if( type.equals(String.class) ){
-            StringBuilder sb = new StringBuilder();
-            Reader reader = value.getCharacterStream();
-            char buffer[] = new char[1024]; 
-            int len;
-            try {
-
-                while ((len = reader.read(buffer)) == 1024) {
-                    sb.append(buffer, 0, 1024);
-                }
-                if( len>0 ) {
-                    sb.append( buffer, 0, len);
-                }
-                result = sb.toString();
-
-                free( value );
-
-            } catch (IOException ex) {            
-                Log.warn( "{0} error ", ex, method);
-                result = null;
-            }
+        	char ch[] = getValueAsCharArray(value);
+        	
+        	return new String(ch);
           }
+          else if( Reader.class.isAssignableFrom(type)) {
+        	  //TODO implement support for reader
+              Log.error( "{0} Reader not supported yet", method );
+                       }
           else {
               Log.error( "{0} type not recognized {1}", method, type.getName());
           }
@@ -131,6 +152,21 @@ public class CLOBAdapter implements DataAdapter {
         else if( CharSequence.class.isAssignableFrom(type)) {
           prop = new SerialClob( ((CharSequence)value).toString().toCharArray() );
           ps.setClob( parameterIndex, prop );
+        }
+        else if( Reader.class.isAssignableFrom(type)) {
+        	Method m = null;
+        	try {
+				m = PreparedStatement.class.getMethod( "setBlob", Integer.TYPE, java.io.Reader.class );
+			} catch (Exception e) {
+		        Log.error( "{0} type not supported {1}", method, type.getName());
+		        return;
+			}
+
+			try {
+				m.invoke(ps, parameterIndex, value);
+			} catch (Exception e) {
+		        Log.error( "{0} setBlob exception", e,  method);
+			}
         }
         else {
           Log.error( "{0} type not recognized {1}", method, type.getName());
