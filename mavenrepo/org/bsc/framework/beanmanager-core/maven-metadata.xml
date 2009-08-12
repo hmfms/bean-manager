@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metadata>
+<?xml version="1.0" encoding="UTF-8"?><metadata>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-core</artifactId>
   <version>1.0</version>
@@ -11,7 +10,8 @@
       <version>1.3-SNAPSHOT</version>
       <version>1.3-rc1</version>
       <version>1.3</version>
+      <version>1.3.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20090725223336</lastUpdated>
+    <lastUpdated>20090812141912</lastUpdated>
   </versioning>
 </metadata>
