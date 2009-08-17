@@ -101,7 +101,7 @@ public class SetJDBCInfoPage extends WizardPage {
 		//supportedDrivers.add( new JDBCInfo( "MySql Driver", com.mysql.jdbc.Driver.class,  "jdbc:mysql://192.168.2.101:3306/aacc" ));
 		supportedDrivers.add( new JDBCInfo( "Oracle Driver", 
                                                     oracle.jdbc.driver.OracleDriver.class,
-                                                    "jdbc:oracle:thin:@//oracle_server:oracle_port/oracle_db_name" ));
+                                                    "jdbc:oracle:thin:@//oracle_server:1521/oracle_db_name" ));
 		supportedDrivers.add( new JDBCInfo( "MSSQL Driver", 
                                                     com.microsoft.sqlserver.jdbc.SQLServerDriver.class,
                                                     "jdbc:sqlserver://SQL_SERVER:1433;databaseName=DB_NAME;integratedSecurity=false;" ));
