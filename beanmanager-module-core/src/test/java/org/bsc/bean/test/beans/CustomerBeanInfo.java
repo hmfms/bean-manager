@@ -1,19 +1,18 @@
 package org.bsc.bean.test.beans;
 
-import org.bsc.bean.test.beans.Customer;
 import static org.bsc.bean.BeanManagerUtils.EMPTY_PROPERTYDESCRIPTOR;
 
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-
 import java.sql.Types;
+
 import org.bsc.bean.AbstractManagedBeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.bean.PropertyDescriptorPK;
-import org.bsc.bean.adapters.CLOBAdapter;
 import org.bsc.bean.adapters.CharBooleanAdapter;
+import org.bsc.bean.generators.UUIDValueGenerator;
 
 /**
  * 
@@ -36,7 +35,10 @@ public class CustomerBeanInfo extends AbstractManagedBeanInfo<Customer> {
                     return new PropertyDescriptor[] {
 
                         new PropertyDescriptorPK("id", getBeanClass(), "getCustomerId", "setCustomerId" )
-                        	.setFieldName("CUSTOMER_ID")                 	
+                        	.setValueGenerator( new UUIDValueGenerator() )
+                        	.setFieldName("CUSTOMER_ID") 
+                        	.setSQLType(Types.VARCHAR)
+                        	.setSize(40)
                         ,
                         
                         new PropertyDescriptorField("firstName", getBeanClass(), "getFirstName", "setFirstName" )

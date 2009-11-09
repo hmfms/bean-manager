@@ -6,7 +6,7 @@ public class Customer {
 
 	private String firstName;
 	private String lastName;
-	private int id;
+	private String id;
 	private int accountId;
     private boolean vip = false;
     private String note;
@@ -46,10 +46,10 @@ public class Customer {
 	public final void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public final int getCustomerId() {
+	public final String getCustomerId() {
 		return id;
 	}
-	public final void setCustomerId(int id) {
+	public final void setCustomerId(String id) {
 		this.id = id;
 	}
 

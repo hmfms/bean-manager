@@ -26,7 +26,7 @@ public class CustomerAccountBeanInfo extends CustomerBeanInfo {
         setBeanClass( CustomerAccount.class );
         
         descriptor.createJoinRelation("ACCOUNT", 
-                    new JoinCondition("customer_id","id") );
+                    new JoinCondition("account_id","id") );
         return descriptor;
     }
 
