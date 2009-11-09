@@ -19,7 +19,7 @@ import java.sql.Types;
 */
 public class PropertyDescriptorPK extends PropertyDescriptorField {
 
- public static final String COUNTER = "counter";
+ public static final String AUTO_GENERATE = "auto.generate";
 
  /**
  for default SQL type is set to Types.INTEGER
@@ -42,10 +42,16 @@ public class PropertyDescriptorPK extends PropertyDescriptorField {
    return "PropertyDescriptorPK " + getName() + " " + getFieldName() ;
  }
 
- public boolean isCounter() {
-  Object v = this.getValue(COUNTER);
-  if( v==null ) { return false; }
-  return ((Boolean)v).booleanValue();
+ 
+ public final boolean isAutoGenerate() {
+     return null!=getValue(AUTO_GENERATE);
  }
 
+ public ValueGenerator<?> getValueGenerator() {
+     return (ValueGenerator) getValue( AUTO_GENERATE );
+ }
+ public final PropertyDescriptorPK setValueGenerator( ValueGenerator<?> vg ) {
+     setValue( AUTO_GENERATE, vg );
+     return this;
+ }
 }

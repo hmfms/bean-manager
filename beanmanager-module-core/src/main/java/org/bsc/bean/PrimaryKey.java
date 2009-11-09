@@ -48,7 +48,6 @@ public class PrimaryKey {
 
     for( int i=0; i<getKeyCount(); ++i ) {
       // ignore counter fields
-      if( get(i).isCounter() ) continue;
       sb.append( "?," );
     }
 
@@ -124,8 +123,6 @@ public class PrimaryKey {
   protected StringBuilder appendToCreatePropertyList( StringBuilder sb, String sep ) {
     for( int i=0; i<getKeyCount(); ++i ) {
 
-      // Add primary key only if it doesn't a counter field
-      if( get(i).isCounter() ) continue;
 
       sb.append( get(i).getFieldName() );
       sb.append( sep );

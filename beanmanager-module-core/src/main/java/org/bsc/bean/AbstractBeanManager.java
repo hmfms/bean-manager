@@ -897,6 +897,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
    * @throws SQLException
    */
   private int setCreateStatement(
+                    Connection connection,
                     PreparedStatement ps,
                     Object bean  ) throws java.sql.SQLException
   {
@@ -910,10 +911,18 @@ private int setStoreStatementInclude( PreparedStatement ps,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      if( pk.isCounter() ) continue;
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
-      setStatementValue( ps, ordinal++, value, pk );
+      if( pk.isAutoGenerate() ) {
+         ValueGenerator<?> generator = pk.getValueGenerator();
 
+         Object pkValue = generator.generate(connection, pk);
+         Log.debug( "Auto generated value {0} for attribute {1} ", pkValue, pk.getName());
+         BeanManagerUtils.invokeWriteMethod(pk, bean, pkValue);
+         setStatementValue( ps, ordinal++, pkValue, pk );
+      }
+      else {
+          value = BeanManagerUtils.invokeReadMethod(pk, bean);
+          setStatementValue( ps, ordinal++, value, pk );
+      }
     }
 
     // SET FIELD VALUE
@@ -999,7 +1008,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     int result = 0;
     
     for( T bean : beans ) {
-        this.setCreateStatement( ps, bean );
+        this.setCreateStatement( conn, ps, bean );
 
         result += ps.executeUpdate();
         

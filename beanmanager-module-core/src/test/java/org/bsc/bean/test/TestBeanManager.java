@@ -215,7 +215,6 @@ public class TestBeanManager extends BaseTestUtils {
 		Customer bean = new Customer();
 
         for( int i=0; i<100 ; ++i ) {
-            bean.setCustomerId(1000 + i);
             bean.setFirstName("name" + i);
             bean.setLastName("sname" + i);
             bean.setAccountId( i );
@@ -248,15 +247,15 @@ public class TestBeanManager extends BaseTestUtils {
             
             final BankAccount account = createAccount(id);
             
-            createCustomer( id, account );
+            Customer c = createCustomer( id, account );
 
-            findCustomerById( id );
+            findCustomerById( c.getCustomerId() );
         
-            CustomerAccount ca = customerAccountManager.findById(conn, id);
+            CustomerAccount ca = customerAccountManager.findById(conn, c.getCustomerId() );
             
-            updateCustomer( id,  "BARTOLOMEO", "SORRENTINO" );
+            updateCustomer( c.getCustomerId(),  "BARTOLOMEO", "SORRENTINO" );
             
-            updateCustomerInclude( id, "LUIGI");
+            updateCustomerInclude( c.getCustomerId(), "LUIGI");
          
             findCustomers();
             
@@ -290,7 +289,6 @@ public class TestBeanManager extends BaseTestUtils {
                 
 		Customer bean = new Customer();
 		
-		bean.setCustomerId(id);
 		bean.setFirstName("name" + id);
 		bean.setLastName("sname1" + id);
         bean.setAccountId( account.getAccountId() );
@@ -299,8 +297,10 @@ public class TestBeanManager extends BaseTestUtils {
 		bean.setBirthDate( new java.util.Date() ); 
 
         customerManager.create(conn, bean);
-		
-        return bean;
+        
+		System.out.printf( "ID=[%s]\n", bean.getCustomerId());
+        
+		return bean;
 		
 	}
 
@@ -318,7 +318,7 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 	
-	void findCustomerById( int id) throws SQLException {
+	void findCustomerById( String id) throws SQLException {
 		
 		Customer bean = customerManager.findById(conn, id);
 		
@@ -333,7 +333,7 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 
-	void updateCustomerInclude( int id, String firstName ) throws SQLException {
+	void updateCustomerInclude( String id, String firstName ) throws SQLException {
 		
 		Customer bean = new Customer();
 		
@@ -351,7 +351,7 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 
-	void updateCustomernExclude( int id ) throws SQLException {
+	void updateCustomernExclude( String id ) throws SQLException {
 		
 		Customer bean = new Customer();
 		
@@ -369,7 +369,7 @@ public class TestBeanManager extends BaseTestUtils {
 		
 	}
 
-	void updateCustomer( int id,  String firstName, String lastName ) throws SQLException {
+	void updateCustomer( String id,  String firstName, String lastName ) throws SQLException {
 		
 		Customer bean = customerManager.findById(conn, id);
 		
