@@ -133,10 +133,9 @@ public interface BeanManager<T> {
   *
   * <pre>
   * Ex.:
-  * String props[] = { "prop1",  "prop2", ... };
-  * int result = manager.store( conn, myBean, props, true ); // include
+  * int result = manager.store( conn, myBean, StoreConstraints.INCLUDE_PROPERTIES, "prop1",  "prop2, ..." ); // include
   * OR
-  * int result = manager.store( conn, myBean, props, false ); // exclude
+  * int result = manager.store( conn, myBean, StoreConstraints.EXCLUDE_PROPERTIES, "prop1", "prop2", ...  ); // exclude
   * </pre>
   * @param conn database connection
   * @param bean object to update into db
