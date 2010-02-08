@@ -1,11 +1,15 @@
 package org.bsc.util;
 
+import static org.bsc.bean.BeanManagerUtils.getMessage;
+
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.bsc.bean.BeanManagerUtils.*;
+
+import org.bsc.bean.BeanManagerMessages;
 
 /**
  * Configurator manager 
@@ -35,7 +39,6 @@ import static org.bsc.bean.BeanManagerUtils.*;
 public class Configurator {
   public static final Logger log = Logger.getLogger( Configurator.class.getName() );
 
-  static final String BUNDLE = "org.bsc.bean.res.BeanManagerMessages";
   static final String RESOURCE = "BeanManager.properties";
   static final String CUSTOM_COMMANDS = "sqlCommands.properties";
 
@@ -107,8 +110,8 @@ public class Configurator {
    *
    * @return
    */
-  public static java.util.ResourceBundle getMessages() {
-    return java.util.ResourceBundle.getBundle(BUNDLE);
+  public static BeanManagerMessages getMessages() {
+    return  BeanManagerMessages.createInstance(Locale.getDefault());
   }
 
   /**
@@ -234,9 +237,9 @@ public class Configurator {
    * @return the same instance given in input with new values
    */
   static java.util.Properties loadCustomCommands( final java.util.Properties result, final File folder, final String ext ) {
-      if( null==result ) throw new IllegalArgumentException( getMessage("ex.param_0_is null", "result") );
-      if( null==folder ) throw new IllegalArgumentException( getMessage("ex.param_0_is null", "folder") );
-      if( null==ext ) throw new IllegalArgumentException( getMessage("ex.param_0_is null", "ext") );
+      if( null==result ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "result") );
+      if( null==folder ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "folder") );
+      if( null==ext ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "ext") );
 
       if( !folder.exists() ) throw new IllegalArgumentException( String.format("folder [%s] doesn't exist!", folder.getPath() ) );
       if( !folder.isDirectory() ) throw new IllegalArgumentException( String.format("folder [%s] is not a directory!", folder.getPath() ) );

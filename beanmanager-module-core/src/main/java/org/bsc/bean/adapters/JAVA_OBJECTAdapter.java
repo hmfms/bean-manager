@@ -1,15 +1,16 @@
 package org.bsc.bean.adapters;
 
-import org.bsc.bean.DataAdapter;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.sql.rowset.serial.SerialBlob;
-import org.bsc.bean.BeanManagerUtils;
-import org.bsc.util.Log;
+
+import static org.bsc.bean.BeanManagerUtils.messages;
+import org.bsc.bean.DataAdapter;
 import org.bsc.bean.PropertyDescriptorField;
+import org.bsc.util.Log;
 
 
 /**
@@ -80,9 +81,7 @@ public class JAVA_OBJECTAdapter implements DataAdapter {
 
       // PRE_CONDITION
       if( !(value instanceof java.io.Serializable) ) {
-        throw new SQLException(
-          BeanManagerUtils.getMessage( "prop_not_serializable", new Object[]{p.getName()} )
-           );
+        throw new SQLException( messages.prop_not_serializable(p.getName()) );
       }
 
       // SERIALIZE OBJECT IN BINARY FORMAT

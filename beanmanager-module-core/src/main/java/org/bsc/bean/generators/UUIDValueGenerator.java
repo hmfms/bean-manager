@@ -7,6 +7,7 @@ package org.bsc.bean.generators;
 
 import java.sql.Connection;
 import java.util.UUID;
+
 import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.bean.ValueGenerator;
 

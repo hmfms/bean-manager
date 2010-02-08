@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import org.bsc.processor.annotation.ResourceBundle;
+
 /**
 It's an implementation of DAO interface (see DAO pattern ) for a jdbc data source
 to define a bean persistent model based on a extension of BeanInfo meta data
@@ -64,6 +66,7 @@ conn.close();
 @see bsc.bean.PropertyDescriptorField
 @see bsc.bean.BeanDescriptorEntity
 */
+@ResourceBundle
 public interface BeanManager<T> {
 
   /**

@@ -5,11 +5,10 @@
 
 package org.bsc.bean.test.beans;
 
-import org.bsc.bean.test.beans.BankAccountBeanInfo;
-import org.bsc.bean.test.beans.CustomerBeanInfo;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
+
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.BeanManagerUtils;
 import org.bsc.bean.JoinCondition;

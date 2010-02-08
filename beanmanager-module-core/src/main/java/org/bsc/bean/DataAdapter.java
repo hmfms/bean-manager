@@ -3,6 +3,7 @@ package org.bsc.bean;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.bsc.bean.adapters.BLOBAdapter;
 import org.bsc.bean.adapters.CHARAdapter;
 import org.bsc.bean.adapters.CLOBAdapter;

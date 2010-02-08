@@ -5,16 +5,21 @@
 
 package org.bsc.bean.dyna;
 
-import org.bsc.bean.*;
+import static org.bsc.bean.PropertyDescriptorField.FIELDNAME;
+
 import java.beans.BeanDescriptor;
 import java.beans.PropertyDescriptor;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.bsc.bean.AbstractManagedBeanInfo;
+import org.bsc.bean.BeanDescriptorUtils;
+import org.bsc.bean.BeanManager;
+import org.bsc.bean.BeanManagerFactory;
 import org.bsc.bean.metadata.ColumnBean;
 import org.bsc.bean.metadata.ColumnBeanInfo;
-import static org.bsc.bean.PropertyDescriptorField.FIELDNAME;
 /**
  *
  * @author Sorrentino

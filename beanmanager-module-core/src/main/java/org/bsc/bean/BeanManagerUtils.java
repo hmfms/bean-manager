@@ -40,7 +40,7 @@ public static final MethodDescriptor[]		EMPTY_METHODDESCRIPTOR		= new MethodDesc
 public static final PropertyDescriptor[]	EMPTY_PROPERTYDESCRIPTOR	= new PropertyDescriptor[0];
 public static final BeanInfo[] 			EMPTY_ADDITIONALBEANINFO	= new BeanInfo[0];
 
-static java.util.ResourceBundle messages = Configurator.getMessages();
+public static final BeanManagerMessages messages = Configurator.getMessages();
 
 /**
 load a BeanInfo for URI
@@ -231,7 +231,7 @@ public static Object getPropertyValue( PropertyDescriptor p, Object bean ) {
  public static PropertyDescriptor[] getBeanProperties( BeanInfo beanInfo ) {
    if (beanInfo == null) {
      throw new java.lang.IllegalArgumentException(getMessage(
-         "ex.param_0_is null", new Object[] {"beanInfo"}));
+         "ex.param_0_is_null", new Object[] {"beanInfo"}));
    }
 
    java.util.Map<String,PropertyDescriptor> propMap = _getInheritProperties( beanInfo );
@@ -563,7 +563,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
    if (null == messages)
      return key;
 
-   String result = messages.getString(key);
+   String result = messages.bundle.getString(key);
 
    return (null == result) ? key : result;
  }

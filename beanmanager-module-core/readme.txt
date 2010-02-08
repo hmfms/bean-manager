@@ -52,3 +52,9 @@ BEANINFO
 BEANMANAGER
 
 IMPROVEMENTS
+
+Release 1.3.1.001
+================
+
+add support of internationalization-plugin
+

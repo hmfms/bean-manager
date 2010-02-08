@@ -1,7 +1,7 @@
 
 package org.bsc.bean;
 
-import java.beans.*;
+import java.beans.BeanInfo;
 
 /**
  * 

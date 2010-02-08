@@ -1,12 +1,12 @@
 package org.bsc.bean.adapters;
 
-import org.bsc.bean.DataAdapter;
-import java.sql.ResultSet;
-import org.bsc.bean.PropertyDescriptorField;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import org.bsc.bean.DataAdapter;
+import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.util.Log;
 
 /**

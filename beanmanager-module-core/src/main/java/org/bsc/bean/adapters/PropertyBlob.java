@@ -1,10 +1,11 @@
 package org.bsc.bean.adapters;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import org.bsc.util.*;
+
+import org.bsc.util.Log;
 /**
  * Title:        Bartolomeo Sorrentino Classi
  * Description:

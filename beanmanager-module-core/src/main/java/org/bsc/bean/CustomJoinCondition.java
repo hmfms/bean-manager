@@ -1,6 +1,5 @@
 package org.bsc.bean;
 
-import org.bsc.bean.JoinCondition;
 import java.text.MessageFormat;
 
 public class CustomJoinCondition extends JoinCondition {

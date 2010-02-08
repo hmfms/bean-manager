@@ -1,15 +1,15 @@
 package org.bsc.bean.adapters;
 
-import org.bsc.bean.DataAdapter;
-import org.bsc.bean.PropertyDescriptorField;
-import org.bsc.util.Log;
-
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
-import java.sql.Types;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
+
+import org.bsc.bean.DataAdapter;
+import org.bsc.bean.PropertyDescriptorField;
+import org.bsc.util.Log;
 
 /**
  * <p>Title: Bartolomeo Sorrentino Classi</p>

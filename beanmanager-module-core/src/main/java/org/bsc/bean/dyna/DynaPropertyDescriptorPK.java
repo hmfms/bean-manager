@@ -5,10 +5,11 @@
 
 package org.bsc.bean.dyna;
 
-import org.bsc.bean.BeanManagerUtils;
-import org.bsc.bean.PropertyDescriptorPK;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
+
+import org.bsc.bean.BeanManagerUtils;
+import org.bsc.bean.PropertyDescriptorPK;
 
 /**
  *

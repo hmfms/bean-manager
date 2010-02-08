@@ -1,11 +1,15 @@
 package org.bsc.bean;
 
-import java.beans.*;
-import java.sql.*;
-
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
-import org.bsc.util.Log;
+
 import org.bsc.util.Configurator;
+import org.bsc.util.Log;
 
 /**
 *

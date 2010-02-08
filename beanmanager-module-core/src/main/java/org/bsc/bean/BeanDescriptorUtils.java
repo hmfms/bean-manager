@@ -5,9 +5,10 @@
 
 package org.bsc.bean;
 
-import java.beans.BeanDescriptor;
 import static org.bsc.bean.BeanDescriptorEntity.ENTITY_NAME;
 import static org.bsc.bean.BeanDescriptorEntity.JOIN_RELATIONS;
+
+import java.beans.BeanDescriptor;
 /**
  *
  * @author Sorrentino

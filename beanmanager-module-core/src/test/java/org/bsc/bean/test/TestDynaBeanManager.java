@@ -1,36 +1,32 @@
 package org.bsc.bean.test;
 
-import org.bsc.bean.test.beans.CustomerBeanInfo;
 import java.sql.Connection;
-
-
-import org.junit.BeforeClass;
-
-import org.bsc.bean.BeanManager;
-import org.bsc.bean.BeanManagerFactory;
-import org.bsc.bean.dyna.DynaManagedBeanInfo;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.ResultSetDynaClass;
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+import org.apache.ddlutils.model.Database;
+import org.bsc.bean.BeanManager;
+import org.bsc.bean.BeanManagerFactory;
 import org.bsc.bean.StoreConstraints;
+import org.bsc.bean.dyna.DynaManagedBeanInfo;
 import org.bsc.bean.metadata.ColumnBean;
 import org.bsc.bean.metadata.ColumnBeanInfo;
+import org.bsc.bean.test.beans.CustomerBeanInfo;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.bsc.bean.test.BaseTestUtils.*;
-
-import org.apache.ddlutils.model.Database;
-import org.apache.ddlutils.Platform;
-import org.apache.ddlutils.PlatformFactory;
 
 /**
  * 

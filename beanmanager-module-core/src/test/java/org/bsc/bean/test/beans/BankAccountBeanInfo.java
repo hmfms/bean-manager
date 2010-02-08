@@ -8,6 +8,7 @@ package org.bsc.bean.test.beans;
 import java.beans.BeanDescriptor;
 import java.beans.PropertyDescriptor;
 import java.sql.Types;
+
 import org.bsc.bean.AbstractManagedBeanInfo;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.PropertyDescriptorField;

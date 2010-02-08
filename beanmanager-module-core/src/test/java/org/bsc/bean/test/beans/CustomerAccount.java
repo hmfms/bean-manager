@@ -5,7 +5,6 @@
 
 package org.bsc.bean.test.beans;
 
-import org.bsc.bean.test.beans.Customer;
 import java.util.Date;
 
 /**

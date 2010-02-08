@@ -1,8 +1,12 @@
 package org.bsc.bean;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 
-import org.bsc.util.*;
+import org.bsc.util.Log;
 
 /**
  *

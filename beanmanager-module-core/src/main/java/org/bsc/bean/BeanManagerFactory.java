@@ -1,6 +1,7 @@
 package org.bsc.bean;
 
 import java.beans.BeanInfo;
+
 import org.bsc.util.Configurator;
 import org.bsc.util.Log;
 
