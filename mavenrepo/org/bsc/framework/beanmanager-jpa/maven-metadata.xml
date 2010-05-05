@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.bsc.framework</groupId>
+  <artifactId>beanmanager-jpa</artifactId>
+  <version>1.4-SNAPSHOT</version>
+  <versioning>
+    <versions>
+      <version>1.4-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20100505100511</lastUpdated>
+  </versioning>
+</metadata>
