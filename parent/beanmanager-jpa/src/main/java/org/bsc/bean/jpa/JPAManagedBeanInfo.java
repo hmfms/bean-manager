@@ -12,26 +12,170 @@ import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.bsc.bean.BeanDescriptorEntity;
 import org.bsc.bean.BeanManagerUtils;
 import org.bsc.bean.ManagedBeanInfo;
 import org.bsc.bean.PropertyDescriptorField;
+import org.bsc.bean.PropertyDescriptorJoin;
 import org.bsc.bean.PropertyDescriptorPK;
 import org.bsc.bean.generators.UUIDValueGenerator;
 import org.bsc.util.Log;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
+    public static class RelationBeanFactory {
+
+        final Class<?> beanClass;
+
+        final Method setter;
+
+        RelationBeanFactory( Class<?> beanClass, Method setter ) {
+            if( null==beanClass ) throw new IllegalArgumentException("beanClass param is null!");
+            if( null==setter ) throw new IllegalArgumentException("setter param is null!");
+            this.beanClass = beanClass;
+            this.setter = setter;
+        }
+
+        public void createAndSet( Object bean ) throws Exception {
+
+            Log.debug( "TRY TO CREATE BEANCLASS [{0}]", beanClass.getName());
+
+            Object o = beanClass.newInstance();
+
+            Log.debug( "INVOKING SETTER [{0}]", setter.toString());
+
+            setter.invoke(bean, o);
+        }
+
+    }
+
+    protected static PropertyDescriptor processJoin(JPAManagedBeanInfo<?> result, AnnotatedElement f, OneToOne relation, PropertyDescriptor pd) throws Exception {
+
+        if( relation==null || pd==null ) return null;
+
+        JoinColumn jc = f.getAnnotation( JoinColumn.class );
+        if( jc==null ) throw new IllegalStateException( "JoinColumn Info is not set!");
+
+        Class<?> type = pd.getPropertyType();
+
+        if( result.relationBeanList==null) result.relationBeanList = new java.util.ArrayList<RelationBeanFactory>(5);
+        result.relationBeanList.add( new RelationBeanFactory( type, pd.getWriteMethod() ));
+
+
+        String fieldA = jc.name();
+        String fieldB = jc.referencedColumnName();
+        String jtable = (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table();
+
+        PropertyDescriptorField pf = new PropertyDescriptorField( pd );
+        pf.setFieldName(fieldA);
+        pf.setValue("relation.attribute", fieldB.toLowerCase());
+
+        BeanDescriptorEntity bde = (BeanDescriptorEntity) result.getBeanDescriptor();
+
+        bde.createJoinRelation(jtable, new org.bsc.bean.JoinCondition(fieldA, fieldB));
+
+        JPAManagedBeanInfo beanInfo = JPAManagedBeanInfo.create(type);
+
+        if( result.additionalList==null) result.additionalList = new java.util.ArrayList<JPAManagedBeanInfo<?>>(5);
+        
+        result.additionalList.add( beanInfo );
+
+
+        
+        PropertyDescriptor[] pp = beanInfo.getPropertyDescriptors();
+
+        for( PropertyDescriptor ppd : pp ) {
+
+            if( ppd instanceof PropertyDescriptorJoin ) continue;
+
+            if( ppd instanceof PropertyDescriptorField ) {
+
+                PropertyDescriptorJoin pdj = new PropertyDescriptorJoin( ppd.getName(), ppd.getReadMethod(), ppd.getWriteMethod());
+                pdj.setJoinTable(jtable);
+
+                pdj.setValue( "relation.name", pd.getName());
+                pdj.setSQLType( BeanManagerUtils.getSQLType(ppd.getPropertyType()));
+
+                result.properties.put( ppd.getName() , pdj );
+            }
+        }
+
+
+        return pf;
+    }
+
+    protected static PropertyDescriptorField processId(JPAManagedBeanInfo<?> result, AnnotatedElement f, Id annotation, PropertyDescriptor pd) throws Exception {
+        if( annotation==null || pd==null ) return null;
+
+        
+        PropertyDescriptorPK pk = null;
+
+        if( pd instanceof PropertyDescriptorPK ) {
+            pk = (PropertyDescriptorPK) pd;
+        }
+
+        if( pk==null ) pk = new PropertyDescriptorPK( pd );
+
+        GeneratedValue gv = f.getAnnotation(GeneratedValue.class);
+
+        if( gv != null ) {
+            if( !pd.getPropertyType().equals(String.class) )
+                throw new UnsupportedOperationException("the property annotated as Id must be a String type!");
+
+            pk.setValueGenerator( new UUIDValueGenerator() );
+        }
+        
+        return pk;
+
+    }
+
+    /**
+     * 
+     * @param result
+     * @param f
+     * @param annotation
+     * @param pd
+     * @throws Exception
+     */
+    protected static void processColumn( JPAManagedBeanInfo<?> result, AnnotatedElement f, Column annotation, PropertyDescriptorField pd) throws Exception {
+
+        if( annotation==null || pd==null ) return;
+
+        //boolean unique = annotation.unique();
+
+        if( !annotation.insertable() && !annotation.updatable() ) pd.setReadOnly(true);
+
+        int len = annotation.length();
+        if( len > 0 ) pd.setSize(len);
+
+        String name = annotation.name();
+        if( name!=null ) pd.setFieldName(name);
+
+        boolean nullable = annotation.nullable();
+        if( !nullable ) pd.setRequired(true);
+
+        //String table = annotation.table();
+
+        //int precision = annotation.precision();
+        //int scale = annotation.scale();
+        
+
+    }
 
     /**
      * 
@@ -46,7 +190,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         for( PropertyDescriptor pd : properties ) {
             try {
                 Field f = beanClass.getDeclaredField(pd.getName());
-
+                Method m = pd.getReadMethod();
+                
                 Transient t = f.getAnnotation( Transient.class );
                 if( t!=null ) {
                     Log.debug( "the field [{0}] is transient",  pd.getName() );
@@ -56,51 +201,67 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                 }
 
-                PropertyDescriptorField pf = null;
+                {   // JOIN
+                    PropertyDescriptor ppd = processJoin( result, f, f.getAnnotation(OneToOne.class), pd);
+                    if( ppd!=null ) {
 
-                Id id = f.getAnnotation( Id.class );
-                if( id!=null ) {
-                    if( !pd.getPropertyType().equals(String.class) )
-                        throw new UnsupportedOperationException("the property annotated as Id must be a String type!");
-                    PropertyDescriptorPK pk = new PropertyDescriptorPK( pd );
+                        result.properties.put( pd.getName(), ppd);
+                        continue;
+                    }
+                }
 
-                    GeneratedValue gv = f.getAnnotation(GeneratedValue.class);
+                { // ID
+                    PropertyDescriptorField pf = null;
 
-                    if( gv != null ) {
-                        pk.setValueGenerator( new UUIDValueGenerator() );
+                    pf =    processId(result, f, f.getAnnotation( Id.class ), pd );
+                    if( pf==null ) pf = processId(result, m, m.getAnnotation( Id.class ), pf );
+
+                    if( pf!= null ) {
+
+                        processColumn( result, f, f.getAnnotation(Column.class), pf );
+                        processColumn( result, m, m.getAnnotation(Column.class), pf );
+
+                        pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
+
+                        result.properties.put( pd.getName(), pf);
+
+                        continue;
+
+                    }
+                }
+
+                { // OTHER
+                    PropertyDescriptorField pf = null;
+
+                    if( pd instanceof PropertyDescriptorField ) {
+                        pf = (PropertyDescriptorField) pd;
                     }
 
-                    pf = pk;
-                }
-                else {
-                    pf = new PropertyDescriptorField( pd );
+                    if( pf==null ) pf = new PropertyDescriptorField( pd );
+
+                    processColumn( result, f, f.getAnnotation(Column.class), pf );
+                    processColumn( result, m, m.getAnnotation(Column.class), pf );
+
+                    pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
+
+                    result.properties.put( pd.getName(), pf);
                 }
 
-                pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
-                
-                result.properties.put( pd.getName(), pf);
-                
-            } catch (IntrospectionException ex) {
-                Log.error( "reflection issue on the field [{0}]", ex, pd.getName() );
+
             } catch (NoSuchFieldException ex) {
                 Log.error( "the field [{0}] doesn't exist!", pd.getName() );
             } catch (SecurityException ex) {
                 Log.error( "security issue on the field [{0}]", ex, pd.getName() );
+            } catch (Exception ex) {
+                Log.error( "reflection issue on the field [{0}]", ex, pd.getName() );
             }
         }
-
         
     }
+    
     public static <T> JPAManagedBeanInfo<T> create( Class<T> beanClass ) throws IntrospectionException {
         if( beanClass == null ) throw new IllegalArgumentException( "beanClass parametere is null!");
 
-        JPAManagedBeanInfo result = new JPAManagedBeanInfo();
-
-        //BeanInfo beanInfo = BeanManagerUtils.loadBeanInfo( JPAManagedBeanInfo.class.getClassLoader(), beanClass);
-        BeanInfo beanInfo = java.beans.Introspector.getBeanInfo(beanClass);
-
-        if( null==beanInfo ) throw new IllegalStateException( "beanInfo not found!");
-        
         String tableName = null;
 
         Entity entity = beanClass.getAnnotation( Entity.class );
@@ -117,6 +278,14 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         }
 
         Log.debug( "table name [{0}]", tableName);
+
+        JPAManagedBeanInfo result = new JPAManagedBeanInfo(beanClass);
+
+        //BeanInfo beanInfo = BeanManagerUtils.loadBeanInfo( JPAManagedBeanInfo.class.getClassLoader(), beanClass);
+        BeanInfo beanInfo = java.beans.Introspector.getBeanInfo(beanClass);
+
+        if( null==beanInfo ) throw new IllegalStateException( "beanInfo not found!");
+
 
         result.beanDescriptor = new BeanDescriptorEntity( beanClass, tableName );
 
@@ -136,11 +305,19 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     }
 
     protected Class<T> beanClass;
+    protected java.util.List<RelationBeanFactory> relationBeanList;
+    protected java.util.List<JPAManagedBeanInfo<?>> additionalList;
 
+    
     protected java.util.Map<String,PropertyDescriptor> properties = null;
     protected BeanDescriptorEntity beanDescriptor = null;
 
-    protected JPAManagedBeanInfo() {
+    protected JPAManagedBeanInfo( Class<T> beanClass ) {
+        setBeanClass(beanClass);
+    }
+
+    protected <F extends PropertyDescriptorField> F getPropertyField( String name ) {
+        return (F)properties.get(name);
     }
 
     public Class<T> getBeanClass() {
@@ -176,7 +353,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     }
 
     public BeanInfo[] getAdditionalBeanInfo() {
-        return null;
+        if( additionalList==null ) return null;
+        return additionalList.toArray( new BeanInfo[ additionalList.size() ]);
     }
 
     public Image getIcon(int i) {

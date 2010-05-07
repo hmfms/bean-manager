@@ -9,13 +9,14 @@
   </parent>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-jpa</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.4-SNAPSHOT</version>
   <name>beanmanager-jpa</name>
   <url>http://code.google.com/p/bean-manager/</url>
 
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-jpa</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-jpa</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</developerConnection>
 </scm>
 
   <repositories>
@@ -49,12 +50,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.7.0</version>
+   </dependency>
+    <dependency>
         <groupId>org.apache.ddlutils</groupId>
         <artifactId>ddlutils</artifactId>
         <version>1.0</version>
         <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>
 

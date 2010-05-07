@@ -5,13 +5,12 @@
 
 package org.bsc.bean.jpa;
 
+import org.bsc.bean.BeanManager;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.LogManager;
-import org.bsc.bean.BeanManager;
-import org.bsc.bean.BeanManagerFactory;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -51,25 +50,47 @@ public class BeanManagerTest {
             }
     }
 
-    @Test
+    @Test 
     public void findAll() throws Exception {
 
-        JPAManagedBeanInfo<MyUser> beanInfo = JPAManagedBeanInfo.create(MyUser.class);
 
-        BeanManager<MyUser> myUserManager = BeanManagerFactory.getFactory().createBeanManager(MyUser.class, beanInfo);
-
+        BeanManager<MyUser> myUserManager = JPABeanManagerFactory.createBeanManager(MyUser.class);
+        BeanManager<MyData> myDataManager = JPABeanManagerFactory.createBeanManager(MyData.class);
+        
         assertNotNull( myUserManager );
+        assertNotNull( myDataManager );
 
-        Collection<MyUser> users = myUserManager.findAll(conn, new ArrayList<MyUser>(), null);
+        MyData data = new MyData();
+        data.setBalance(1000L);
 
-        for( MyUser u : users ) {
-            System.out.println( u );
-        }
+        myDataManager.create(conn, data);
 
         MyUser us = new MyUser();
         us.setName( "BSC");
-
+        us.setData( data );
+        
         myUserManager.create(conn, us);
+
+        MyUser us1 = myUserManager.findById(conn, us.getId());
+
+        assertEquals( us.getName(), us1.getName());
+        assertEquals( "BSC", us1.getName());
+        assertEquals( data.getId(), us.getData().getId());
+
+        data.setBalance( 1200 );
+        myDataManager.store(conn, data);
+        
+        us1 = myUserManager.findById(conn, us.getId());
+
+        assertEquals( us.getName(), us1.getName());
+        assertEquals( "BSC", us1.getName());
+        assertEquals( data.getId(), us.getData().getId());
+        assertEquals( 1200L, us.getData().getBalance());
+        
+
+        Collection<MyUser> users = myUserManager.findAll(conn, new ArrayList<MyUser>(), null);
+        
+        for( MyUser u : users ) System.out.println( u );
 
     }
 }

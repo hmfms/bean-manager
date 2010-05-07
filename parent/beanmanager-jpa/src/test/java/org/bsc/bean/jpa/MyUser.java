@@ -6,10 +6,13 @@
 package org.bsc.bean.jpa;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -23,6 +26,21 @@ public class MyUser implements Serializable {
     private String id;
     private String name;
 
+    @OneToOne
+    @JoinColumn( referencedColumnName="ID",name="data")
+    //@JoinColumn( name="data")
+    //@Transient
+    private MyData data ;
+
+    public MyData getData() {
+        return data;
+    }
+
+    public void setData(MyData data) {
+        this.data = data;
+    }
+
+ 
     public String getId() {
         return id;
     }

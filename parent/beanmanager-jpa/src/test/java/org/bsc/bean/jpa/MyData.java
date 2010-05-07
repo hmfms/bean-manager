@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
@@ -21,7 +22,8 @@ public class MyData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    private Long balance;
+    private long balance;
+    private String userId;
 
     public String getId() {
         return id;
@@ -31,12 +33,20 @@ public class MyData implements Serializable {
         this.id = id;
     }
 
-    public Long getBalance() {
+    public long getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(long balance) {
         this.balance = balance;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override
