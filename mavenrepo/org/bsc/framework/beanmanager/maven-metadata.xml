@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><metadata>
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager</artifactId>
   <version>1.0</version>
   <versioning>
     <versions>
       <version>1.0</version>
+      <version>1.3.1</version>
     </versions>
-    <lastUpdated>20080728114142</lastUpdated>
+    <lastUpdated>20100507100925</lastUpdated>
   </versioning>
 </metadata>
