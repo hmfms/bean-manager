@@ -78,6 +78,21 @@ public class PropertyDescriptorField extends PropertyDescriptor {
  }
 
  /**
+  * 
+  * @param pd
+  * @throws IntrospectionException
+  */
+ public PropertyDescriptorField( PropertyDescriptor pd ) throws IntrospectionException
+ {
+  super( pd.getName(), pd.getReadMethod(), pd.getWriteMethod() );
+  this.setFieldName( this.getName() );
+  this.setDerefName( false );
+  this.setValue( SQLTYPE, new Integer(Types.VARCHAR) );
+  this.setReadOnly( false );
+  this.setSize(0);
+  this.setRequired(true);
+ }
+  /**
   *
   * @return String
   */

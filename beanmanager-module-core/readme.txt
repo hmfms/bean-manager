@@ -1,3 +1,8 @@
+Release 1.3.1
+================
+add propertyDescriptorField copy constructor
+add possibilty to pass command other than commandKey in prepareCustomFind
+
 Release 1.3
 ================
 add support IN clause

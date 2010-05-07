@@ -36,6 +36,9 @@ public class ManagedBeanInfoProxy<T> implements ManagedBeanInfo<T> {
 		}
 	}
 
+        public final BeanInfo getDelegate() {
+            return delegate;
+        }
 	/**
 	 * 
 	 * @param beanInfo
@@ -50,6 +53,7 @@ public class ManagedBeanInfoProxy<T> implements ManagedBeanInfo<T> {
 	/**
 	 * 
 	 */
+        @Override
 	public String toString() {
 		return delegate.toString();
 	}

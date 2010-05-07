@@ -3,6 +3,7 @@
 package org.bsc.bean;
 
 import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.sql.Types;
 
 /**
@@ -30,6 +31,13 @@ public class PropertyDescriptorPK extends PropertyDescriptorField {
                            String setterName) throws IntrospectionException
  {
   super( propertyName, beanClass, getterName, setterName );
+  this.setValue( SQLTYPE, new Integer(Types.INTEGER) );
+  this.setValue( PRIMARYKEY, Boolean.TRUE );
+ }
+
+ public PropertyDescriptorPK( PropertyDescriptor pd ) throws IntrospectionException
+ {
+  super( pd.getName(), pd.getReadMethod(), pd.getWriteMethod() );
   this.setValue( SQLTYPE, new Integer(Types.INTEGER) );
   this.setValue( PRIMARYKEY, Boolean.TRUE );
  }

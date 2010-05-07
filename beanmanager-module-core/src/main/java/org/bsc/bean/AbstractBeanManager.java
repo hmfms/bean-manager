@@ -662,7 +662,7 @@ protected String getStorePropertyListInclude(  String begin,
   /**
   * assign the value to the bean property
   */
-  private void setPropertyValue( Object bean, ResultSet rs, PropertyDescriptorField p ) throws SQLException {
+  protected void setPropertyValue( Object bean, ResultSet rs, PropertyDescriptorField p ) throws SQLException {
 
     Object value = null;
 
@@ -681,7 +681,7 @@ protected String getStorePropertyListInclude(  String begin,
     Log.debug("ADAPTER {2} used={0} value={1}", adapter.getClass().getName(), value, p.getName());
 
     if(value!=null) {
-      BeanManagerUtils.invokeWriteMethod(p, bean, value);
+      invokeWriteMethod(p, bean, value);
     }
 
     }
@@ -762,7 +762,7 @@ protected String getStorePropertyListInclude(  String begin,
 
     for( i=0; i<props.length ; ++i ) {
       if( !props[i].isReadOnly() ) {
-        value = BeanManagerUtils.invokeReadMethod(props[i], bean);
+        value = invokeReadMethod(props[i], bean);
         setStatementValue( ps, ordinal++, value, props[i] );
       }
     }
@@ -773,7 +773,7 @@ protected String getStorePropertyListInclude(  String begin,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
+      value = invokeReadMethod(pk, bean);
       setStatementValue( ps, ordinal++, value, pk );
     }
 
@@ -817,7 +817,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
       if( p.isReadOnly() || p instanceof PropertyDescriptorJoin )
         continue;
 
-      value = BeanManagerUtils.invokeReadMethod(p, bean);
+      value = invokeReadMethod(p, bean);
       setStatementValue( ps, ordinal++, value, p );
     }
 
@@ -827,7 +827,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
+      value = invokeReadMethod(pk, bean);
       setStatementValue( ps, ordinal++, value, pk );
     }
 
@@ -866,7 +866,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
       {
 
         if( !props[i].isReadOnly() ) {
-          value = BeanManagerUtils.invokeReadMethod(props[i], bean);
+          value = invokeReadMethod(props[i], bean);
           setStatementValue( ps, ordinal++, value, props[i] );
         }
       }
@@ -878,7 +878,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
+      value = invokeReadMethod(pk, bean);
       setStatementValue( ps, ordinal++, value, pk );
     }
 
@@ -893,8 +893,16 @@ private int setStoreStatementInclude( PreparedStatement ps,
   }
 
 
-  /**
-   *
+  protected Object invokeReadMethod( PropertyDescriptor pd, Object beanInstance ) throws Exception {
+    return  BeanManagerUtils.invokeReadMethod(pd, beanInstance);
+
+  }
+
+  protected Object invokeWriteMethod( PropertyDescriptor pd, Object beanInstance, Object value ) throws Exception {
+    return  BeanManagerUtils.invokeWriteMethod(pd, beanInstance, value);
+  }
+
+  /*
    * @param ps
    * @param bean
    * @return
@@ -920,11 +928,11 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
          Object pkValue = generator.generate(connection, pk);
          Log.debug( "Auto generated value {0} for attribute {1} ", pkValue, pk.getName());
-         BeanManagerUtils.invokeWriteMethod(pk, bean, pkValue);
+         invokeWriteMethod(pk, bean, pkValue);
          setStatementValue( ps, ordinal++, pkValue, pk );
       }
       else {
-          value = BeanManagerUtils.invokeReadMethod(pk, bean);
+          value = invokeReadMethod(pk, bean);
           setStatementValue( ps, ordinal++, value, pk );
       }
     }
@@ -932,7 +940,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     // SET FIELD VALUE
     for( i=0; i<props.length ; ++i ) {
       if( !props[i].isReadOnly() ) {
-        value = BeanManagerUtils.invokeReadMethod(props[i], bean);          
+        value = invokeReadMethod(props[i], bean);          
         setStatementValue( ps, ordinal++, value, props[i] );
       }
     }
@@ -1153,7 +1161,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
               {
 
                 if( !props[i].isReadOnly() ) {
-                  value = BeanManagerUtils.invokeReadMethod(props[i], bean);
+                  value = invokeReadMethod(props[i], bean);
                   setStatementValue( ps, ordinal++, value, props[i] );
                 }
               }
@@ -1197,7 +1205,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
               if( p.isReadOnly() || p instanceof PropertyDescriptorJoin )
                 continue;
 
-              value = BeanManagerUtils.invokeReadMethod(p, bean);
+              value = invokeReadMethod(p, bean);
               setStatementValue( ps, ordinal++, value, p );
             }
 
@@ -1339,7 +1347,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
+      value = invokeReadMethod(pk, bean);
       setStatementValue( ps, ordinal++, value, pk );
     }
 
@@ -1546,7 +1554,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     for( int k=0; k<getPrimaryKey().getKeyCount(); ++k ) {
       PropertyDescriptorPK pk = getPrimaryKey().get(k);
 
-      value = BeanManagerUtils.invokeReadMethod(pk, bean);
+      value = invokeReadMethod(pk, bean);
       setStatementValue( ps, ordinal++, value, pk );
     }
     /////////////////////////////////////////////////////////
@@ -1707,10 +1715,13 @@ private int setStoreStatementInclude( PreparedStatement ps,
   public PreparedStatement prepareCustomFind( Connection conn, String commandKey, String where ) throws SQLException
   {
 
+    if( commandKey == null ) throw new IllegalArgumentException( BeanManagerUtils.getMessage("ex.param_0_is_null", "commandKey") );
+    
     String cmd = entity.getCustomFindCommand(commandKey);
 
     if( isEmpty(cmd) ) {
-      throw new Error( BeanManagerUtils.getMessage("ex.custom_cmd_null") );
+      //throw new Error( BeanManagerUtils.getMessage("ex.custom_cmd_null") );
+      cmd = commandKey;
     }
 
     String conditions = "";
