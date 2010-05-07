@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -261,6 +262,25 @@ public class TestBeanManager extends BaseTestUtils {
             
             removeCustomer( id );
             
+        }
+	@Test
+    public void customCommand() throws Exception {
+
+
+
+            PreparedStatement ps = customerManager.prepareCustomFind(conn, "SELECT {0} FROM {1} ", "");
+
+            ps.setMaxRows(5);
+
+		List<Customer> customers = new ArrayList<Customer>();
+
+		customerManager.find(ps, customers );
+
+		for( Customer c: customers ) {
+
+			System.out.printf( "Customer name=%s, surname=%s, id=%s\n", c.getFirstName(), c.getLastName(), c.getCustomerId());
+		}
+
         }
         
 	@Test
