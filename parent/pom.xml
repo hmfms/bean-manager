@@ -9,16 +9,10 @@
   <name>bean manager parent</name>
 
 <modules>
-<<<<<<< .mine
-	<module>beanmanager-module-core</module>
-	<module>beanmanager-ddlutils</module>	
 
-=======
-<!--
-	<module>beanmanager-module-core</module>
--->
->>>>>>> .theirs
-</modules>  
+    <module>beanmanager-module-core</module>
+    <!--module>beanmanager-jpa</module-->
+  </modules>  
 
 <properties>
     <scm.url>scm:svn:https://bean-manager.googlecode.com/svn</scm.url>
@@ -33,12 +27,11 @@
 <developerConnection>${scm.url}/trunk/parent</developerConnection>
 </scm>
 
-
 <distributionManagement>
     <site>
         <id>google-project</id>
         <name>beanmanager</name>
-        <url>svn:https://bean-manager.googlecode.com/svn/trunk/site</url>
+        <url>svn:https://bean-manager.googlecode.com/svn/site</url>
     </site>
     <repository>
         <id>google-project</id>
@@ -81,5 +74,6 @@
       <scope>test</scope>
     </dependency>
 </dependencies>
+
 
 </project>
