@@ -9,15 +9,15 @@
 <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.framework</groupId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
 </parent>
 
 <properties>
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-core</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-core</developerConnection>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/BeanManager1.3/beanmanager-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/BeanManager1.3/beanmanager-core</developerConnection>
 </scm>
 
 <licenses>
