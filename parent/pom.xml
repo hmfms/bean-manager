@@ -10,7 +10,7 @@
 
 <modules>
 
-    <module>beanmanager-module-core</module>
+    <module>beanmanager-core</module>
     <!--module>beanmanager-jpa</module-->
   </modules>  
 
