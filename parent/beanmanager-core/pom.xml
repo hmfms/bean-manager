@@ -16,8 +16,8 @@
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-module-core</developerConnection>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/beanmanager-core</developerConnection>
 </scm>
 
 <licenses>
