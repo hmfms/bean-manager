@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/site"/>
 	<classpathentry kind="src" path="target/generated-sources/processor"/>
+	<classpathentry kind="src" path="src/site"/>
 	<classpathentry excluding="**" kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" path="src/test/resources"/>

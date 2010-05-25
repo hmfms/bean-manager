@@ -56,7 +56,7 @@ public class PropertyDescriptorPK extends PropertyDescriptorField {
  }
 
  public ValueGenerator<?> getValueGenerator() {
-     return (ValueGenerator) getValue( AUTO_GENERATE );
+     return (ValueGenerator<?>) getValue( AUTO_GENERATE );
  }
  public final PropertyDescriptorPK setValueGenerator( ValueGenerator<?> vg ) {
      setValue( AUTO_GENERATE, vg );

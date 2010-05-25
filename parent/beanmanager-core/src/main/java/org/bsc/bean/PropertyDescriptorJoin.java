@@ -3,6 +3,7 @@
 package org.bsc.bean;
 
 import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 
 /**
 property that identify a field joined with another table field
@@ -49,6 +50,15 @@ public static final String JOINTABLE = PropertyDescriptorField.ENTITY;
  }
 
  /**
+  * 
+  * @param pd
+  * @throws IntrospectionException
+  */
+ public PropertyDescriptorJoin(PropertyDescriptor pd) throws IntrospectionException {
+	super(pd);
+ }
+
+/**
   *
   * @return String
   */
