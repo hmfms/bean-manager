@@ -8,6 +8,7 @@ package org.bsc.bean.jpa;
 import java.beans.BeanInfo;
 import java.beans.Beans;
 import java.beans.PropertyDescriptor;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.bsc.bean.AbstractBeanManager;
 import org.bsc.bean.ManagedBeanInfo;
@@ -68,8 +69,9 @@ public class JPABeanManager<T> extends AbstractBeanManager<T> {
         return super.invokeWriteMethod(pd, beanInstance, value);
     }
 
-    @Override
-    public T instantiateBean() throws InstantiationException {
+    @SuppressWarnings("unchecked")
+	@Override
+    public T instantiateBean() throws java.lang.InstantiationException  {
         Log.debug( "INSTANTIATE BEAN [{0}]", getBeanClass()  );
 
         try {

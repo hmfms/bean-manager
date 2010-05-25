@@ -4,6 +4,8 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>org.bsc.bean.jpa.MyData</class>
     <class>org.bsc.bean.jpa.MyUser</class>
+    <class>org.bsc.bean.jpa.MyEntityBean1</class>
+    <class>org.bsc.bean.jpa.MyEntityBean2</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby:target/LOCALDB;create=true"/>
       <property name="javax.persistence.jdbc.password" value=""/>

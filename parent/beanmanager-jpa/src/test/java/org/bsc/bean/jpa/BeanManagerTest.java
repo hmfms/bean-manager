@@ -5,18 +5,20 @@
 
 package org.bsc.bean.jpa;
 
-import org.bsc.bean.BeanManager;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.LogManager;
-import org.junit.Test;
+
+import org.bsc.bean.BeanManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
 /**
  *
  * @author softphone
@@ -49,6 +51,45 @@ public class BeanManagerTest {
                     conn.close();
             }
     }
+
+    @Test
+    public void testJOINED() throws Exception {
+        BeanManager<MyEntityBean1> myEntityBean1Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean1.class);
+        BeanManager<MyEntityBean2> myEntityBean2Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean2.class);
+
+        String id = null;
+
+    	{
+    		MyEntityBean1 bean1 = new MyEntityBean1();
+    		bean1.setProperty1_1("@1.1");
+    		bean1.setProperty1_2("@1.2");
+    		bean1.setProperty2_1("@2.1");
+    		bean1.setProperty2_2("@2.2");
+    		
+    		myEntityBean2Manager.create(conn, bean1);
+    		myEntityBean1Manager.create(conn, bean1);
+    		
+    		id = bean1.getId();
+    		
+    	}
+   	
+    	{
+    		MyEntityBean1 bean = myEntityBean1Manager.findById(conn, id);
+    		
+    		assertNotNull( bean );
+    		
+    	}
+    	
+    	{
+    		
+    		myEntityBean1Manager.removeById(conn, id);
+    		myEntityBean2Manager.removeById(conn, id);
+    	}
+        
+    
+        
+    }
+
 
     @Test 
     public void findAll() throws Exception {
