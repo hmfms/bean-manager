@@ -6,6 +6,7 @@
 package org.bsc.bean.jpa;
 
 import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
  * @author softphone
  */
 @Entity
+@Table( name="DATAPP")
 public class MyData implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

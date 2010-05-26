@@ -77,16 +77,26 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         JoinColumn jc = f.getAnnotation( JoinColumn.class );
         if( jc==null ) throw new IllegalStateException( "JoinColumn Info is not set!");
 
+        String jtable = null;
+        
         Class<?> type = pd.getPropertyType();
-
+        
         if( result.relationBeanList==null) result.relationBeanList = new java.util.ArrayList<RelationBeanFactory>(5);
         result.relationBeanList.add( new RelationBeanFactory( type, pd.getWriteMethod() ));
 
 
         String fieldA = jc.name();
         String fieldB = jc.referencedColumnName();
-        String jtable = (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table();
-
+        
+        // GET JOIN TBLE NAME
+        Table joinTable = type.getAnnotation(Table.class);
+        if( joinTable!=null) {
+        	jtable = joinTable.name();
+        }
+        else {	
+        	jtable = (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table();
+        }
+        
         PropertyDescriptorField pf = new PropertyDescriptorField( pd );
         pf.setFieldName(fieldA);
         pf.setValue("relation.attribute", fieldB.toLowerCase());
@@ -96,12 +106,9 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         bde.createJoinRelation(jtable, new org.bsc.bean.JoinCondition(fieldA, fieldB));
 
         JPAManagedBeanInfo<?> beanInfo = JPAManagedBeanInfo.create(type);
-
-        if( result.additionalList==null) result.additionalList = new java.util.ArrayList<JPAManagedBeanInfo<?>>(5);
         
-        result.additionalList.add( beanInfo );
-
-
+// TODO
+//        result.getAdditionalList().add( beanInfo );
         
         PropertyDescriptor[] pp = beanInfo.getPropertyDescriptors();
 
@@ -350,7 +357,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     			joinedInheritance = true;
 
     			joinTableName = superClass.getSimpleName();
-    	        Table table = beanClass.getAnnotation( Table.class );
+    	        Table table = superClass.getAnnotation( Table.class );
     	        if( table != null ) joinTableName = table.name();
     			
     		}
@@ -391,6 +398,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         	for( int i=0; i < pkList.size() ; ++i ) {
             	result.beanDescriptor.createJoinRelation(joinTableName, new org.bsc.bean.JoinCondition(pkList.get(i).getFieldName(), jpkList.get(i)));        		
         	}
+        	
+        	result.getAdditionalList().add( JPAManagedBeanInfo.create(superClass));
 
         }
         
@@ -445,7 +454,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
     protected Class<T> beanClass;
     protected java.util.List<RelationBeanFactory> relationBeanList;
-    protected java.util.List<JPAManagedBeanInfo<?>> additionalList;
+    private java.util.List<JPAManagedBeanInfo<?>> additionalList;
 
     
     protected java.util.Map<String,PropertyDescriptor> properties = null;
@@ -455,6 +464,12 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         setBeanClass(beanClass);
     }
 
+    protected java.util.List<JPAManagedBeanInfo<?>> getAdditionalList() {
+        if( additionalList==null) additionalList = new java.util.ArrayList<JPAManagedBeanInfo<?>>(5);
+    	
+        return additionalList;
+    }
+    
     protected <F extends PropertyDescriptorField> F getPropertyField( String name ) {
         return (F)properties.get(name);
     }

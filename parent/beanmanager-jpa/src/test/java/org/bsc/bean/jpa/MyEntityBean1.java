@@ -7,12 +7,14 @@ package org.bsc.bean.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author softphone
  */
 @Entity
+@Table( name="MASTER_ENTITY")
 //@PrimaryKeyJoinColumn(name="CUST_ID")
 public class MyEntityBean1 extends MyEntityBean2 {
 

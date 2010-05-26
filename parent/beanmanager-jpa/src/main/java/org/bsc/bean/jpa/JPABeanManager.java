@@ -21,11 +21,11 @@ import org.bsc.util.Log;
  */
 public class JPABeanManager<T> extends AbstractBeanManager<T> {
 
-    public JPABeanManager(ManagedBeanInfo beanInfo) {
+    public JPABeanManager(ManagedBeanInfo<T> beanInfo) {
         super( beanInfo );
     }
 
-    public JPABeanManager(Class bean, BeanInfo beanInfo) {
+    public JPABeanManager(Class<T> bean, BeanInfo beanInfo) {
         super( bean, beanInfo);
     }
 

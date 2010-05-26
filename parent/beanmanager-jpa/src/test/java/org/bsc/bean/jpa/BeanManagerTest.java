@@ -55,7 +55,7 @@ public class BeanManagerTest {
     @Test
     public void testJOINED() throws Exception {
         BeanManager<MyEntityBean1> myEntityBean1Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean1.class);
-        BeanManager<MyEntityBean2> myEntityBean2Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean2.class);
+        //BeanManager<MyEntityBean2> myEntityBean2Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean2.class);
 
         String id = null;
 
@@ -66,7 +66,6 @@ public class BeanManagerTest {
     		bean1.setProperty2_1("@2.1");
     		bean1.setProperty2_2("@2.2");
     		
-    		myEntityBean2Manager.create(conn, bean1);
     		myEntityBean1Manager.create(conn, bean1);
     		
     		id = bean1.getId();
@@ -83,7 +82,6 @@ public class BeanManagerTest {
     	{
     		
     		myEntityBean1Manager.removeById(conn, id);
-    		myEntityBean2Manager.removeById(conn, id);
     	}
         
     
