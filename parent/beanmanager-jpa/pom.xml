@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.framework</groupId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4-beta1</version>
   </parent>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-jpa</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4-beta1</version>
   <name>beanmanager jpa - trunk</name>
   <url>http://code.google.com/p/bean-manager/</url>
 
 <scm>
-<url>https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</url>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4-beta1/beanmanager-jpa</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4-beta1/beanmanager-jpa</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4-beta1/beanmanager-jpa</developerConnection>
 </scm>
 
   <repositories>
@@ -31,7 +30,7 @@
     <dependency>
         <groupId>org.bsc.framework</groupId>
         <artifactId>beanmanager-core</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
