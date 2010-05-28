@@ -35,6 +35,35 @@ public class TopLInkJPATest
     }
 
     @Test
+    public void inheritance() {
+    	final String id = "ID1";
+    	
+        EntityManager em = null;
+         try {
+             em = emf.createEntityManager();
+             em.getTransaction().begin();
+             
+             MyBean bean1 = em.find(MyBean.class, id);
+             if( bean1!=null )
+             	em.remove(bean1);
+             
+             MyBean bean = new MyBean();
+
+             bean.setId(id);
+             bean.setContact( "TEST");
+
+             em.persist(bean);
+
+             em.getTransaction().commit();
+         } finally {
+             if (em != null) {
+                 em.close();
+             }
+         }
+    	
+    }
+    
+    @Test
     //@Ignore
     public void createJOINED() {
 

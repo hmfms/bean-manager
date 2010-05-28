@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
+import javax.persistence.EntityManager;
+
 import org.bsc.bean.BeanManager;
 import org.junit.After;
 import org.junit.Before;
@@ -52,6 +54,26 @@ public class BeanManagerTest {
             }
     }
 
+    @Test
+    public void inheritance() throws Exception  {
+    	final String id = "ID1";
+    	
+        BeanManager<MyBean> em = JPABeanManagerFactory.createBeanManager(MyBean.class);
+         
+         MyBean bean1 = em.findById( conn, id);
+         if( bean1!=null )
+         	em.remove(conn, bean1);
+         
+         MyBean bean = new MyBean();
+
+         bean.setId(id);
+         bean.setContact( "TEST");
+
+         em.create(conn, bean);
+
+    	
+    }
+    
     @Test
     public void testJOINED() throws Exception {
         BeanManager<MyEntityBean1> myEntityBean1Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean1.class);
