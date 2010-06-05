@@ -34,8 +34,8 @@
         <url>svn:https://bean-manager.googlecode.com/svn/site</url>
     </site>
     <repository>
-        <id>google-project</id>
-        <url>svn:https://bean-manager.googlecode.com/svn/trunk/mavenrepo</url>
+        <id>java.net-m2-repository</id>
+        <url>java-net:/maven2-repository/trunk/repository/</url>
     </repository>
     <snapshotRepository>
         <id>google-project</id>
