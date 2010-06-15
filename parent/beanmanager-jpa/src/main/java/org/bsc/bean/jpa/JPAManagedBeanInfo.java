@@ -182,12 +182,13 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             	
             	Id idm = m.getAnnotation(Id.class );
             	
-            	if( idf!=null || idm!=null  ) {
-            		pkList.add( pdj.getFieldName() );
-            	}
-                                  	
                 processColumn( result, f, pdj );
                 processColumn( result, m, pdj );
+
+                if( idf!=null || idm!=null  ) {
+            		pkList.add( pdj.getFieldName() );
+            	}
+
 
                 if( !result.properties.containsKey( pd.getName() ) ) {
                 	result.properties.put( pd.getName(), pdj);
