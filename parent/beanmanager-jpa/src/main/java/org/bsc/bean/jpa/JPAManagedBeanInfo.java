@@ -71,6 +71,22 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
     }
 
+    protected final static String getTableName( Class<?> beanClass, String defValue ) {
+    	if( beanClass == null && defValue == null ) throw new IllegalArgumentException( "both parameters 'beanClass' and  parameter 'defValue' are null!");
+    	
+    	Table annotation = beanClass.getAnnotation( Table.class );
+    	
+    	String tableName = ( annotation != null ) ? annotation.name() : defValue;
+    	
+    	if( tableName==null || tableName.isEmpty() ) throw new IllegalStateException( "tableName is not defined");
+    	
+    	String schema = ( annotation != null ) ? annotation.schema() : null ;
+    	
+    	return ( schema!=null && !schema.isEmpty() ) ?
+    		String.format( "%s.%s", schema, tableName ) :
+    		tableName;	
+    }
+    
     protected static PropertyDescriptor processJoin(JPAManagedBeanInfo<?> result, AnnotatedElement f, OneToOne relation, PropertyDescriptor pd) throws Exception {
 
         if( relation==null || pd==null ) return null;
@@ -90,6 +106,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         String fieldB = jc.referencedColumnName();
         
         // GET JOIN TBLE NAME
+/*
         Table joinTable = type.getAnnotation(Table.class);
         if( joinTable!=null) {
         	jtable = joinTable.name();
@@ -97,6 +114,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         else {	
         	jtable = (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table();
         }
+*/        
+        jtable = getTableName( type, (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table() );
         
         PropertyDescriptorField pf = new PropertyDescriptorField( pd );
         pf.setFieldName(fieldA);
@@ -395,12 +414,16 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         if( entity == null ) throw new IllegalArgumentException( String.format("class [%s] is not an Entity!", beanClass.getName()));
     	}
 
+    	/*
         String tableName = beanClass.getSimpleName();
         {
         Table table = beanClass.getAnnotation( Table.class );
         if( table != null ) tableName = table.name();
         }
-        
+        */
+    	
+    	String tableName = getTableName( beanClass, beanClass.getSimpleName() );
+    	
         //
         // CHECK FOR JOINED INHERITANCE
         //
@@ -427,10 +450,13 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
     				if( inheritance.strategy()==InheritanceType.JOINED ) {
     					joinedInheritance = true;
-
+    					
+    					/*
     					joinTableName = superClass.getSimpleName();
     					Table table = superClass.getAnnotation( Table.class );
     					if( table != null ) joinTableName = table.name();
+    					*/
+    					joinTableName = getTableName( superClass, superClass.getSimpleName());
     				}
     				else {
     					singleTableInheritance = true;
