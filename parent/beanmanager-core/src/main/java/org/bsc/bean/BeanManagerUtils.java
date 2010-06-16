@@ -470,6 +470,39 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
      return Types.JAVA_OBJECT;
  }
  
+ 
+ private static java.util.Map<Class<?>,DataAdapter> adapterMap = new java.util.HashMap<Class<?>,DataAdapter>(10);
+ 
+ /**
+  * 
+  * @param type
+  * @param sqlType
+  * @param adapter
+  * @return
+  */
+ public static DataAdapter registerAdapter( Class<?> type, DataAdapter adapter ) {
+
+	 return adapterMap.put(type, adapter);
+	 
+ }
+ 
+ /**
+  * 
+  * @param type
+  * @param sqlType
+  * @return
+  */
+ public static DataAdapter unregisterAdapter( Class<?> type, int sqlType ) {
+
+	 return adapterMap.remove(type);
+	 
+ }
+ 
+ private static DataAdapter lookupRegisterdAdapter( Class<?> type ) {
+
+	 return adapterMap.get(type);
+ }
+ 
  /**
   * Find the right adapter for the property
   *
@@ -477,61 +510,65 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
   * @return
   */
  public static DataAdapter lookupAdapter( PropertyDescriptorField p ) throws SQLException {
-   DataAdapter adapter = p.getAdapter();
+	 DataAdapter adapter = p.getAdapter();
 
-   if( adapter==null ) {
+	 if( adapter == null ) {
+		 adapter = lookupRegisterdAdapter( p.getPropertyType() );
+	 }
 
-     switch( p.getSQLType() ) {
+	 if( adapter==null ) {
 
-     case Types.DATE:
-     case Types.TIME:
-     case Types.TIMESTAMP:
-       adapter = DataAdapter.DATETIME;
-       break;
+		 switch( p.getSQLType() ) {
 
-     case Types.CHAR:
-       adapter = DataAdapter.CHAR;
-       break;
+		 case Types.DATE:
+		 case Types.TIME:
+		 case Types.TIMESTAMP:
+			 adapter = DataAdapter.DATETIME;
+			 break;
 
-     case Types.JAVA_OBJECT:
-       adapter = DataAdapter.JAVA_OBJECT;
-       break;
+		 case Types.CHAR:
+			 adapter = DataAdapter.CHAR;
+			 break;
 
-     case Types.INTEGER:
-     case Types.DOUBLE:
-     case Types.FLOAT:
-     case Types.REAL:
-     case Types.NUMERIC:
-     case Types.BIGINT:
-     case Types.DECIMAL:
-     case Types.SMALLINT:
-     case Types.TINYINT:
-       adapter = DataAdapter.NUMBER;
-       break;
+		 case Types.JAVA_OBJECT:
+			 adapter = DataAdapter.JAVA_OBJECT;
+			 break;
 
-     case Types.VARCHAR:
-     case Types.LONGVARCHAR:
-       adapter = DataAdapter.VARCHAR;
-       break;
-    case Types.CLOB:
-        adapter = DataAdapter.CLOB;
-        break;
-    case Types.BLOB:
-    case Types.LONGVARBINARY:
-    case Types.VARBINARY:
-    case Types.BINARY:
-        adapter = DataAdapter.BLOB;
-        break;
+		 case Types.INTEGER:
+		 case Types.DOUBLE:
+		 case Types.FLOAT:
+		 case Types.REAL:
+		 case Types.NUMERIC:
+		 case Types.BIGINT:
+		 case Types.DECIMAL:
+		 case Types.SMALLINT:
+		 case Types.TINYINT:
+			 adapter = DataAdapter.NUMBER;
+			 break;
 
-     default:
-       adapter = DataAdapter.GENERIC;
-       break;
-     }
+		 case Types.VARCHAR:
+		 case Types.LONGVARCHAR:
+			 adapter = DataAdapter.VARCHAR;
+			 break;
+		 case Types.CLOB:
+			 adapter = DataAdapter.CLOB;
+			 break;
+		 case Types.BLOB:
+		 case Types.LONGVARBINARY:
+		 case Types.VARBINARY:
+		 case Types.BINARY:
+			 adapter = DataAdapter.BLOB;
+			 break;
 
-     p.setAdapter(adapter);
-   }
+		 default:
+			 adapter = DataAdapter.GENERIC;
+			 break;
+		 }
 
-   return adapter;
+		 p.setAdapter(adapter);
+	 }
+
+	 return adapter;
  }
 
 /////////////////////// MESSAGES SECTION ///////////////////////
