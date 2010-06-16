@@ -87,7 +87,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     		tableName;	
     }
     
-    protected static PropertyDescriptor processJoin(JPAManagedBeanInfo<?> result, AnnotatedElement f, OneToOne relation, PropertyDescriptor pd) throws Exception {
+    protected static PropertyDescriptor processJoin(JPAManagedBeanInfo<?> result, AnnotatedElement f, OneToOne relation, PropertyDescriptor pd ) throws Exception {
 
         if( relation==null || pd==null ) return null;
 
@@ -144,7 +144,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                 pdj.setValue( "relation.name", pd.getName());
                 pdj.setSQLType( BeanManagerUtils.getSQLType(ppd.getPropertyType()));
 
-                result.properties.put( ppd.getName() , pdj );
+                result.addProperty( pdj );
             }
         }
 
@@ -175,7 +175,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
 
-                        result.properties.put( pd.getName(), pd);
+                        result.addProperty( pd );
                         continue;
 
                     }            		
@@ -185,7 +185,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
 
-                        result.properties.put( pd.getName(), pd);
+                        result.addProperty( pd );
                         continue;
 
                     }            		
@@ -209,8 +209,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             	}
 
 
-                if( !result.properties.containsKey( pd.getName() ) ) {
-                	result.properties.put( pd.getName(), pdj);
+                if( !result.containsProperty( pd.getName() ) ) {
+                	result.addProperty( pdj );
                 }
                 else {
                 	Log.debug( "property {0} is duplicated!", pd.getName());
@@ -324,7 +324,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
 
-                        result.properties.put( pd.getName(), pd);
+                        result.addProperty( pd );
                         continue;
 
                     }            		
@@ -334,7 +334,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
 
-                        result.properties.put( pd.getName(), pd);
+                        result.addProperty( pd );
                         continue;
 
                     }            		
@@ -349,7 +349,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     PropertyDescriptor ppd = processJoin( result, f, f.getAnnotation(OneToOne.class), pd);
                     if( ppd!=null ) {
 
-                        result.properties.put( pd.getName(), ppd);
+                        result.addProperty( ppd );
                         continue;
                     }
                 }
@@ -369,7 +369,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                         pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
 
-                        result.properties.put( pd.getName(), pf);
+                        result.addProperty( pf );
 
                         pk.add(pf);
                         
@@ -395,7 +395,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                     pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
 
-                    result.properties.put( pd.getName(), pf);
+                    result.addProperty( pf );
                 }
 
             } catch (SecurityException ex) {
@@ -484,7 +484,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
         PropertyDescriptor pd[] = beanInfo.getPropertyDescriptors();
 
-        result.properties = new java.util.LinkedHashMap<String, PropertyDescriptor>( pd.length );
+        result.props = new java.util.LinkedHashMap<String, PropertyDescriptor>( pd.length );
 
         List<PropertyDescriptorPK> pkList = new LinkedList<PropertyDescriptorPK>();
         
@@ -506,7 +506,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             	result.beanDescriptor.createJoinRelation(joinTableName, new org.bsc.bean.JoinCondition(pkList.get(i).getFieldName(), jpkList.get(i)));        		
         	}
         	
-        	result.getAdditionalList().add( JPAManagedBeanInfo.create(superClass));
+        	result.getAdditionalList().add( JPAManagedBeanInfo.create(superClass ));
 
         }
         
@@ -520,28 +520,38 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     private java.util.List<JPAManagedBeanInfo<?>> additionalList;
 
     
-    protected java.util.Map<String,PropertyDescriptor> properties = null;
+    protected java.util.Map<String,PropertyDescriptor> props = null;
     protected BeanDescriptorEntity beanDescriptor = null;
 
     protected JPAManagedBeanInfo( Class<T> beanClass ) {
         setBeanClass(beanClass);
     }
 
+    private void addProperty( PropertyDescriptor pd ) {
+    	props.put( pd.getName(), pd);
+    	
+    }
+    private boolean containsProperty( String name ) {
+    	return props.containsKey(name);
+    }
+    
     protected java.util.List<JPAManagedBeanInfo<?>> getAdditionalList() {
         if( additionalList==null) additionalList = new java.util.ArrayList<JPAManagedBeanInfo<?>>(5);
     	
         return additionalList;
     }
     
-    protected <F extends PropertyDescriptorField> F getPropertyField( String name ) {
-        return (F)properties.get(name);
+    @SuppressWarnings("unchecked")
+	protected <F extends PropertyDescriptorField> F getPropertyField( String name ) {
+        return (F)props.get(name);
     }
 
     public Class<T> getBeanClass() {
        return beanClass;
     }
 
-    public void setBeanClass(Class<? extends T> type) {
+    @SuppressWarnings("unchecked")
+	public void setBeanClass(Class<? extends T> type) {
         beanClass = (Class<T>) type;
     }
 
@@ -550,7 +560,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     }
 
     public PropertyDescriptor[] getPropertyDescriptors() {
-        return properties.values().toArray( new PropertyDescriptor[ properties.size() ]);
+        return props.values().toArray( new PropertyDescriptor[ props.size() ]);
     }
 
     public EventSetDescriptor[] getEventSetDescriptors() {
