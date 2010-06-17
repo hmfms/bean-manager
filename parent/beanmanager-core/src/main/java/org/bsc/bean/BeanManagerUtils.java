@@ -469,40 +469,7 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
      
      return Types.JAVA_OBJECT;
  }
- 
- 
- private static java.util.Map<Class<?>,DataAdapter> adapterMap = new java.util.HashMap<Class<?>,DataAdapter>(10);
- 
- /**
-  * 
-  * @param type
-  * @param sqlType
-  * @param adapter
-  * @return
-  */
- public static DataAdapter registerAdapter( Class<?> type, DataAdapter adapter ) {
-
-	 return adapterMap.put(type, adapter);
-	 
- }
- 
- /**
-  * 
-  * @param type
-  * @param sqlType
-  * @return
-  */
- public static DataAdapter unregisterAdapter( Class<?> type, int sqlType ) {
-
-	 return adapterMap.remove(type);
-	 
- }
- 
- private static DataAdapter lookupRegisterdAdapter( Class<?> type ) {
-
-	 return adapterMap.get(type);
- }
- 
+  
  /**
   * Find the right adapter for the property
   *
@@ -511,10 +478,6 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
   */
  public static DataAdapter lookupAdapter( PropertyDescriptorField p ) throws SQLException {
 	 DataAdapter adapter = p.getAdapter();
-
-	 if( adapter == null ) {
-		 adapter = lookupRegisterdAdapter( p.getPropertyType() );
-	 }
 
 	 if( adapter==null ) {
 

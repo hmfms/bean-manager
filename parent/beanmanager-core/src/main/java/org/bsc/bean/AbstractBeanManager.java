@@ -668,7 +668,7 @@ protected String getStorePropertyListInclude(  String begin,
 
     try {
 
-    DataAdapter adapter = BeanManagerUtils.lookupAdapter(p);
+    DataAdapter adapter = BeanManagerUtils.lookupAdapter( p );
 
     if( null==adapter ) {
         Log.warn("no adapter found for property {0} ", p.getName() );
@@ -709,7 +709,7 @@ protected String getStorePropertyListInclude(  String begin,
 
   {
 
-    DataAdapter adapter = BeanManagerUtils.lookupAdapter(p);
+    DataAdapter adapter = BeanManagerUtils.lookupAdapter( p );
 
     adapter.setValue( ps, ordinal, value, p);
 
