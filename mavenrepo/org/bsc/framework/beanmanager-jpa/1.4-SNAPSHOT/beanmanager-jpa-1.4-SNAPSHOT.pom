@@ -73,6 +73,7 @@
 
 <plugins>
 
+<!-- JDK 1.6
                 <plugin>
                   <groupId>org.bsc.maven</groupId>
                   <artifactId>maven-processor-plugin</artifactId>
@@ -85,21 +86,15 @@
                       </goals>
                       <phase>test</phase>
                       <configuration>
-                         <!-- outputDirectory>${basedir}/target/generated-sources/processor</outputDirectory-->
-                          
-                         <!-- failOnError>true</failOnError -->
-                         
                          <processors>
-                         <!-- list of processors to use -->
                             <processor>org.bsc.bean.jpa.processor.JPAProcessor</processor>
                         </processors>  
                       </configuration>
 					  	
-
                     </execution>
                   </executions>
                 </plugin>
-
+-->
 </plugins>
 
 </build>  
