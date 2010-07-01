@@ -54,19 +54,20 @@
  </reporting>
 
  <dependencies>
- 
+
+<!--
  <dependency>
   <groupId>org.eclipse.osgi</groupId>
   <artifactId>org.eclipse.osgi</artifactId>
   <version>3.3.0.v20070530</version>
   <optional>true</optional>
 </dependency>
+-->
 
 <dependency>
   <groupId>org.eclipse.osgi</groupId>
-  <artifactId>org.eclipse.osgi.services</artifactId>
-  <version>3.1.200.v20070605</version>
-  <optional>true</optional>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.2.0-v20060601</version>
 </dependency>
 
 <dependency>
@@ -128,6 +129,7 @@
 	</configuration>
 </plugin>
 
+<!-- JDK 1.6 
 <plugin>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-processor-plugin</artifactId>
@@ -142,10 +144,9 @@
       <configuration>
          <outputDirectory>${basedir}/target/generated-sources/processor</outputDirectory>
           
-         <!-- failOnError>true</failOnError -->
+         <failOnError>false</failOnError>
           
          <processors>
-         <!-- list of processors to use -->
             <processor>org.bsc.processor.implementation.ResourceProcessorImpl</processor>
         </processors>  
       </configuration>
@@ -153,6 +154,7 @@
     </execution>
   </executions>
 </plugin>
+-->
 
 </plugins>
 </build>
