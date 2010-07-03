@@ -89,11 +89,11 @@ public class BeanEnumeration<T> implements Enumeration<T>, Iterable<T> {
   }
 
  
-  public static <T> void close( BeanEnumeration<T> enums ) {
+  public static <T> void close( Enumeration<T> enums ) {
       
-      if( null!=enums ) {
+      if( enums instanceof BeanEnumeration ) {
             try {
-                enums.close();
+                ((BeanEnumeration)enums).close();
             } catch (SQLException ex) {
                 Log.warn( "error occurred on BeanEnumeration close", ex );
             }

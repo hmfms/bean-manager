@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 
 import org.bsc.util.Log;
@@ -166,6 +167,53 @@ public class DataBaseUtils {
 
   }
 
+  /**
+   * Safe close, doesn't throw SQLException
+   *
+   * @param conn
+   */
+  public static void close( Connection conn ) {
+        if (conn == null) return;
+
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+           Log.warn("close connection exception! {0} - {1}", ex.getErrorCode(), ex.getMessage());
+        }
+
+  }
+
+  /**
+   * Safe close, doesn't throw SQLException
+   *
+   * @param rs
+   */
+  public static void close( ResultSet rs ) {
+        if (rs == null) return;
+
+        try {
+            rs.close();
+        } catch (SQLException ex) {
+           Log.warn("close resultset exception! {0} - {1}", ex.getErrorCode(), ex.getMessage());
+        }
+
+  }
+
+  /**
+   * Safe close, doesn't throw SQLException
+   *
+   * @param stmt
+   */
+  public static void close( Statement stmt ) {
+        if (stmt == null) return;
+
+        try {
+            stmt.close();
+        } catch (SQLException ex) {
+           Log.warn("close statement exception! {0} - {1}", ex.getErrorCode(), ex.getMessage());
+        }
+
+  }
 
   /**
    * class utility for MySql database

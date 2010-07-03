@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import org.bsc.processor.annotation.ResourceBundle;
+//import org.bsc.processor.annotation.ResourceBundle;
 
 /**
 It's an implementation of DAO interface (see DAO pattern ) for a jdbc data source
@@ -66,7 +66,7 @@ conn.close();
 @see bsc.bean.PropertyDescriptorField
 @see bsc.bean.BeanDescriptorEntity
 */
-@ResourceBundle
+//@ResourceBundle
 public interface BeanManager<T> {
 
   /**
