@@ -71,6 +71,15 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
     }
 
+    private static final boolean isNullOrEmpty( String value ) {
+        //return (value==null || value.isEmpty());
+
+        if( value==null ) return true;
+        if( value.length()==0 ) return true;
+        if( value.trim().length() == 0 ) return true;
+        return false;
+    }
+
     protected final static String getTableName( Class<?> beanClass, String defValue ) {
     	if( beanClass == null && defValue == null ) throw new IllegalArgumentException( "both parameters 'beanClass' and  parameter 'defValue' are null!");
     	
@@ -78,11 +87,11 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     	
     	String tableName = ( annotation != null ) ? annotation.name() : defValue;
     	
-    	if( tableName==null || tableName.isEmpty() ) throw new IllegalStateException( "tableName is not defined");
+    	if( isNullOrEmpty( tableName ) ) throw new IllegalStateException( "tableName is not defined");
     	
     	String schema = ( annotation != null ) ? annotation.schema() : null ;
     	
-    	return ( schema!=null && !schema.isEmpty() ) ?
+    	return ( !isNullOrEmpty(schema) ) ?
     		String.format( "%s.%s", schema, tableName ) :
     		tableName;	
     }
@@ -115,7 +124,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         	jtable = (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table();
         }
 */        
-        jtable = getTableName( type, (jc.table()==null || jc.table().isEmpty()) ? type.getSimpleName() : jc.table() );
+        jtable = getTableName( type, ( isNullOrEmpty(jc.table())) ? type.getSimpleName() : jc.table() );
         
         PropertyDescriptorField pf = new PropertyDescriptorField( pd );
         pf.setFieldName(fieldA);

@@ -70,7 +70,6 @@ public class JPABeanManager<T> extends AbstractBeanManager<T> {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
     public T instantiateBean() throws java.lang.InstantiationException  {
         Log.debug( "INSTANTIATE BEAN [{0}]", getBeanClass()  );
 
