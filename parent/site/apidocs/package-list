@@ -1,7 +1,0 @@
-org.bsc.bean
-org.bsc.bean.adapters
-org.bsc.bean.dyna
-org.bsc.bean.generators
-org.bsc.bean.metadata
-org.bsc.bean.osgi
-org.bsc.util
