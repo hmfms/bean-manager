@@ -14,12 +14,12 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
-import javax.persistence.EntityManager;
 
 import org.bsc.bean.BeanManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 /**
  *
@@ -74,7 +74,7 @@ public class BeanManagerTest {
     	
     }
     
-    @Test
+    @Test //@Ignore
     public void testJOINED() throws Exception {
         BeanManager<MyEntityBean1> myEntityBean1Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean1.class);
         //BeanManager<MyEntityBean2> myEntityBean2Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean2.class);

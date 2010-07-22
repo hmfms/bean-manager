@@ -324,7 +324,11 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             	}
                 
             	Method m = pd.getReadMethod();
-                
+
+                if( m==null ) {
+                    Log.warn( "property {0} has no getter method. ignored!", pd.getName());
+                }
+
             	//
             	// TRANSIENT
             	// 
@@ -338,7 +342,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                     }            		
             	}
-            	else {
+            	else if( m!=null ) {
+
                     Transient t = m.getAnnotation( Transient.class );
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
@@ -346,7 +351,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                         result.addProperty( pd );
                         continue;
 
-                    }            		
+                    }
             		
             	}
             	
@@ -374,7 +379,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( pf!= null ) {
 
                         processColumn( result, f, pf );
-                        processColumn( result, m, pf );
+                        if( m!=null ) processColumn( result, m, pf );
 
                         pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
 
@@ -400,7 +405,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
                     if( pf==null ) pf = new PropertyDescriptorField( pd );
 
                     processColumn( result, f, pf );
-                    processColumn( result, m, pf );
+                    if( m!=null ) processColumn( result, m, pf );
 
                     pf.setSQLType( BeanManagerUtils.getSQLType(pd.getPropertyType()));
 

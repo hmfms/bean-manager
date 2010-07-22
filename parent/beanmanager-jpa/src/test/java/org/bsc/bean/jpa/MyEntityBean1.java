@@ -26,10 +26,12 @@ public class MyEntityBean1 extends MyEntityBean2 {
     
     private String property1_2;
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
