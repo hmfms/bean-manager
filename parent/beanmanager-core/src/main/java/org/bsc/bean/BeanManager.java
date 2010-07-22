@@ -128,7 +128,7 @@ public interface BeanManager<T> {
    *@param bean object to update into db
    *@exception SQLException
    */
-  public int store(Connection conn, T bean) throws SQLException;
+  public int store(Connection conn, T ... bean) throws SQLException;
 
   /**
   * update bean into db having the possibility of
@@ -237,7 +237,7 @@ public interface BeanManager<T> {
    reload bean instance from db
    @param conn database connection
    @param bean  bean intance
-   @return bean instance updated (same of parameter bean)
+   @return bean instance updated (same of parameter bean) - null if not found
    @exception SQLException
    @see #findById
    */

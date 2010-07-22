@@ -752,7 +752,7 @@ protected String getStorePropertyListInclude(  String begin,
    * @return
    * @throws SQLException
    */
-  int setStoreStatement( PreparedStatement ps, Object bean ) throws java.sql.SQLException
+  protected int setStoreStatement( PreparedStatement ps, Object bean ) throws java.sql.SQLException
   {
 
     int i = 0;
@@ -908,7 +908,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
    * @return
    * @throws SQLException
    */
-  private int setCreateStatement(
+  protected int setCreateStatement(
                     Connection connection,
                     PreparedStatement ps,
                     Object bean  ) throws java.sql.SQLException
@@ -1037,20 +1037,25 @@ private int setStoreStatementInclude( PreparedStatement ps,
  update bean into db
 
  @param conn database connection
- @param bean object to update into db
+ @param beans objects to update into db
  @exception SQLException
  */
- public int store( Connection conn,  Object bean ) throws SQLException {
+ public int store( Connection conn,  T ... beans ) throws SQLException {
     String sql = this.getStoreStatement();
 
     Log.TRACE_CMD("store", sql );
 
     PreparedStatement ps = conn.prepareStatement(sql);
 
-    this.setStoreStatement( ps, bean );
+    int result = 0;
 
-    int result = ps.executeUpdate();
+    for( T bean : beans ) {
+        ps.clearParameters();
+        this.setStoreStatement( ps, bean );
 
+        result += ps.executeUpdate();
+    }
+    
     ps.close();
 
     return result;
@@ -1078,7 +1083,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
  @param constraints allow to include or exclude properties from update
  @exception SQLException
  */
- public int store( Connection conn, Object bean, StoreConstraints constraints, String... properties ) throws SQLException {
+ public int store( Connection conn, T bean, StoreConstraints constraints, String... properties ) throws SQLException {
     int result = 0;
     
     if( StoreConstraints.EXCLUDE_PROPERTIES==constraints ) {
@@ -1524,13 +1529,14 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
  @param conn database connection
  @param bean  bean intance
- @return bean instance updated (same of parameter bean)
+ @return bean instance updated (same of parameter bean) - null if not found
  @exception SQLException
  @see #findById
  */
  public T loadBean( Connection conn, T bean ) throws SQLException {
     String sql      = null;
     PreparedStatement ps = null;
+    T result = null;
 
     try {
 
@@ -1563,11 +1569,12 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
     if( rs.next() ) {
       this.setBeanProperties( bean, rs );
+      result = bean;
     }
 
     rs.close();
 
-    return bean;
+    return result;
 
     }
     catch( SQLException sqlex ) {

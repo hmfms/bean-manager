@@ -4,6 +4,7 @@ import static org.bsc.bean.BeanManagerUtils.getMessage;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
@@ -113,6 +114,86 @@ public class Configurator {
   public static BeanManagerMessages getMessages() {
     return  BeanManagerMessages.createInstance(Locale.getDefault());
   }
+  
+  /**
+   * Load custom commands from classloader path.
+   * <pre>
+   * try to find resource where there are all
+   * custom sql commands. These commands will be added to internal command cache
+   *
+   * if the command start with '/' char it will be considered an path to another resource
+   * and the system will try to init it through ClassLoader.getResourceAsStream API
+   *
+   * assumptions:
+   * - Each resource must contain one SQL command
+   *
+   * </pre>
+   *
+   * @param propertyResourceName  resource name (file must be .properties compliant)
+   * @return all commads resolved as properties MAP
+   * @see java.lang.ClassLoader#getResourceAsStream(java.lang.String)
+   * @see java.util.Properties
+   * @see org.bsc.bean.BeanManager#prepareCustomFind(java.sql.Connection, java.lang.String, java.lang.String) 
+   */
+  public static java.util.Properties loadCustomCommands( String propertyResourceName) {
+      if( propertyResourceName==null ) throw new IllegalArgumentException( "property resource name is null!");
+
+      java.util.Properties result = new java.util.Properties();
+
+          try {
+
+              java.io.InputStream is = getTCL().getResourceAsStream(propertyResourceName);
+
+              if (is != null) {
+                  result = new java.util.Properties();
+                  result.load(is);
+
+
+                  for (Map.Entry<Object, Object> e : result.entrySet()) {
+
+                      String value = (String) e.getValue();
+                      if (null != value && value.charAt(0) == '/') { // check if is a resource
+
+                          Log.debug("loading custom command {0} resource [{1}]", e.getKey(), e.getValue());
+                          java.io.InputStream ris = getTCL().getResourceAsStream(value.substring(1));
+
+                          if (null != ris) {
+
+                              String content = null;
+
+                              try {
+                                  content = loadContent(new java.io.InputStreamReader(ris));
+
+                                  result.put(e.getKey(), content);
+
+                              } catch (Exception ex) {
+                                  Log.warn("error on loading  content for custom command {0} uri [{1}]", ex, e.getKey(), e.getValue());
+                              }
+
+                          } else {
+                              Log.warn("Does not exist content for custom command {0} uri [{1}]", e.getKey(), e.getValue());
+                          }
+                      }
+                  }
+
+                  synchronized (Configurator.class) {
+
+                      if (customCommands == null) {
+
+                          customCommands = new java.util.Properties();
+                      }
+
+                      customCommands.putAll(result);
+                  }
+              }
+          }
+          catch (IOException ex) {
+            log.log( Level.WARNING, "loadCustomCommands.exception", ex);
+          }
+
+          return result;
+  }
+
 
   /**
    * Load custom commands from classloader path.
@@ -127,62 +208,14 @@ public class Configurator {
    * - Each resource must contain one SQL command
    *
    * </pre>
-   *
+   * 
+   * @deprecated  use #loadCustomCommands(java.lang.String)
    * @return all commads resolved as properties MAP
    * @see java.lang.ClassLoader#getResourceAsStream(java.lang.String)
    * @see java.util.Properties
    */
   public static java.util.Properties loadCustomCommands() {
-
-      synchronized( Configurator.class ) {
-
-          if( customCommands!=null) return customCommands;
-
-          customCommands = new java.util.Properties();
-
-          try {
-          java.io.InputStream is = getTCL().getResourceAsStream(CUSTOM_COMMANDS);
-
-          if( is!=null ) {
-              customCommands.load(is);
-
-
-              for( Map.Entry<Object,Object> e : customCommands.entrySet() ) {
-
-                  String value = (String)e.getValue();
-                  if( null!=value && value.charAt(0)=='/' ) { // check if is a resource
-
-                      Log.debug( "loading custom command {0} resource [{1}]", e.getKey(), e.getValue());
-                      java.io.InputStream ris = getTCL().getResourceAsStream(value.substring(1));
-
-                      if( null!=ris ) {
-
-                          String content = null;
-
-                          try {
-                            content = loadContent( new java.io.InputStreamReader(ris));
-
-                            customCommands.put( e.getKey(), content );
-
-                          } catch( Exception ex ) {
-                              Log.warn( "error on loading  content for custom command {0} uri [{1}]", ex, e.getKey(), e.getValue());
-                          }
-
-                      }
-                      else {
-                          Log.warn( "Does not exist content for custom command {0} uri [{1}]", e.getKey(), e.getValue());
-                      }
-                  }
-              }
-          }
-
-          }
-          catch (Exception ex) {
-            log.log( Level.WARNING, "loadCustomCommands.exception", ex);
-          }
-
-          return customCommands;
-      }
+        return loadCustomCommands(CUSTOM_COMMANDS);
   }
 
 
@@ -225,18 +258,51 @@ public class Configurator {
 
   /**
    * Load custom commands from folder.
+   * Scan a given folder and init file with given extension.
+   * These commands will be added to internal command cache
+   *
+   * assumptions:
+   * - The file must be textual file
+   * - Each file must contain one SQL command
+   *
+   * @param result Properties where add the commands - Key=file name without extension, value=file content
+   * @param folder folder where are located the file
+   * @param ext file extension
+   * @return the same instance given in input with new values
+   * @see org.bsc.bean.BeanManager#prepareCustomFind(java.sql.Connection, java.lang.String, java.lang.String) 
+   */
+  public static java.util.Properties loadCustomCommands( final File folder, final String ext ) {
+      java.util.Properties result = new java.util.Properties();
+
+      loadCustomCommands(result, folder, ext);
+
+      synchronized( Configurator.class ) {
+
+          if (customCommands == null) {
+
+              customCommands = new java.util.Properties();
+          }
+
+          customCommands.putAll(result);
+      }
+
+      return result;
+  }
+
+  /**
+   * Load custom commands from folder.
    * Scan a given folder and init file with given extension
    *
    * assumptions:
    * - The file must be textual file
    * - Each file must contain one SQL command
    *
-   * @param result Proeprties where add the commands - Key=file name without extension, value=file content
+   * @param result Properties where add the commands - Key=file name without extension, value=file content
    * @param folder folder where are located the file
    * @param ext file extension
    * @return the same instance given in input with new values
    */
-  static java.util.Properties loadCustomCommands( final java.util.Properties result, final File folder, final String ext ) {
+  public static java.util.Properties loadCustomCommands( final java.util.Properties result, final File folder, final String ext ) {
       if( null==result ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "result") );
       if( null==folder ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "folder") );
       if( null==ext ) throw new IllegalArgumentException( getMessage("ex.param_0_is_null", "ext") );

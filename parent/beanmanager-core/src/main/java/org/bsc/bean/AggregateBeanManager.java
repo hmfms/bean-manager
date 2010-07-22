@@ -139,22 +139,55 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
    */
   public int create(Connection conn, T... beans) throws java.sql.SQLException {
 
+    AbstractBeanManager _base = (AbstractBeanManager)base;
+    String base_create_sql = _base.getCreateStatement();
+    PreparedStatement base_ps = conn.prepareStatement(base_create_sql);
+
+    PreparedStatement aggregate_ps[] = new PreparedStatement[ aggregate.length ];
+
+    for( int i=0 ; i<aggregate.length; ++i ) {
+
+        AbstractBeanManager _aggregate = (AbstractBeanManager) aggregate[i];
+        String aggregate_sql = _aggregate.getCreateStatement();
+        aggregate_ps[i] = conn.prepareStatement(aggregate_sql);
+    }
+
+
     int result = 0;
     Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
 
-    for( T bean : beans ) {
-        if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
-          result = base.create( conn, bean );
-        }
+    try {
+        for( T bean : beans ) {
+            if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
 
-        for( int i=0; i<aggregate.length; ++i ) {
-            aggregate[i].create( conn, bean );
-        }
+                base_ps.clearParameters();
+                _base.setCreateStatement( conn, base_ps, bean );
+                result += base_ps.executeUpdate();
+            }
 
-        if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
-          result = base.create( conn, bean );
+            for( int i=0; i<aggregate.length; ++i ) {
+
+                AbstractBeanManager _aggregate = (AbstractBeanManager) aggregate[i];
+                aggregate_ps[i].clearParameters();
+                _aggregate.setCreateStatement( conn, aggregate_ps[i], bean );
+                result += aggregate_ps[i].executeUpdate();
+            }
+
+            if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
+
+                base_ps.clearParameters();
+                _base.setCreateStatement( conn, base_ps, bean );
+                result += base_ps.executeUpdate();
+            }
         }
+    }finally {
+
+        for( int i=0 ; i<aggregate.length; ++i ) {
+            DataBaseUtils.close(aggregate_ps[i]);
+        }
+        DataBaseUtils.close(base_ps);
     }
+
     return result;
 
   }
@@ -247,24 +280,59 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
  </pre>
 
  @param conn database connection
- @param bean object to update into db
+ @param beans objects to update into db
  @exception SQLException
  */
-  public int store(Connection conn, T bean) throws java.sql.SQLException {
+  public int store(Connection conn, T ... beans) throws java.sql.SQLException {
+
+
+    AbstractBeanManager _base = (AbstractBeanManager)base;
+    String base_store_sql = _base.getStoreStatement();
+    PreparedStatement base_ps = conn.prepareStatement(base_store_sql);
+
+    PreparedStatement aggregate_ps[] = new PreparedStatement[ aggregate.length ];
+
+    for( int i=0 ; i<aggregate.length; ++i ) {
+
+        AbstractBeanManager _aggregate = (AbstractBeanManager) aggregate[i];
+        String aggregate_sql = _aggregate.getStoreStatement();
+        aggregate_ps[i] = conn.prepareStatement(aggregate_sql);
+    }
+
 
     int result = 0;
     Integer aggregateOrder = base.getBeanDescriptor().getAggregateOrder();
 
-    if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
-      result += base.store( conn, bean );
-    }
+    try {
+        for( T bean : beans ) {
+            if( aggregateOrder==BeanDescriptorEntity.ORDER_FIRST ) {
 
-    for( int i=0; i<aggregate.length; ++i ) {
-        result += aggregate[i].store( conn, bean );
-    }
+                base_ps.clearParameters();
+                _base.setStoreStatement( base_ps, bean );
+                result += base_ps.executeUpdate();
+            }
 
-    if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
-      result += base.store( conn, bean );
+            for( int i=0; i<aggregate.length; ++i ) {
+
+                AbstractBeanManager _aggregate = (AbstractBeanManager) aggregate[i];
+                aggregate_ps[i].clearParameters();
+                _aggregate.setStoreStatement( aggregate_ps[i], bean );
+                result += aggregate_ps[i].executeUpdate();
+            }
+
+            if( aggregateOrder==BeanDescriptorEntity.ORDER_LAST ) {
+
+                base_ps.clearParameters();
+                _base.setStoreStatement( base_ps, bean );
+                result += base_ps.executeUpdate();
+            }
+        }
+    }finally {
+
+        for( int i=0 ; i<aggregate.length; ++i ) {
+            DataBaseUtils.close(aggregate_ps[i]);
+        }
+        DataBaseUtils.close(base_ps);
     }
     return result;
   }
@@ -378,7 +446,7 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
     reload bean instance from db
     @param conn database connection
     @param bean  bean intance
-    @return bean instance updated (same of parameter bean)
+    @return bean instance updated (same of parameter bean) - null if not found
     @exception SQLException
     @see #findById
     */

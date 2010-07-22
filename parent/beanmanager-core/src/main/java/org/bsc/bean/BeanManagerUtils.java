@@ -347,7 +347,8 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
 		return String.class;
 	  case	Types.NUMERIC:
 	  case	Types.DECIMAL:
-		  return java.math.BigDecimal.class;
+		  //return java.math.BigDecimal.class;
+                 return (returnRawType) ? double.class : Double.class;
 	  case Types.BIT:
 	  	return (returnRawType) ? boolean.class : Boolean.class;
 	  case Types.TINYINT:
