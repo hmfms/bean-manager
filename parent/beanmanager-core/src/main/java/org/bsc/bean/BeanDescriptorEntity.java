@@ -78,13 +78,18 @@ public class BeanDescriptorEntity extends BeanDescriptor {
    *@param entityName entity name
    */
   public BeanDescriptorEntity setEntityName( String entityName ) {
-    if( Configurator.isLowerCase() ) {
-      this.setValue( ENTITY_NAME, entityName.toLowerCase() );
-    }
-    else {
-      this.setValue( ENTITY_NAME, entityName );
-    }
-    return this;
+      String v = null;
+
+      if (Configurator.isLowerCase()) {
+          v = entityName.toLowerCase();
+      } else {
+          v = entityName;
+      }
+
+      //this.setValue(ENTITY_NAME, Configurator.variableSubstitution(v));
+      this.setValue(ENTITY_NAME, v);
+
+      return this;
   }
 
   /**

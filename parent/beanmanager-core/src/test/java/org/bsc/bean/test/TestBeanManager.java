@@ -57,6 +57,8 @@ public class TestBeanManager extends BaseTestUtils {
 	
 	@BeforeClass
 	public static void init() throws Exception {
+
+            System.setProperty("default.schema", "APP");
             
             loadDriver();
             
