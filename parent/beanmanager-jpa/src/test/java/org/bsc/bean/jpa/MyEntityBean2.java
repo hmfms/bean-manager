@@ -18,7 +18,7 @@ import javax.persistence.Table;
  * @author softphone
  */
 @Entity
-@Table( name="JOINED_ENTITY")
+@Table( name="JOINED_ENTITY", schema="APP")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class MyEntityBean2 {
    @Id

@@ -37,6 +37,7 @@ import org.bsc.bean.PropertyDescriptorField;
 import org.bsc.bean.PropertyDescriptorJoin;
 import org.bsc.bean.PropertyDescriptorPK;
 import org.bsc.bean.generators.UUIDValueGenerator;
+import org.bsc.util.Configurator;
 import org.bsc.util.Log;
 
 /**
@@ -81,6 +82,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     }
 
     protected final static String getTableName( Class<?> beanClass, String defValue ) {
+        
     	if( beanClass == null && defValue == null ) throw new IllegalArgumentException( "both parameters 'beanClass' and  parameter 'defValue' are null!");
     	
     	Table annotation = beanClass.getAnnotation( Table.class );
@@ -90,7 +92,12 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
     	if( isNullOrEmpty( tableName ) ) throw new IllegalStateException( "tableName is not defined");
     	
     	String schema = ( annotation != null ) ? annotation.schema() : null ;
-    	
+
+        if( isNullOrEmpty(schema) ) {
+
+            schema = Configurator.getDefaultSchema();
+        }
+        
     	return ( !isNullOrEmpty(schema) ) ?
     		String.format( "%s.%s", schema, tableName ) :
     		tableName;	

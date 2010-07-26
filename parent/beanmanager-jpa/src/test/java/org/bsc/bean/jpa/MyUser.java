@@ -20,7 +20,7 @@ import javax.persistence.Table;
  * @author softphone
  */
 @Entity
-@Table(name="USERAPP")
+@Table(name="USERAPP", schema="APP")
 public class MyUser implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

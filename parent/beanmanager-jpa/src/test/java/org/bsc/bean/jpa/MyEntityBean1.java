@@ -14,7 +14,7 @@ import javax.persistence.Table;
  * @author softphone
  */
 @Entity
-@Table( name="MASTER_ENTITY")
+@Table( name="MASTER_ENTITY", schema="APP")
 //@PrimaryKeyJoinColumn(name="CUST_ID")
 public class MyEntityBean1 extends MyEntityBean2 {
 
