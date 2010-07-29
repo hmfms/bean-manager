@@ -13,13 +13,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.LogManager;
+import org.bsc.bean.AbstractBeanManager;
 
 
 import org.bsc.bean.BeanManager;
+import org.bsc.bean.PropertyDescriptorField;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 /**
  *
@@ -153,5 +155,28 @@ public class BeanManagerTest {
         
         for( MyUser u : users ) System.out.println( u );
 
+    }
+
+    @Test
+    public void checkNonEntityInheritance() {
+
+        AbstractBeanManager<ItemCifF00091> m = (AbstractBeanManager<ItemCifF00091>) JPABeanManagerFactory.createBeanManager(ItemCifF00091.class);
+
+        PropertyDescriptorField fieldM = m.getPropertyByName("M");
+
+        Assert.assertNull(fieldM);
+
+        {
+        String cs = m.getCreateStatement();
+
+        System.out.println( "CREATE STATEMENT\n" + cs );
+        }
+
+        {
+        String cs = m.getFindAllStatement();
+
+        System.out.println( "FINDALL STATEMENT\n" + cs );
+
+        }
     }
 }

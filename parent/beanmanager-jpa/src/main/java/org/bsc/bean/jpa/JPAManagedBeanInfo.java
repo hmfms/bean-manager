@@ -178,7 +178,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             		f = superClass.getDeclaredField(pd.getName());
             	}
             	catch (NoSuchFieldException ex) {
-                    Log.warn( "the field [{0}] doesn't exist!", pd.getName() );
+                    // TODO LOG
+                    //Log.debug( "the field [{0}] doesn't exist!", pd.getName() );
             	}
             	
                 Method m = pd.getReadMethod();
@@ -327,7 +328,8 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
             		f = beanClass.getDeclaredField(pd.getName());
             	}
             	catch (NoSuchFieldException ex) {
-                    Log.warn( "the field [{0}] doesn't exist!", pd.getName() );
+                    // TODO LOG
+                    //Log.debug( "the field [{0}] doesn't exist!", pd.getName() );
             	}
                 
             	Method m = pd.getReadMethod();
@@ -428,6 +430,27 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         
     }
 
+    /**
+     * 
+     * @param beanClass
+     * @return
+     */
+    private static Class<?> getFirstNontEntityClass( Class<?> beanClass ) {
+
+
+        Class<?> superClass = beanClass.getSuperclass();
+        while( superClass!=null ) {
+            if( superClass.isAnnotationPresent(Entity.class)) {
+
+                superClass = superClass.getSuperclass();
+                continue;
+            }
+            return superClass;
+        }
+
+        return null;
+    }
+
     public static <T> JPAManagedBeanInfo<T>  create( Class<T> beanClass ) throws IntrospectionException{
 
     	{
@@ -456,7 +479,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         boolean mappedSuperclass = false;
         
     	Class<?> superClass = beanClass.getSuperclass();
-    	
+
     	if( superClass != null ) {
     	
     		Entity entity = superClass.getAnnotation( Entity.class );
@@ -495,10 +518,21 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
         JPAManagedBeanInfo<T> result = new JPAManagedBeanInfo<T>(beanClass);
 
-        BeanInfo beanInfo = (joinedInheritance || noEntityInheritance ) ? 
-        						java.beans.Introspector.getBeanInfo(beanClass,superClass) :
-        						java.beans.Introspector.getBeanInfo(beanClass);        
-                
+
+        BeanInfo beanInfo = null;
+        if (joinedInheritance || noEntityInheritance) {
+
+            beanInfo = java.beans.Introspector.getBeanInfo(beanClass, superClass);
+            
+        } else {
+
+            Class<?> stopClass = getFirstNontEntityClass(beanClass);
+            beanInfo = (stopClass != null) ?
+                java.beans.Introspector.getBeanInfo(beanClass, stopClass) :
+                java.beans.Introspector.getBeanInfo(beanClass);
+
+        }
+
         if( null==beanInfo ) throw new IllegalStateException( "beanInfo not found!");
 
         result.beanDescriptor = new BeanDescriptorEntity( beanClass, tableName );
