@@ -76,6 +76,11 @@ public interface BeanManager<T> {
    */
   public BeanDescriptorEntity getBeanDescriptor();
 
+  /**
+  @return array of PropertyDescriptorField inside beanInfo
+  @see bsc.bean.PropertyDescriptorField
+  */
+  public PropertyDescriptorField [] getPropertyDescriptorsFields();
 
   /**
   * get persistent bean class

@@ -107,6 +107,13 @@ public AggregateBeanManager( BeanManager<T> base, BeanManager<T>[] aggregateMana
     return base.getBeanDescriptor();
   }
 
+  /**
+  @return array of PropertyDescriptorField inside beanInfo
+  @see bsc.bean.PropertyDescriptorField
+  */
+  public PropertyDescriptorField [] getPropertyDescriptorsFields() {
+    return base.getPropertyDescriptorsFields();
+  }
 
   /**
    *get the bean class
