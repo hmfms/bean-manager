@@ -197,7 +197,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                     }            		
             	}
-            	else {
+            	if( m!=null ) {
                     Transient t = m.getAnnotation( Transient.class );
                     if( t!=null ) {
                         Log.debug( "the field [{0}] is transient",  pd.getName() );
@@ -351,7 +351,7 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
 
                     }            		
             	}
-            	else if( m!=null ) {
+            	if( m!=null ) {
 
                     Transient t = m.getAnnotation( Transient.class );
                     if( t!=null ) {
