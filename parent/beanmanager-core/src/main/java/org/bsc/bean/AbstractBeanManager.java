@@ -779,6 +779,8 @@ protected String getStorePropertyListInclude(  String begin,
 
     }
     catch( Exception ex ) {
+      Log.error("setStoreStatement", ex );
+
       Object[] params = { ex.getMessage(), props[i].getName() };
       throw new SQLException( BeanManagerUtils.getMessage("ex.set_store_stmt",params) );
     }
@@ -833,8 +835,10 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
     }
     catch( Exception ex ) {
-      Object[] params = { ex.getMessage(), props[i].getName() };
-      throw new SQLException( BeanManagerUtils.getMessage("ex.set_store_stmt",params) );
+        Log.error("setStoreStatementInclude", ex);
+
+        Object[] params = {ex.getMessage(), props[i].getName()};
+        throw new SQLException(BeanManagerUtils.getMessage("ex.set_store_stmt", params));
     }
 
     return ordinal;
@@ -884,8 +888,10 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
     }
     catch( Exception ex ) {
-      Object[] params = { ex.getMessage(), props[i].getName() };
-      throw new SQLException( BeanManagerUtils.getMessage("ex.set_store_stmt",params) );
+        Log.error("setStoreStatementExclude", ex);
+
+        Object[] params = {ex.getMessage(), props[i].getName()};
+        throw new SQLException(BeanManagerUtils.getMessage("ex.set_store_stmt", params));
     }
 
     return ordinal;
@@ -947,6 +953,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
 
     }
     catch( Exception ex ) {
+      Log.error("setCreateStatement", ex );
       Object[] params = { ex.getMessage(), props[i].getName() };
       throw new SQLException( BeanManagerUtils.getMessage("ex.set_create_stmt", params) );
     }
