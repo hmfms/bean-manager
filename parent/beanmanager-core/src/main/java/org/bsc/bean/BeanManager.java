@@ -82,6 +82,14 @@ public interface BeanManager<T> {
   */
   public PropertyDescriptorField [] getPropertyDescriptorsFields();
 
+
+  /**
+   *
+   * @return primary key object
+   * @see bsc.bean.PrimaryKey
+   */
+  public PrimaryKey getPrimaryKey();
+
   /**
   * get persistent bean class
   *
