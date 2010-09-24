@@ -3,21 +3,21 @@
 
 <groupId>org.bsc.framework</groupId>
 <artifactId>beanmanager-core</artifactId>
-<version>1.4-SNAPSHOT</version>
+<version>1.4</version>
 <name>bean manager core - trunk</name>
   
 <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.framework</groupId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
 </parent>
 
 <properties>
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-core</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent//beanmanager-core</developerConnection>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4/beanmanager-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4//beanmanager-core</developerConnection>
 </scm>
 
 <licenses>
