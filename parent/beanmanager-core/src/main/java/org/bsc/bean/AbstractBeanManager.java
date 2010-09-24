@@ -666,23 +666,31 @@ protected String getStorePropertyListInclude(  String begin,
 
     Object value = null;
 
-    try {
-
     DataAdapter adapter = BeanManagerUtils.lookupAdapter( p );
 
     if( null==adapter ) {
         Log.warn("no adapter found for property {0} ", p.getName() );
         return ;
     }
-    
-    
-    value = adapter.getValue(rs,p);
 
-    Log.debug("ADAPTER {2} used={0} value={1}", adapter.getClass().getName(), value, p.getName());
+    try {
 
-    if(value!=null) {
-      invokeWriteMethod(p, bean, value);
-    }
+        try {
+
+            value = adapter.getValue(rs, p);
+
+        } catch (SQLException e) {
+            // this catch is to support of optional field
+
+            Log.warn( "getValue error: [{2}] adapter [{0}] field [{1}] ", adapter.getClass().getName(), p.getDerefFieldName(), e.getMessage() );
+            return;
+        }
+
+        Log.debug("ADAPTER {2} used={0} value={1}", adapter.getClass().getName(), value, p.getName());
+
+        if (value != null) {
+            invokeWriteMethod(p, bean, value);
+        }
 
     }
     catch( Exception ex ) {
@@ -1692,6 +1700,7 @@ private int setStoreStatementInclude( PreparedStatement ps,
     T bean;
 
     time = Log.TRACE_TIME_BEGIN();
+
 
     while( rs.next() ) {
       bean = instantiateBean();
