@@ -1,0 +1,4 @@
+org.bsc.bean.cglib
+org.bsc.bean.ddl
+org.bsc.bean.test
+org.bsc.bean.test.beans
