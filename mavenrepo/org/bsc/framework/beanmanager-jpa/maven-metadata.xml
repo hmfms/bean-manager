@@ -2,12 +2,12 @@
 <metadata>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-jpa</artifactId>
-  <version>1.4-SNAPSHOT</version>
   <versioning>
     <versions>
+      <version>1.4.1-SNAPSHOT</version>
       <version>1.4-SNAPSHOT</version>
       <version>1.4-beta1</version>
     </versions>
-    <lastUpdated>20100812174157</lastUpdated>
+    <lastUpdated>20101104142148</lastUpdated>
   </versioning>
 </metadata>
