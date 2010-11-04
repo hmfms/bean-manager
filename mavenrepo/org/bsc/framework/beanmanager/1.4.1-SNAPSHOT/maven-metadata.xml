@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.bsc.framework</groupId>
+  <artifactId>beanmanager</artifactId>
+  <version>1.4.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20101104.141936</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20101104141936</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.4.1-20101104.141936-1</value>
+        <updated>20101104141936</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
