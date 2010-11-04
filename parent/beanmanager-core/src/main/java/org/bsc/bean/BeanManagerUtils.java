@@ -458,15 +458,11 @@ private static void _inheritAggregateProperties(    java.util.Map<String,Propert
           }
          return Types.ARRAY;
      }
-     if( java.sql.Date.class.equals(clazz)) {
-         return Types.DATE;
-     }
-     if( java.sql.Time.class.equals(clazz)) {
-         return Types.TIME;
-     }
-     if( java.sql.Timestamp.class.equals(clazz)) {
-         return Types.TIMESTAMP;
-     }
+     
+     if( java.util.Date.class.equals(clazz))		return Types.DATE;
+     if( java.sql.Date.class.equals(clazz))			return Types.DATE; 
+     if( java.sql.Time.class.equals(clazz)) 		return Types.TIME;
+     if( java.sql.Timestamp.class.equals(clazz)) 	return Types.TIMESTAMP;
      
      return Types.JAVA_OBJECT;
  }
