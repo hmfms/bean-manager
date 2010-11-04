@@ -70,10 +70,14 @@ public class BeanManagerTest {
 
          bean.setId(id);
          bean.setContact( "TEST");
-
+         bean.setBirthDate( new java.util.Date() );
          em.create(conn, bean);
 
-    	
+         MyBean bean2 = em.findById( conn, id);
+         
+         Assert.assertNotNull( bean2 );
+         Assert.assertTrue( bean2.getBirthDate() instanceof java.util.Date );
+         
     }
     
     @Test //@Ignore

@@ -1,13 +1,18 @@
 package org.bsc.bean.jpa;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
-public class MyBean extends java.util.HashMap<String,String> {
+public class MyBean extends java.util.HashMap<String,Object> {
+
 
 	public String getContact() {
-		return get("contact");
+		return (String) get("contact");
 	}
 
 	public void setContact(String contact) {
@@ -16,7 +21,7 @@ public class MyBean extends java.util.HashMap<String,String> {
 
 	@Id
 	public String getId() {
-		return get("id");
+		return (String) get("id");
 	}
 
 	public void setId(String id) {
@@ -24,12 +29,22 @@ public class MyBean extends java.util.HashMap<String,String> {
 	}
 
 	public String getNumber() {
-		return get("number");
+		return (String) get("number");
 	}
 
 	public void setNumber(String number) {
 		put("number", number);
 	}
+
+	@Temporal(TemporalType.DATE)
+	public java.util.Date getBirthDate() {
+		return (Date) get("bd");
+	}
+
+	public void setBirthDate(java.util.Date birthDate) {
+		put( "bd", birthDate );
+	}
+	
 	
 
 }
