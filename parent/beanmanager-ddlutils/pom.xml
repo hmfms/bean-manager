@@ -2,12 +2,12 @@
   <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.framework</groupId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.framework</groupId>
   <artifactId>beanmanager-ddlutils</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4.1-SNAPSHOT</version>
   <name>Bean Manager ddlutils - trunk</name>
   
   
@@ -15,7 +15,7 @@
 	<dependency>
 		<groupId>org.bsc.framework</groupId>
 		<artifactId>beanmanager-core</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4.1-SNAPSHOT</version>
 	</dependency>
 
     <dependency>
