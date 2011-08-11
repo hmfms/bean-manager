@@ -158,7 +158,6 @@
             <plugin>
               <groupId>org.bsc.maven</groupId>
               <artifactId>maven-processor-plugin</artifactId>
-              <version>1.3.1</version>
               <executions>
                 <execution>
                   <id>process</id>
@@ -185,6 +184,53 @@
         </plugins>
      </build>
    </profile>  
+      
+	<profile>
+		<id>test-processor</id>
+				
+		<dependencies>
+
+			<dependency>
+				<groupId>org.bsc.framework</groupId>
+				<artifactId>beanmanager-ddlutils</artifactId>
+				<version>1.4.1-SNAPSHOT</version>
+				<scope>test</scope>
+			</dependency>
+		
+		</dependencies>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.bsc.maven</groupId>
+					<artifactId>maven-processor-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>process</id>
+							<goals>
+								<goal>process-test</goal>
+							</goals>
+							<phase>test</phase>
+							<configuration>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+								<processors>
+									<processor>org.bsc.bean.ddl.processor.DDLProcessor</processor>
+								</processors>
+								
+								<options>
+									<driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
+									<connectionUrl>jdbc:derby</connectionUrl>
+									<seedClass>org.bsc.bean.test.beans.Attachment</seedClass>
+								</options>
+									
+							</configuration>
+			
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+   
 </profiles>
 
 <pluginRepositories>

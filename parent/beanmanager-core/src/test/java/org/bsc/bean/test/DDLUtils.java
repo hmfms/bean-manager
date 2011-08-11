@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.bsc.bean.ddl;
+package org.bsc.bean.test;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;

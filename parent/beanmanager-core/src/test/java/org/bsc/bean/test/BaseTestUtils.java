@@ -10,7 +10,6 @@ import java.sql.DriverManager;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
-import org.bsc.bean.ddl.DDLUtils;
 
 /**
  *
