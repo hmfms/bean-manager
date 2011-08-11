@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.bsc.framework</groupId>
+  <artifactId>beanmanager-ddlutils</artifactId>
+  <version>1.4.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20110811.170917</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20110811170917</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.4.1-20110811.170917-1</value>
+        <updated>20110811170917</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.4.1-20110811.170917-1</value>
+        <updated>20110811170917</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>

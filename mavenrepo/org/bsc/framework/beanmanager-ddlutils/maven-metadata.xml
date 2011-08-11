@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.bsc.framework</groupId>
+  <artifactId>beanmanager-ddlutils</artifactId>
+  <versioning>
+    <versions>
+      <version>1.4.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20110811171030</lastUpdated>
+  </versioning>
+</metadata>
