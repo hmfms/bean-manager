@@ -14,7 +14,7 @@
   <dependencies>
 	<dependency>
 		<groupId>org.bsc.framework</groupId>
-		<artifactId>beanmanager-core</artifactId>
+		<artifactId>beanmanager-jpa</artifactId>
 		<version>1.4.1-SNAPSHOT</version>
 	</dependency>
 
