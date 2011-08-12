@@ -88,6 +88,7 @@ public class DDLProcessor extends AbstractProcessor {
         
         Database db = new Database(); 
 
+        java.util.Map<String,Table> tableMap = new java.util.HashMap<String,Table>();
         
         for ( Class<? extends ManagedBeanInfo> bic : result ) {
         	
@@ -98,8 +99,17 @@ public class DDLProcessor extends AbstractProcessor {
 				ManagedBeanInfo<?> beanInfo = bic.newInstance();
         					
 				Table table = DDLUtil.fromBeanInfoToTable(beanInfo);
+
+				Table prevTable = tableMap.get(table.getName());
+				if( prevTable!=null && table.getColumnCount() < prevTable.getColumnCount() ) {
+					continue;
+				}
+
 				
-				db.addTable(table);
+				info( String.format( "processing table [%s]" ,table.getName() ));
+				
+				
+				tableMap.put( table.getName(), table);
 				
 			} catch (InstantiationException e) {
 				warn( String.format("error processing metadata over class [%s]!. Skipped", bic.getName() ), e );
@@ -108,6 +118,10 @@ public class DDLProcessor extends AbstractProcessor {
 			}
         	
         }
+        
+		db.addTables(tableMap.values());
+		
+        
         
         String sql = DDLUtil.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
         

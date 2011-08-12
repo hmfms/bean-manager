@@ -78,6 +78,7 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
         
         Database db = new Database(); 
 
+        java.util.Map<String,Table> tableMap = new java.util.HashMap<String,Table>();
         
         for (TypeElement type : (Collection<TypeElement>)roundEnv.getElementsAnnotatedWith(javax.persistence.Entity.class)) {
         	info( String.format( "entity fqn=[%s]" , type.getQualifiedName() ));
@@ -90,7 +91,16 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
 				
 				Table table = DDLUtil.fromBeanInfoToTable(beanInfo);
 				
-				db.addTable(table);
+				Table prevTable = tableMap.get(table.getName());
+				if( prevTable!=null && table.getColumnCount() < prevTable.getColumnCount() ) {
+					continue;
+				}
+
+				
+				info( String.format( "processing table [%s]" ,table.getName() ));
+				
+				
+				tableMap.put( table.getName(), table);
 				
 			} catch (ClassNotFoundException e) {
 				warn( String.format("class [%s] not found in classloader!. Skipped", type.getQualifiedName() ));
@@ -99,6 +109,8 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
 			}
         	
         }
+        
+        db.addTables( tableMap.values() );
         
         String sql = DDLUtil.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
         

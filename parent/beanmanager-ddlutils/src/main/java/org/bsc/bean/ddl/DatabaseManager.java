@@ -1,6 +1,6 @@
 package org.bsc.bean.ddl;
 
-import static org.bsc.bean.ddl.DdlUtils.fromBeanInfoToTable;
+import static org.bsc.bean.ddl.DDLUtil.fromBeanInfoToTable;
 
 import java.beans.BeanInfo;
 import java.io.IOException;
