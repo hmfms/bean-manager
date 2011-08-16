@@ -2,6 +2,7 @@ package org.bsc.bean.jpa;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
@@ -28,6 +29,7 @@ public class MyBean extends java.util.HashMap<String,Object> {
 		put("id", id);
 	}
 
+	@Column(nullable=true)
 	public String getNumber() {
 		return (String) get("number");
 	}

@@ -12,10 +12,10 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.LogManager;
+
 import org.bsc.bean.AbstractBeanManager;
-
-
 import org.bsc.bean.BeanManager;
 import org.bsc.bean.PropertyDescriptorField;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class BeanManagerTest {
     public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    public static final String CONNECTION_URL = "jdbc:derby:target/LOCALDB;create=true"; ;
+    public static final String CONNECTION_URL = "jdbc:derby:target/LOCALDB2;create=true"; ;
 
     @BeforeClass
     public static void loadDriver() throws Exception {
@@ -129,10 +129,11 @@ public class BeanManagerTest {
 
         MyData data = new MyData();
         data.setBalance(1000L);
-
+        
         myDataManager.create(conn, data);
 
         MyUser us = new MyUser();
+        us.setId( UUID.randomUUID().toString());
         us.setName( "BSC");
         us.setData( data );
         
@@ -183,4 +184,27 @@ public class BeanManagerTest {
 
         }
     }
+    
+    @Test
+    public void outboundRecord() throws Exception{
+
+        BeanManager<OutboundRecordJPA> m = JPABeanManagerFactory.createBeanManager(OutboundRecordJPA.class);
+
+        OutboundRecordJPA rec = new OutboundRecordJPA();
+        
+        rec.setChain_id(1);
+        rec.setChain_n(1);
+        rec.setContact_info("contact_info");
+        rec.setRecord_id(1);
+        rec.setSms_flag("flag");
+        rec.setDate_ins( new java.util.Date());
+        
+        m.create(conn, rec);
+        
+        java.util.List<OutboundRecordJPA> resultList = new java.util.ArrayList<OutboundRecordJPA>();
+        
+        m.findAll(conn, resultList, "");
+        
+        
+     }
 }

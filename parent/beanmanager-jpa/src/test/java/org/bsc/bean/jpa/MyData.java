@@ -7,13 +7,12 @@ package org.bsc.bean.jpa;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -26,7 +25,7 @@ public class MyData implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    private long balance;
+    private long balance; 
     private String userId;
 
     public String getId() {
@@ -45,6 +44,7 @@ public class MyData implements Serializable {
         this.balance = balance;
     }
 
+    @Column(nullable=true)
     public String getUserId() {
         return userId;
     }

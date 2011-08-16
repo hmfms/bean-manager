@@ -295,10 +295,10 @@ public class JPAManagedBeanInfo<T> implements  ManagedBeanInfo<T> {
         if( len > 0 ) pd.setSize(len);
 
         String name = annotation.name();
-        if( name!=null ) pd.setFieldName(name);
+        if( name!=null && name.length()>0 ) pd.setFieldName(name);
 
         boolean nullable = annotation.nullable();
-        if( !nullable ) pd.setRequired(true);
+        pd.setRequired(!nullable);
 
         //String table = annotation.table();
 

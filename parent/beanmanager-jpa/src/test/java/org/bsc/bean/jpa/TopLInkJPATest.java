@@ -1,19 +1,17 @@
 package org.bsc.bean.jpa;
 
-import org.junit.Ignore;
-import org.junit.After;
+import static org.junit.Assert.assertNotNull;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- * Hello world!
- *
- */
-//@Ignore
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore
 public class TopLInkJPATest
 {
 
