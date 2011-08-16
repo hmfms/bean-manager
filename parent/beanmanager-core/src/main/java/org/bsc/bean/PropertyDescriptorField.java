@@ -371,7 +371,7 @@ public class PropertyDescriptorField extends PropertyDescriptor {
    * 
    * @return
    */
-  public boolean isRequided() {
+  public boolean isRequired() {
       return getBooleanValue(REQUIRED);
   }
   
