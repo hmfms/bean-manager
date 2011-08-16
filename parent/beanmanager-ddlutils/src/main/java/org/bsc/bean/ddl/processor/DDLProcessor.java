@@ -1,9 +1,7 @@
 package org.bsc.bean.ddl.processor;
 
-import java.io.IOException;
 import java.util.Set;
 
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -11,9 +9,6 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.FileObject;
-import javax.tools.StandardLocation;
 
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
@@ -23,42 +18,13 @@ import org.bsc.bean.ddl.DDLUtil;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes("*")
-@SupportedOptions( {"driver", "connectionUrl", "seedClass"} )
-public class DDLProcessor extends AbstractProcessor {
+@SupportedOptions( {"driver", "connectionUrl", "seedClass", "localDb"} )
+public class DDLProcessor extends AbstractDDLProcessor {
 
-    protected void info( String msg ) {
-        //logger.info(msg);
-        processingEnv.getMessager().printMessage(Kind.NOTE, msg );
-    }
-
-    protected void warn( String msg ) {
-        //logger.warning(msg);
-        processingEnv.getMessager().printMessage(Kind.WARNING, msg );
-    }
-    
-    protected void warn( String msg, Throwable t ) {
-        //logger.log(Level.WARNING, msg, t );
-        processingEnv.getMessager().printMessage(Kind.WARNING, msg );
-    }
-
-    protected void error( String msg ) {
-        //logger.severe(msg);
-        processingEnv.getMessager().printMessage(Kind.ERROR, msg );
-    }
-    
-    protected void error( String msg, Throwable t ) {
-        //logger.log(Level.SEVERE, msg, t );
-        processingEnv.getMessager().printMessage(Kind.ERROR, msg );
-    }
-
-    
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (roundEnv.processingOver())      return false;
         
-        final Filer filer = processingEnv.getFiler();
-
         java.util.Map<String,String> optionMap = processingEnv.getOptions();
         
         for( java.util.Map.Entry<String,String> e : optionMap.entrySet() ) {
@@ -122,24 +88,12 @@ public class DDLProcessor extends AbstractProcessor {
 		db.addTables(tableMap.values());
 		
         
+        super.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
         
-        String sql = DDLUtil.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
-        
-		try {
-	        FileObject res = filer.createResource(StandardLocation.SOURCE_OUTPUT, "sql", "createDB.sql", (javax.lang.model.element.Element)null);
-
-	        java.io.Writer w = res.openWriter();
-	        
-	        w.write(sql);
-	        
-	        w.close();
-		} catch (IOException e) {
-			warn( String.format("error writing output file" ), e );
-			
-			System.err.println( sql );
-		}
-        
-        
+        String localDb = optionMap.get("localDb");
+        if( null!=localDb ) {
+        	super.createLocalDatabase(db, localDb);
+        }
         return false;
 	}
 }

@@ -18,7 +18,6 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
@@ -30,36 +29,12 @@ import org.bsc.bean.jpa.JPAManagedBeanInfo;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes("javax.persistence.Entity")
-@SupportedOptions( {"driver", "connectionUrl"} )
-public class JPAProcessor extends javax.annotation.processing.AbstractProcessor {
+@SupportedOptions( {"driver", "connectionUrl","localDb"} )
+public class JPAProcessor extends AbstractDDLProcessor {
 
 	public JPAProcessor() {
 	}
 	
-    protected void info( String msg ) {
-        //logger.info(msg);
-        processingEnv.getMessager().printMessage(Kind.NOTE, msg );
-    }
-
-    protected void warn( String msg ) {
-        //logger.warning(msg);
-        processingEnv.getMessager().printMessage(Kind.WARNING, msg );
-    }
-    
-    protected void warn( String msg, Throwable t ) {
-        //logger.log(Level.WARNING, msg, t );
-        processingEnv.getMessager().printMessage(Kind.WARNING, msg );
-    }
-
-    protected void error( String msg ) {
-        //logger.severe(msg);
-        processingEnv.getMessager().printMessage(Kind.ERROR, msg );
-    }
-    
-    protected void error( String msg, Throwable t ) {
-        //logger.log(Level.SEVERE, msg, t );
-        processingEnv.getMessager().printMessage(Kind.ERROR, msg );
-    }
 
     
 	@SuppressWarnings("unchecked")
@@ -67,8 +42,6 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (roundEnv.processingOver())      return false;
         
-        final Filer filer = processingEnv.getFiler();
-
         java.util.Map<String,String> optionMap = processingEnv.getOptions();
         
         for( java.util.Map.Entry<String,String> e : optionMap.entrySet() ) {
@@ -85,7 +58,8 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
         	
         	Class<?> clazz = null;;
 			try {
-				clazz = Class.forName( type.getQualifiedName().toString(), true, javax.persistence.Entity.class.getClassLoader() );
+				//clazz = Class.forName( type.getQualifiedName().toString(), true, javax.persistence.Entity.class.getClassLoader() );
+				clazz = Class.forName( type.getQualifiedName().toString());
 
 				ManagedBeanInfo<?> beanInfo = JPAManagedBeanInfo.create(clazz);
 				
@@ -111,24 +85,13 @@ public class JPAProcessor extends javax.annotation.processing.AbstractProcessor 
         }
         
         db.addTables( tableMap.values() );
-        
-        String sql = DDLUtil.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
-        
-		try {
-	        FileObject res = filer.createResource(StandardLocation.SOURCE_OUTPUT, "sql", "createDB.sql", (javax.lang.model.element.Element)null);
+  
+        super.generateSQL(db, optionMap.get("driver"), optionMap.get("connectionUrl"));
+        String localDb = optionMap.get("localDb");
+        if( null!=localDb ) {
+        	super.createLocalDatabase(db, localDb);
+        }
 
-	        java.io.Writer w = res.openWriter();
-	        
-	        w.write(sql);
-	        
-	        w.close();
-		} catch (IOException e) {
-			warn( String.format("error writing output file" ), e );
-			
-			System.err.println( sql );
-		}
-        
-        
         return false;
 	}
 

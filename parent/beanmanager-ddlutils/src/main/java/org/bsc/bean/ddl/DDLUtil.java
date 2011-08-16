@@ -41,7 +41,7 @@ public class DDLUtil {
 			if (f.getSize() > 0)
 				result.setSizeAndScale(f.getSize(), 0);
 			result.setTypeCode(f.getSQLType());
-			result.setRequired(f.isRequided());
+			result.setRequired(f.isRequired());
 			result.setPrimaryKey(f instanceof PropertyDescriptorPK);
 
 		}
