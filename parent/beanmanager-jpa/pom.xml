@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>beanmanager</artifactId>
-    <groupId>org.bsc.framework</groupId>
+    <groupId>org.bsc.bean</groupId>
     <version>1.4.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.bsc.framework</groupId>
+  <groupId>org.bsc.bean</groupId>
   <artifactId>beanmanager-jpa</artifactId>
   <version>1.4.1-SNAPSHOT</version>
   <name>beanmanager jpa - trunk</name>
@@ -88,7 +88,7 @@
   </repositories>
   <dependencies>
     <dependency>
-        <groupId>org.bsc.framework</groupId>
+        <groupId>org.bsc.bean</groupId>
         <artifactId>beanmanager-core</artifactId>
         <version>1.4.1-SNAPSHOT</version>
     </dependency>
