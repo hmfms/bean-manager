@@ -3,22 +3,22 @@
 
 <groupId>org.bsc.bean</groupId>
 <artifactId>beanmanager-core</artifactId>
-<version>1.4.1-SNAPSHOT</version>
+<version>1.4.1</version>
 <name>bean manager core - trunk</name>
   
 <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.bean</groupId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
 </parent>
 
 <properties>
 </properties>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-core</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent//beanmanager-core</developerConnection>
-<url>https://bean-manager.googlecode.com/svn/trunk/parent//beanmanager-core</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-core</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-core</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-core</url>
 </scm>
 
 

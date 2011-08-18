@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.bean</groupId>
   <artifactId>beanmanager</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <packaging>pom</packaging>
   <description>ORM framework based on JavaBeans extension</description>
   <name>bean manager parent - trunk</name>
@@ -52,9 +52,9 @@
 </properties>
 
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent</developerConnection>
-<url>https://bean-manager.googlecode.com/svn/trunk/parent</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1</url>
 </scm>
 
 <distributionManagement>

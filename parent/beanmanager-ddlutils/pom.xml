@@ -2,25 +2,25 @@
   <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.bean</groupId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.bean</groupId>
   <artifactId>beanmanager-ddlutils</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <name>Bean Manager ddlutils - trunk</name>
   
 <scm>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</developerConnection>
-<url>https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-ddlutils</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-ddlutils</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-ddlutils</url>
 </scm>
   
   <dependencies>
 	<dependency>
 		<groupId>org.bsc.bean</groupId>
 		<artifactId>beanmanager-jpa</artifactId>
-		<version>1.4.1-SNAPSHOT</version>
+		<version>1.4.1</version>
 	</dependency>
 
     <dependency>

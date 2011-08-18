@@ -4,18 +4,18 @@
   <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.bean</groupId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.1</version>
   </parent>
   <groupId>org.bsc.bean</groupId>
   <artifactId>beanmanager-jpa</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
   <name>beanmanager jpa - trunk</name>
   <url>http://code.google.com/p/bean-manager/</url>
 
 <scm>
-<url>https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</url>
-<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</connection>
-<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-jpa</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-jpa</url>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-jpa</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/tags/beanmanager-1.4.1/beanmanager-jpa</developerConnection>
 </scm>
 
 <profiles>
@@ -90,7 +90,7 @@
     <dependency>
         <groupId>org.bsc.bean</groupId>
         <artifactId>beanmanager-core</artifactId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
