@@ -10,6 +10,11 @@
   <version>1.4.1-SNAPSHOT</version>
   <name>Bean Manager ddlutils - trunk</name>
   
+<scm>
+<connection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</connection>
+<developerConnection>scm:svn:https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</developerConnection>
+<url>https://bean-manager.googlecode.com/svn/trunk/parent/beanmanager-ddlutils</url>
+</scm>
   
   <dependencies>
 	<dependency>
