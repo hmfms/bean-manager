@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <description>ORM framework based on JavaBeans extension</description>
   <name>bean manager parent - trunk</name>
-
+  <url>http://code.google.com/p/bean-manager/</url>
 <licenses>
     <license>
         <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
