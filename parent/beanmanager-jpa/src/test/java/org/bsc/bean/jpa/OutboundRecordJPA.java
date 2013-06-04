@@ -2,6 +2,8 @@ package org.bsc.bean.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class OutboundRecordJPA {
@@ -33,6 +35,7 @@ public class OutboundRecordJPA {
 	public void setChain_n(int chainN) {
 		chain_n = chainN;
 	}
+        @Temporal(TemporalType.TIMESTAMP)
 	public java.util.Date getDate_ins() {
 		return date_ins;
 	}

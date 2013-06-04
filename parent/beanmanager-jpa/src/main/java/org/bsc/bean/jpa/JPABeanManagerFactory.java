@@ -10,22 +10,38 @@ import java.beans.IntrospectionException;
 
 import org.bsc.bean.AggregateBeanManager;
 import org.bsc.bean.BeanManager;
+import org.bsc.bean.BeanManagerFactory;
 import org.bsc.bean.ManagedBeanInfo;
 import org.bsc.util.Log;
+import org.kohsuke.MetaInfServices;
 
 /**
  *
  * @author bsorentino
  */
-public class JPABeanManagerFactory  {
+@MetaInfServices(BeanManagerFactory.class)
+public class JPABeanManagerFactory extends BeanManagerFactory {
 
-    @SuppressWarnings("unchecked")
-    public static <T> BeanManager<T> createBeanManager(Class<T> beanClass) {
-
+  /**
+   *
+   * @param beanClass
+   * @param beanInfo
+   * @return
+   */
+  @Override
+  public <T> BeanManager<T> createBeanManager( Class<T> beanClass, BeanInfo beanInfo )
+  {
         try {
-            JPAManagedBeanInfo<T> beanInfo = JPAManagedBeanInfo.create(beanClass);
+            JPAManagedBeanInfo<T> _beanInfo;
+            
+            if( beanInfo instanceof JPAManagedBeanInfo ) {
+                _beanInfo = (JPAManagedBeanInfo<T>) beanInfo;
+            }
+            else {
+                _beanInfo = JPAManagedBeanInfo.create(beanClass);
+            }
 
-            BeanInfo[] additionalBeanInfo = beanInfo.getAdditionalBeanInfo();
+            BeanInfo[] additionalBeanInfo = _beanInfo.getAdditionalBeanInfo();
 
 
             if (additionalBeanInfo != null && additionalBeanInfo.length > 0) {
@@ -35,9 +51,9 @@ public class JPABeanManagerFactory  {
                 for (int i = 0; i < additionalBeanInfo.length; ++i) {
                     aggregateBeanManager[i] = new JPABeanManager((ManagedBeanInfo) additionalBeanInfo[i]);
                 }
-                return new AggregateBeanManager(new JPABeanManager<T>(beanInfo), aggregateBeanManager);
+                return new AggregateBeanManager(new JPABeanManager<T>(_beanInfo), aggregateBeanManager);
             } else {
-                return new JPABeanManager<T>(beanInfo);
+                return new JPABeanManager<T>(_beanInfo);
             }
 
         } catch (IntrospectionException ex) {
@@ -45,6 +61,14 @@ public class JPABeanManagerFactory  {
         }
 
         return null;
+      
+  }
+
+    @Override
+    public <T> BeanManager<T> createBeanManager(Class<T> beanClass) {
+        return this.createBeanManager(beanClass,null);
     }
 
+
+ 
 }

@@ -33,7 +33,7 @@ public class CLOBAdapter implements DataAdapter {
      * @param type
      * @return
      */
-    private boolean isCharArray( Class<?> type ) {
+    protected boolean isCharArray( Class<?> type ) {
        return (type.isArray() && (type.getComponentType().equals(Character.class) || type.getComponentType().equals(Character.TYPE))); 
     }
     

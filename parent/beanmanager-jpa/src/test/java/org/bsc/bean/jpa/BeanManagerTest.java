@@ -14,9 +14,13 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.LogManager;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.bsc.bean.AbstractBeanManager;
 import org.bsc.bean.BeanManager;
+import org.bsc.bean.BeanManagerFactory;
 import org.bsc.bean.PropertyDescriptorField;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,36 +35,53 @@ public class BeanManagerTest {
     public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static final String CONNECTION_URL = "jdbc:derby:target/LOCALDB2;create=true"; ;
 
+    static BeanManagerFactory factory;
+    static EntityManagerFactory emf;
+
     @BeforeClass
     public static void loadDriver() throws Exception {
+            emf = Persistence.createEntityManagerFactory("org.bsc_beanmanager-jpa_jar_1.0-SNAPSHOTPU");
+
             Class.forName(DRIVER);
             LogManager.getLogManager().readConfiguration( BeanManagerTest.class.getResourceAsStream("/logging.properties"));
+    
+            factory = BeanManagerFactory.getSPIFactory();
+            
+
+            
     }
 
 
     java.sql.Connection conn;
-
+    EntityManager em;
     @Before
     public void openConnection() throws Exception {
+
+            em = emf.createEntityManager();
+
             Properties p = new Properties();
             p.setProperty("create", "true");
 
 	    conn = DriverManager.getConnection(CONNECTION_URL, p);
 
+
     }
 
     @After
     public void closeConnection() throws Exception {
+            
             if( null!=conn ) {
                     conn.close();
             }
+
+            em.close();
     }
 
     @Test
     public void inheritance() throws Exception  {
     	final String id = "ID1";
     	
-        BeanManager<MyBean> em = JPABeanManagerFactory.createBeanManager(MyBean.class);
+        BeanManager<MyBean> em = factory.createBeanManager(MyBean.class);
          
          MyBean bean1 = em.findById( conn, id);
          if( bean1!=null )
@@ -82,7 +103,7 @@ public class BeanManagerTest {
     
     @Test //@Ignore
     public void testJOINED() throws Exception {
-        BeanManager<MyEntityBean1> myEntityBean1Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean1.class);
+        BeanManager<MyEntityBean1> myEntityBean1Manager = factory.createBeanManager(MyEntityBean1.class);
         //BeanManager<MyEntityBean2> myEntityBean2Manager = JPABeanManagerFactory.createBeanManager(MyEntityBean2.class);
 
         String id = null;
@@ -121,8 +142,8 @@ public class BeanManagerTest {
     public void findAll() throws Exception {
 
 
-        BeanManager<MyUser> myUserManager = JPABeanManagerFactory.createBeanManager(MyUser.class);
-        BeanManager<MyData> myDataManager = JPABeanManagerFactory.createBeanManager(MyData.class);
+        BeanManager<MyUser> myUserManager = factory.createBeanManager(MyUser.class);
+        BeanManager<MyData> myDataManager = factory.createBeanManager(MyData.class);
         
         assertNotNull( myUserManager );
         assertNotNull( myDataManager );
@@ -165,7 +186,7 @@ public class BeanManagerTest {
     @Test
     public void checkNonEntityInheritance() {
 
-        AbstractBeanManager<ItemCifF00091> m = (AbstractBeanManager<ItemCifF00091>) JPABeanManagerFactory.createBeanManager(ItemCifF00091.class);
+        AbstractBeanManager<ItemCifF00091> m = (AbstractBeanManager<ItemCifF00091>) factory.createBeanManager(ItemCifF00091.class);
 
         PropertyDescriptorField fieldM = m.getPropertyByName("M");
 
@@ -188,7 +209,7 @@ public class BeanManagerTest {
     @Test
     public void outboundRecord() throws Exception{
 
-        BeanManager<OutboundRecordJPA> m = JPABeanManagerFactory.createBeanManager(OutboundRecordJPA.class);
+        BeanManager<OutboundRecordJPA> m = factory.createBeanManager(OutboundRecordJPA.class);
 
         OutboundRecordJPA rec = new OutboundRecordJPA();
         

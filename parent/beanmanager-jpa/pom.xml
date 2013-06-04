@@ -4,11 +4,11 @@
   <parent>
     <artifactId>beanmanager</artifactId>
     <groupId>org.bsc.bean</groupId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
   <groupId>org.bsc.bean</groupId>
   <artifactId>beanmanager-jpa</artifactId>
-  <version>1.4.2-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
   <name>beanmanager jpa - trunk</name>
   <url>http://code.google.com/p/bean-manager/</url>
 
@@ -90,7 +90,7 @@
     <dependency>
         <groupId>org.bsc.bean</groupId>
         <artifactId>beanmanager-core</artifactId>
-        <version>1.4.2-SNAPSHOT</version>
+        <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -114,6 +114,12 @@
         <artifactId>commons-beanutils</artifactId>
         <version>1.7.0</version>
    </dependency>
+   
+    <dependency>
+        <groupId>org.kohsuke.metainf-services</groupId>
+        <artifactId>metainf-services</artifactId>
+    </dependency>
+   
 <!--     
     <dependency>
         <groupId>org.apache.ddlutils</groupId>

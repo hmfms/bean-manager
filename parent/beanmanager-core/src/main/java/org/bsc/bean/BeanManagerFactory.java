@@ -1,6 +1,7 @@
 package org.bsc.bean;
 
 import java.beans.BeanInfo;
+import java.util.ServiceLoader;
 
 import org.bsc.util.Configurator;
 import org.bsc.util.Log;
@@ -19,6 +20,22 @@ public abstract class BeanManagerFactory {
   static final String FACTORY_CLASS = "bsc.factory";
 
 
+  public static BeanManagerFactory getSPIFactory() {
+  
+      ServiceLoader<BeanManagerFactory> loader = ServiceLoader.load( BeanManagerFactory.class );
+      
+      java.util.Iterator<BeanManagerFactory> i = loader.iterator();
+      
+      if( i.hasNext() ) {
+          
+          return i.next();
+      }
+      else {
+          return getFactory();
+      }
+      
+  }
+  
   /**
    *
    * @return
