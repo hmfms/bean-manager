@@ -48,101 +48,100 @@ import org.junit.Test;
  *
  */
 public class TestBeanManager extends BaseTestUtils {
-	private static BeanManager<Customer> customerManager = null; 
-	private static BeanManager<BankAccount> accountManager = null; 
-	private static BeanManager<CustomerAccount> customerAccountManager = null; 
-	private static BeanManager<Attachment> attachmentManager = null; 
-
+    private static boolean USE_PROXY = true;
+    
+    private static BeanManager<Customer> customerManager = null;
+    private static BeanManager<BankAccount> accountManager = null;
+    private static BeanManager<CustomerAccount> customerAccountManager = null;
+    private static BeanManager<Attachment> attachmentManager = null;
     private Connection conn = null;
-	
-	@BeforeClass
-	public static void init() throws Exception {
 
-            System.setProperty("default.schema", "APP");
-            
-            loadDriver();
-            
-            initLogger();
-            
-            Connection conn = connect();
-            
-            try { 
-                
-                
-                BeanManagerFactory factory = BeanManagerFactory.getFactory();
-                
-                customerManager = factory.createBeanManager(Customer.class);
-                accountManager = factory.createBeanManager(BankAccount.class);
-                customerAccountManager = factory.createBeanManager(CustomerAccount.class);
-                attachmentManager = factory.createBeanManager(Attachment.class);
-		Database db = new Database();
-		
-		createTablesModel(db,                         
-                        new CustomerBeanInfo(),
-                        new BankAccountBeanInfo(),
-                        new CustomerAccountBeanInfo(),
-                        new AttachmentBeanInfo()
-                        );
-		
-              
-		Platform p = PlatformFactory.createNewPlatformInstance(DRIVER, CONNECTION_URL);
-		
-                // void createTables(Connection connection, Database model, boolean dropTablesFirst, boolean continueOnError)
-                // Creates the tables defined in the database model.
-                p.createTables( conn, db, true, true);
+    @BeforeClass
+    public static void init() throws Exception {
 
-                
-            }
-            finally {
-                disconnect( conn );
-            }
+        System.setProperty("default.schema", "APP");
+
+        loadDriver();
+
+        initLogger();
+
+        Connection conn = connect();
+
+        try {
+
+
+            BeanManagerFactory factory = (USE_PROXY) ? 
+                                        new BeanManagerFactoryProxy() :
+                                        BeanManagerFactory.getFactory() ;
+
+            customerManager = factory.createBeanManager(Customer.class);
+            accountManager = factory.createBeanManager(BankAccount.class);
+            customerAccountManager = factory.createBeanManager(CustomerAccount.class);
+            attachmentManager = factory.createBeanManager(Attachment.class);
+            Database db = new Database();
+
+            createTablesModel(db,
+                    new CustomerBeanInfo(),
+                    new BankAccountBeanInfo(),
+                    new CustomerAccountBeanInfo(),
+                    new AttachmentBeanInfo());
+
+
+            Platform p = PlatformFactory.createNewPlatformInstance(DRIVER, CONNECTION_URL);
+
+            // void createTables(Connection connection, Database model, boolean dropTablesFirst, boolean continueOnError)
+            // Creates the tables defined in the database model.
+            p.createTables(conn, db, true, true);
+
+
+        } finally {
+            disconnect(conn);
         }
-  	
-        @AfterClass
-	public static void term() throws Exception {
-	                
-	}
+    }
 
-      
-	@Before
-	public void openConnection() throws Exception {
+    @AfterClass
+    public static void term() throws Exception {
+    }
 
-                conn = connect(); 
-		
-	
-        }
-	
-	@After
-	public void closeConnection() throws Exception {
-	
-            disconnect( conn );
-	}
-	
-        //@Test
-	public void getTables() throws Exception {
-             String catalog = null; 
-             String schemaPattern = null; 
+    @Before
+    public void openConnection() throws Exception {
 
-            
-            DatabaseMetaData dbmd = conn.getMetaData();
-            
-            ResultSet rs = dbmd.getTables(  catalog, schemaPattern, "%", null );
-            
-            BeanManager<TableBean> manager = (BeanManager<TableBean>) BeanManagerFactory.getFactory().createBeanManager(TableBean.class, new TableBeanInfo());
-        
-            System.out.printf( "==== TABLES ====\n");
-            
-            while( rs.next() ) {
+        conn = connect();
 
-                TableBean bean = manager.instantiateBean();
 
-                manager.setBeanProperties(bean, rs);
+    }
 
-                System.out.printf( "table.schema=%s table.name=%s table.type=%s\n", bean.getSchema(), bean.getName(), bean.getType());
-                
-            }
+    @After
+    public void closeConnection() throws Exception {
+
+        disconnect(conn);
+    }
+
+    //@Test
+    public void getTables() throws Exception {
+        String catalog = null;
+        String schemaPattern = null;
+
+
+        DatabaseMetaData dbmd = conn.getMetaData();
+
+        ResultSet rs = dbmd.getTables(catalog, schemaPattern, "%", null);
+
+        BeanManager<TableBean> manager = (BeanManager<TableBean>) BeanManagerFactory.getFactory().createBeanManager(TableBean.class, new TableBeanInfo());
+
+        System.out.printf("==== TABLES ====\n");
+
+        while (rs.next()) {
+
+            TableBean bean = manager.instantiateBean();
+
+            manager.setBeanProperties(bean, rs);
+
+            System.out.printf("table.schema=%s table.name=%s table.type=%s\n", bean.getSchema(), bean.getName(), bean.getType());
 
         }
+
+    }
 
     @Test
     public void loadCustomCommands() {
@@ -151,99 +150,98 @@ public class TestBeanManager extends BaseTestUtils {
         //assertEquals("cc.size != 3",  3, cc.size());
 
         {
-        String k = "command0";
-        String p = cc.getProperty(k);
+            String k = "command0";
+            String p = cc.getProperty(k);
 
-        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+            assertNotNull(String.format("commands[%s] does not exist!", k), p);
 
-        System.out.println(p);
-
-        }
-
-        {
-        String k = "command1";
-        String p = cc.getProperty(k);
-
-        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
-
-        System.out.println(p);
-
-        }
-        
-        {
-        String k = "command2";
-        String p = cc.getProperty(k);
-
-        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
-
-        System.out.println(p);
-
-        }
-
-/*
-        Properties commands = Configurator.loadCustomCommands( new File("target/test-classes/commands"), "sql");
-
-        assertEquals("commands.size != 2",  2, commands.size());
-
-        {
-        String k = "command1";
-        String p = commands.getProperty(k);
-
-        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
-
-        System.out.println(p);
+            System.out.println(p);
 
         }
 
         {
-        String k = "command2";
-        String p = commands.getProperty(k);
+            String k = "command1";
+            String p = cc.getProperty(k);
 
-        assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+            assertNotNull(String.format("commands[%s] does not exist!", k), p);
 
-        System.out.println(p);
+            System.out.println(p);
 
         }
-*/
+
+        {
+            String k = "command2";
+            String p = cc.getProperty(k);
+
+            assertNotNull(String.format("commands[%s] does not exist!", k), p);
+
+            System.out.println(p);
+
+        }
+
+        /*
+         Properties commands = Configurator.loadCustomCommands( new File("target/test-classes/commands"), "sql");
+
+         assertEquals("commands.size != 2",  2, commands.size());
+
+         {
+         String k = "command1";
+         String p = commands.getProperty(k);
+
+         assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+         System.out.println(p);
+
+         }
+
+         {
+         String k = "command2";
+         String p = commands.getProperty(k);
+
+         assertNotNull( String.format( "commands[%s] does not exist!", k), p);
+
+         System.out.println(p);
+
+         }
+         */
 
     }
 
-
     /**
-     * 
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testINClause() throws Exception {
-		Customer bean = new Customer();
+        Customer bean = new Customer();
 
-        for( int i=1; i<100 ; ++i ) {
+        for (int i = 1; i < 100; ++i) {
             bean.setFirstName("name" + i);
             bean.setLastName("sname" + i);
-            bean.setAccountId( i );
+            bean.setAccountId(i);
             bean.setVip(true);
-            bean.setNote( "Note" + i );
-            bean.setBirthDate( new java.util.Date() );
+            bean.setNote("Note" + i);
+            bean.setBirthDate(new java.util.Date());
             customerManager.create(conn, bean);
         }
 
-        List<String> names = Arrays.asList( "name5", "name6", "name7");
+        List<String> names = Arrays.asList("name5", "name6", "name7");
 
-        List<Customer> result  = new ArrayList<Customer>( names.size());
+        List<Customer> result = new ArrayList<Customer>(names.size());
 
-        customerManager.find(conn, result, String.format( "${firstName} IN %s order by #{firstName}", BeanManagerUtils.IN(names) ), names);
+        customerManager.find(conn, result, String.format("${firstName} IN %s order by #{firstName}", BeanManagerUtils.IN(names)), names);
 
-        assertTrue( result.size()==3 );
+        assertTrue(result.size() == 3);
 
-        assertEquals( "name5", result.get(0).getFirstName());
-        assertEquals( "name6", result.get(1).getFirstName());
-        assertEquals( "name7", result.get(2).getFirstName());
+        assertEquals("name5", result.get(0).getFirstName());
+        assertEquals("name6", result.get(1).getFirstName());
+        assertEquals("name7", result.get(2).getFirstName());
 
         customerManager.removeAll(conn);
 
     }
 
-    private BankAccount createAccount( int id) throws SQLException {
+    private BankAccount createAccount(int id) throws SQLException {
 
         BankAccount bean = new BankAccount();
 
@@ -257,22 +255,21 @@ public class TestBeanManager extends BaseTestUtils {
 
     }
 
-
     @Test
-    public void loadCustomer()  throws Exception {
+    public void loadCustomer() throws Exception {
 
         Customer c = new Customer();
 
         c.setFirstName("NAME1");
-        c.setLastName( "LNAME1");
+        c.setLastName("LNAME1");
 
         int result = customerManager.create(conn, c);
 
-        Assert.assertNotNull(c.getCustomerId() );
+        Assert.assertNotNull(c.getCustomerId());
         Assert.assertEquals(1, result);
 
         c.setFirstName("NAME2");
-        c.setLastName( "LNAME2");
+        c.setLastName("LNAME2");
 
         customerManager.loadBean(conn, c);
 
@@ -304,8 +301,6 @@ public class TestBeanManager extends BaseTestUtils {
         removeCustomer(id);
 
     }
-
-
 
     @Test
     public void customCommand() throws Exception {
